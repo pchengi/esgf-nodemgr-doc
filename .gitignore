@@ -1,0 +1,13 @@
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.aux
+*.bcf
+*.idx
+*.ilg
+*.ind
+*.pyc
+*.pdf
+*~
