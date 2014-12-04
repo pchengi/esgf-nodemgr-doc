@@ -24,12 +24,31 @@
 \section{Overview}
 
 
+\section{Design Considerations}
+
+We are interested in a hierarchical framework for node management rather than a pure p2p.  In this case nodes elect "super-nodes" that perform additional tasks than "member-nodes".  Our goal for scalability is to have a balance of super vs member nodes to ensure that no super-node becomes oversubscribed.  Super-nodes operate at the "project" level.   
+
+A node that serves as the "super-node" for project A can be a member node for project B.  Super-nodes can serve in that role for multiple projects.    Configuring a node for eligibility for selection to become a super node is voluntary, but important for the federation to have an "adequate" number of candidates.
+
+Vetting for a super node. Hand-picked initial super-nodes.  
+
+member nodes pass messages.  
+
+Node manager admin interface.  Allow admins to eg. sign certs, vet nodes,  
+
+\begin{enumerate}
+\item
+Tree-based communication between super nodes and member nodes to reduce communication overheads, ie. avoid $n^2$ patterns.  We expect a "wide" tree with "few" hops. 
+\end{enumerate}
+
+
 \section{Breakup of tasks}
 
 
 
 \section{System Architecture}
 Diagram of the system to go here...\\
+
 \subsection{Components}
 \begin{enumerate}
 \item 
@@ -53,9 +72,18 @@ Use case diagram goes here...
 This is to be a place to list out problems that need to be handled.
 \begin{enumerate}
 \item
+do we use zookeeper?
+
+to what extent can we rely if we do,  what do we need to implement for the nm
+
+
 Is zookeeper a fit for management?
 \item
 can zookeeper manage group-level access control?
+\item
+Deal with "spoofed" node; ensure relayed information is legitimate. 
+
+
 \end{enumerate}
 \hypertarget{mymarker}{}
 \printindex
