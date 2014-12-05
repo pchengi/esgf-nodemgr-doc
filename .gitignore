@@ -9,5 +9,10 @@
 *.ilg
 *.ind
 *.pyc
-*.pdf
+*.nav
+*.xml
+*.snm
+nodemgrdoc.pdf
+presentation/esgf-nodemgr.pdf
+*.txt
 *~

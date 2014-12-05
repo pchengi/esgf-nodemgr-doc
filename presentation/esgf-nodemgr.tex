@@ -1,0 +1,80 @@
+\documentclass{beamer}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{multicol}
+\usepackage{biblatex}
+\bibliography{gridbib}
+\usetheme{Madrid}
+\usebackgroundtemplate{
+\setlength{\unitlength}{1mm}
+\begin{picture}(-10,80)
+%\put(5,-10){\includegraphics[scale=0.2]{Logo-v2.pdf}}
+\put(95,-10){\includegraphics[scale=0.1]{../logowork/doe-is-enes.pdf}}
+\end{picture}
+\setlength{\unitlength}{1pt}
+}
+\title{ESGF Node Manager}
+\author{P. Dwarakanath, S. Ames}
+\institute{LIU/LLNL}
+\date{December 10 2014}
+\begin{document}
+
+\begin{frame}
+\titlepage
+\setlength{\unitlength}{1mm}
+\begin{picture}(-10,-10)
+%\put(40,-10){\includegraphics[scale=0.3]{Triolith3.jpg}}
+\end{picture}
+\setlength{\unitlength}{1pt}
+\end{frame}
+
+\begin{frame}{Contents}
+\tableofcontents
+\end{frame}
+
+\section{Background}
+\begin{frame}{Background}
+The current ESGF node manager handles:
+\begin{itemize}
+\item Capturing metrics
+\item Sharing node information across federations: certs, endpoints etc
+\item A mechanism to share common configuration files.
+\end{itemize}
+Drawbacks
+\begin{itemize}
+\item Limited scalability.
+\item P2P file/data exchange could be more secure, particularly configuration files.
+\end{itemize}
+
+\end{frame}
+
+\section{Desirable features for next-gen Node Manager}
+\begin{frame}{Desirable features for next-gen Node Manager}
+\begin{itemize}
+\item Fault-tolerant distributed system, without a single point of failure.
+\item High scalability without overloading resources.
+\item Minimise communication overheads.
+\item PAN federation administration: handling cert requests, node memberships etc
+\item Consistent and highly available common configuration files
+\end{itemize}
+\end{frame}
+
+\section{Overview of proposed solution}
+\begin{frame}{Overview of proposed solution}
+Supernodes
+\begin{itemize}
+\item A supernode is a validated and reliable source for configuration directives, metrics, information about components etc.
+\item Multiple supernodes to to ensure scalability, fault tolerance and load sharing.
+\item Supernodes are designed to function at the Project level.
+\item A node can be supernode to multiple projects, or supernode to one/some and member in others.
+\item Nodes can be standby supernodes too: only used when another supernode is down.
+\end{itemize}
+\end{frame}
+
+%\section{Component Diagram for data download workflow}
+%\begin{frame}{Component Diagram for data download workflow}
+%\includegraphics[scale=0.52]{/home/pchengi/clipc-work/clipc-dev/doc/diagram.pdf}
+%\end{frame}
+
+\end{document}

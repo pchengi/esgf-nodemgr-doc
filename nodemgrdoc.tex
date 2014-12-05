@@ -38,7 +38,9 @@ Node manager admin interface.  Allow admins to eg. sign certs, vet nodes,
 
 \begin{enumerate}
 \item
-Tree-based communication between super nodes and member nodes to reduce communication overheads, ie. avoid $n^2$ patterns.  We expect a "wide" tree with "few" hops. 
+Tree-based communication between super nodes and member nodes to reduce communication overheads, ie. avoid $n^2$ patterns.  We expect a ``wide'' tree with ``few" hops.
+\item 
+Need to maintain backward compatibility with format of registration.xml etc, to not break existing parsers. 
 \end{enumerate}
 
 
@@ -50,18 +52,14 @@ Tree-based communication between super nodes and member nodes to reduce communic
 Diagram of the system to go here...\\
 
 \subsection{Components}
+We see two major components in this solution.
 \begin{enumerate}
 \item 
-super node election service (zookeeper?)
+A component which takes care of failure detection, failure handling, leader election, shared state etc.
+Apache ZooKeeper seems to be a very promising fit for this role.
 \item
-node failure detection (zookeeper?)
-\item
-shared state among nodes (zookeeper?)
-\item
-node status service
-\item
-metrics collection and query
-
+A component that serves as a `feeder', to the zookeeper. This would also provide an administrative interface to the node manager. This is the component of the node manager that is meant to be exposed to the federation, and not the ZooKeeper itself. It could be used by local admins, to generate requests for federation membership or certificate signing. It would also allow admins of supernodes to ratify/sign these requests.
+metrics collection and query. This component would also be responsible for collection of metrics.
 \end{enumerate}
 
 \subsection{Use Case Diagram}
