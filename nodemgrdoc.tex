@@ -45,6 +45,16 @@ Need to maintain backward compatibility with format of registration.xml etc, to 
 
 
 \section{Breakup of tasks}
+\subsection{zookeeper evaluation}
+\begin{enumerate}
+\item
+Performance evaluation
+\item
+Evaluate functionality
+\item
+Assess  API
+\end{enumerate}
+
 
 
 
@@ -62,6 +72,15 @@ A component that serves as a `feeder', to the zookeeper. This would also provide
 metrics collection and query. This component would also be responsible for collection of metrics.
 \end{enumerate}
 
+\subsubsection{Metric subcomponent}
+
+This subcomponent produces the metrics that appear on the dashboard or other UI.  Some metrics are based on node state managed by the "feeder" service.  The zookeeper DFS can be used as the metastore for metric metadata.  Much metric "raw" data will be found in the log files.  A crawler procedure can gather stats from the logs.   The metric service can include aggregate information from the provenance collection system.
+
+
+
+An optional part of this is a centralized collection of the log data that can be queried efficiently.  We expect that this would be on data center supernodes.   
+
+
 \subsection{Use Case Diagram}
 Use case diagram goes here...
 
@@ -77,10 +96,14 @@ to what extent can we rely if we do,  what do we need to implement for the nm
 
 Is zookeeper a fit for management?
 \item
-can zookeeper manage group-level access control?
+can zookeeper manage group-level access control?  We think it can.  Need to evaluate.
+\item
+Is zookeeper python API adequate
+
 \item
 Deal with "spoofed" node; ensure relayed information is legitimate. 
-
+\item
+Need to choose centralized query service database system.  Use Hadoop, spark, Hive, Cassandra, or some RDBMS?
 
 \end{enumerate}
 \hypertarget{mymarker}{}
