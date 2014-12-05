@@ -60,15 +60,38 @@ Drawbacks
 \end{itemize}
 \end{frame}
 
-\section{Overview of proposed solution}
-\begin{frame}{Overview of proposed solution}
-Supernodes
+\section{Node manager types}
+\begin{frame}{Node manager types}
+Node managers can be of three different types.
+\begin{enumerate}
+\item Supernodes
 \begin{itemize}
-\item A supernode is a validated and reliable source for configuration directives, metrics, information about components etc.
-\item Multiple supernodes to to ensure scalability, fault tolerance and load sharing.
-\item Supernodes are designed to function at the Project level.
-\item A node can be supernode to multiple projects, or supernode to one/some and member in others.
-\item Nodes can be standby supernodes too: only used when another supernode is down.
+\item A validated and reliable source for configuration directives, metrics, information about components etc.
+\item Multiple concurrent supernodes for scalability, fault tolerance and load sharing.
+\item Supernodes query other node managers for metrics and status.
+\end{itemize}
+\item Membernodes
+\begin{itemize}
+\item Default node manager configuration
+\item Cannot query other node managers.
+\end{itemize}
+\item Standby supernodes
+\begin{itemize}
+\item The node managers run as supernodes only when too few supernodes are operational.
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+\section{Node manager components}
+\begin{frame}{Node manager components}
+\begin{itemize}
+\item \textbf{Apache ZooKeeper}, to take care of group management (project), leader election for supernode management etc
+\item \textbf{ESGF Node Manager API}, to serve as a wrapper, for ZooKeeper and modify node's availability to be considered for use as supernode etc.
+\item \textbf{Metric collector}: query member nodes and aggregate them (supernodes)
+\item \textbf{Self-check component}: run sanity checks on self.
+\item \textbf{Messaging component}: alert notifications for local admins when services fail.
+\item \textbf{Admin console (local node)}: submit membership requests, CSRs, volunteer for supernode role etc
+\item \textbf{Admin console (supernode admin mode)}: sign CSRs, manage membership and volunteering requests etc. 
 \end{itemize}
 \end{frame}
 
