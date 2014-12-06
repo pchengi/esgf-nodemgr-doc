@@ -35,7 +35,7 @@
 
 \section{Background}
 \begin{frame}{Background}
-The current ESGF node manager handles:
+The current ESGF Node Manager handles:
 \begin{itemize}
 \item Capturing metrics
 \item Sharing node information across federations: certs, endpoints etc
@@ -57,33 +57,42 @@ Drawbacks
 \item Minimise communication overheads.
 \item PAN federation administration: handling cert requests, node memberships etc
 \item Consistent and highly available common configuration files
+\item Mechanism to ensure replica consistency across federation.
 \end{itemize}
 \end{frame}
 
-\section{Node manager types}
-\begin{frame}{Node manager types}
+\section{Node Manager types}
+\begin{frame}{Node Manager types}
 Node managers can be of three different types.
 \begin{enumerate}
 \item Supernodes
 \begin{itemize}
-\item A validated and reliable source for configuration directives, metrics, information about components etc.
+\item A validated and reliable source for configuration directives, metrics, information about components etc, at project level.
 \item Multiple concurrent supernodes for scalability, fault tolerance and load sharing.
-\item Supernodes query other node managers for metrics and status.
+\item Supernodes query other Node Managers for metrics and status.
+\item A single Node Manager can serve as supernode to multiple projects or even as supernode to one and membernode to another etc.
 \end{itemize}
 \item Membernodes
 \begin{itemize}
-\item Default node manager configuration
-\item Cannot query other node managers.
+\item Default Node Manager configuration
+\item Cannot query other Node Managers.
 \end{itemize}
 \item Standby supernodes
 \begin{itemize}
-\item The node managers run as supernodes only when too few supernodes are operational.
+\item The Node Managers run as supernodes only when too few supernodes are operational.
 \end{itemize}
 \end{enumerate}
 \end{frame}
 
-\section{Node manager components}
-\begin{frame}{Node manager components}
+\section{View of federated Node Managers}
+\begin{frame}{View of federated Node Managers}
+\begin{center}
+\includegraphics[scale=0.35]{ESG-node-org.pdf}
+\end{center}
+\end{frame}
+
+\section{Node Manager components}
+\begin{frame}{Node Manager components}
 \begin{itemize}
 \item \textbf{Apache ZooKeeper}, to take care of group management (project), leader election for supernode management etc
 \item \textbf{ESGF Node Manager API}, to serve as a wrapper, for ZooKeeper and modify node's availability to be considered for use as supernode etc.
@@ -95,9 +104,20 @@ Node managers can be of three different types.
 \end{itemize}
 \end{frame}
 
-%\section{Component Diagram for data download workflow}
-%\begin{frame}{Component Diagram for data download workflow}
-%\includegraphics[scale=0.52]{/home/pchengi/clipc-work/clipc-dev/doc/diagram.pdf}
-%\end{frame}
+\section{Node Manager component diagram}
+\begin{frame}{Node Manager component diagram}
+\begin{center}
+\includegraphics[scale=0.3]{NM-design.pdf}
+\end{center}
+\end{frame}
+
+\section{Node Manager design considerations}
+\begin{frame}{Node Manager design considerations}
+\begin{itemize}
+\item Security: factor for both user/machine executed elevated privilege operations.
+\item Design to guard against spoofing of membernodes/supernodes etc.
+\end{itemize}
+\end{frame}
+
 
 \end{document}
