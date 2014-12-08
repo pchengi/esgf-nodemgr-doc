@@ -60,11 +60,19 @@ Evaluate functionality
 Assess  API
 \end{enumerate}
 
+\subsection{metrics gathering}
+\begin{enumerate}
+\item Gather needed metrics
+\item design SQL queries
+\item  implement result aggregation
+\end{enumerate}
 
 
 
 \section{System Architecture}
-Diagram of the system to go here...\\
+\begin{center}
+\includegraphics[width=5in]{presentation/NM-design.pdf}
+\end{center}
 
 \subsection{Components}
 We see two major components in this solution.
@@ -89,8 +97,7 @@ This is a subcomponent of the node manager which is responsible for carrying out
 \subsection{Messaging subcomponent}
 The messaging subcomponent is used by the self-check subcomponent, to alert the local admin, when the state of the node changes, i.e. fails a sanity check, or clears one, after having been flagged down by previous checks.
 
-\subsection{Use Case Diagram}
-Use case diagram goes here...
+
 
 \section{Node manager capacities}
 Each and every ESGF installation, irrespective of role, i.e. data, compute etc, would have the node manager as a component.  However, the node manager itself can function in different capacities. 
@@ -106,9 +113,14 @@ A bulk of internode communication is handled implicitly by ZooKeeper, releasing 
 \begin{enumerate}
 \item \textbf{Supernode to membernode}: metric queries, status queries, status change notifcation (standby to supernode, viceversa etc)
 \item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction
-\item \textbf{Membernode to membernode}: passing on authenticated messages received from supernodes.
+\item \textbf{Membernode to membernode}: passing on authenticated messages received from supernodes.  (this is implicit in zookeeper's communication) 
 \item \textbf{Membernode to supernode}: Pushing local config status etc.
 \end{enumerate}
+
+\begin{center}
+\includegraphics[width=5in]{presentation/ESG-node-org.pdf}
+\end{center}
+
 
 \section{Authentication mechanisms}
 Distinction to be made between user authentication and system authentication, as certain privileged operations may need to be executed without human intervention. This would need a system or process to be authorized to perform the operation. 
