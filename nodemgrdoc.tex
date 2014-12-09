@@ -5,7 +5,7 @@
 \def\myauthone{Prashanth Dwarakanath}
 \def\myauthtwo{Sasha Ames}
 %\def\myauththree{Torgny Fax\'en}
-\def\mypress{Earth Sciences Grid Federation}
+\def\mypress{Earth System Grid Federation}
 \usepackage{chengi}
 \usepackage{biblatex}
 \bibliography{thebib}
@@ -30,23 +30,24 @@
 
 
 \section{Design Considerations}
+\begin{itemize}
+\item 
+
 
 We are interested in a hierarchical framework for node management rather than a pure p2p.  In this case nodes elect "super-nodes" that perform additional tasks than "member-nodes".  Our goal for scalability is to have a balance of super vs member nodes to ensure that no super-node becomes oversubscribed.  Super-nodes operate at the "project" level.   
-
+\item
 A node that serves as the "super-node" for project A can be a member node for project B.  Super-nodes can serve in that role for multiple projects.    Configuring a node for eligibility for selection to become a super node is voluntary, but important for the federation to have an "adequate" number of candidates.
-
+\item
 Vetting for a super node. Hand-picked initial super-nodes.  
-
-member nodes pass messages.  
-
+\item
+Member nodes pass messages.  
+\item
 Node manager admin interface.  Allow admins to eg. sign certs, vet nodes,  
-
-\begin{enumerate}
 \item
 Tree-based communication between super nodes and member nodes to reduce communication overheads, ie. avoid $n^2$ patterns.  We expect a ``wide'' tree with ``few" hops.
 \item 
 Need to maintain backward compatibility with format of registration.xml etc, to not break existing parsers. 
-\end{enumerate}
+\end{itemize}
 
 
 \section{Breakup of tasks}
@@ -82,6 +83,7 @@ A component which takes care of failure detection, failure handling, leader elec
 Apache ZooKeeper seems to be a very promising fit for this role, so this component shall henceforth simply be refered to as ZooKeeper.
 \item
 A component that serves as a `feeder', to the zookeeper. This would also provide an administrative interface to the node manager. This is the component of the node manager that is meant to be exposed to the federation, and not the ZooKeeper itself, and it includes the ESGF Node Manager API. Henceforth, this component shall simply be refered to as the node manager. The node manager will also be used by local admins, to generate requests for federation membership or certificate signing and allow supernode admins to ratify/sign these requests. The node manager would also be responsible for collection of metrics.
+
 \end{enumerate}
 
 \subsection{Metric subcomponent}
@@ -121,23 +123,43 @@ A bulk of internode communication is handled implicitly by ZooKeeper, releasing 
 \includegraphics[width=5in]{presentation/ESG-node-org.pdf}
 \end{center}
 
+\section{Design Specifics}
+
+\subsection{Use of ZooKeeper}
+
+\begin{enumerate}
+\item super-nodes establish project group ZK-node directory instances.  Each project includes the min and max thresholds for super node count.  The threshold may increase if a larger number of project nodes join a group.  We expect that these settings will initially be controlled by a super-node administrator, but could be automated.
+
+
+\item Super and Member nodes establish ephemeral nodes for project group membership.  Based on the property of ephemeral nodes, an instance will not persist if a creator Member Node becomes unavailable.  The ephemeral node instance contains the high-level characteristics for the node, such as the node types running (data, index, idp, compute),  maybe user, data set counts, other projects hosted.  
+\item Standby nodes set their status in a subdirectory for the project group
+
+\item the first standby node will assume super node responsibility if the project SN count threshold dips below the minimum allowed.  A thread in the node manager service may poll the ZK ephemeral nodes to see if the change over is required, then can invoke the SN role library functions.
+\item SuperNode legacy service for registration.xml pulls node "alive" information to feed to the Dashboard.  
+
+\end{enumerate}
+
+
 
 \section{Authentication mechanisms}
 Distinction to be made between user authentication and system authentication, as certain privileged operations may need to be executed without human intervention. This would need a system or process to be authorized to perform the operation. 
+
+
+
 \section{Issues and questions}
 This is to be a place to list out problems that need to be handled.
 \begin{enumerate}
 \item
-do we use zookeeper?
-
-to what extent can we rely if we do,  what do we need to implement for the nm
-
+Do we use zookeeper?
+\item
+To what extent can we rely if we do,  what do we need to implement for the NM?
+\item
 
 Is zookeeper a fit for management?
 \item
-can zookeeper manage group-level access control?  We think it can.  Need to evaluate.
+Can zookeeper manage group-level access control?  We think it can.  Need to evaluate.
 \item
-Is zookeeper python API adequate
+Is zookeeper python API adequate?
 
 \item
 Deal with "spoofed" node; ensure relayed information is legitimate. 
@@ -149,6 +171,7 @@ Need the supernode to query nodes for metrics and perform aggregation where nece
 \section{To revisit}
 \begin{enumerate}
 \item Support for automated replication of datasets
+\item Support for an update manager service (to supplant present esgf-installer)
 \end{enumerate}
 %\nocite{KandR}
 \printbibliography
