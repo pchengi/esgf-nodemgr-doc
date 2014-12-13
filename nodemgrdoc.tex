@@ -12,7 +12,7 @@
 \DefineBibliographyStrings{english}{%
   bibliography = {References},
 }
-\def\phname{NM{ }}
+\def\nm{Node Manager{ }}
 \def\vernum{December 5, 2014}
 \setcounter{tocdepth}{2}
 \thispagestyle{empty}
@@ -144,6 +144,12 @@ A bulk of internode communication is handled implicitly by ZooKeeper, releasing 
 \section{Authentication mechanisms}
 Distinction to be made between user authentication and system authentication, as certain privileged operations may need to be executed without human intervention. This would need a system or process to be authorized to perform the operation. 
 
+\section{Feedback and questions from the F2F 2014}
+\begin{enumerate}
+\item Can ZooKeeper be proxied on http/https, to avoid having to open up further ports.
+\item Can the \nm implement federated attribute service?
+\item Luca's virtual organization management vs project level management by \nm How do they fit in ?
+\end{enumerate}
 
 
 \section{Issues and questions}
@@ -151,8 +157,14 @@ This is to be a place to list out problems that need to be handled.
 \begin{enumerate}
 \item
 Do we use zookeeper?
+\begin{enumerate}
+\item \redline{Implementing dynamic changes by adding or removing ZKs might be problematic.}
+\item \redline{ZK seems to be designed to operate behind a firewall, preferably with all hosts on the same subnet.}
+\item \redline{ZK not designed with focus on security, as common implementations are cluster management etc, all behind firewall}
+\item \redline{Getting hosts to open up additional ports is cumbersome and a backward step} 
+\end{enumerate}
 \item
-To what extent can we rely if we do,  what do we need to implement for the NM?
+To what extent can we rely if we do,  what do we need to implement for the \nm?
 \item
 
 Is zookeeper a fit for management?
@@ -172,6 +184,7 @@ Need the supernode to query nodes for metrics and perform aggregation where nece
 \begin{enumerate}
 \item Support for automated replication of datasets
 \item Support for an update manager service (to supplant present esgf-installer)
+\item Metrics collection: what needs to be done for aggregation? Does it clash with what Sandro intends to do?
 \end{enumerate}
 %\nocite{KandR}
 \printbibliography
