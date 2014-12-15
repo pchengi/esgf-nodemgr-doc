@@ -80,7 +80,9 @@ We see two major components in this solution.
 \begin{enumerate}
 \item 
 A component which takes care of failure detection, failure handling, leader election, shared state etc.
-Apache ZooKeeper seems to be a very promising fit for this role, so this component shall henceforth simply be refered to as ZooKeeper.
+%Apache ZooKeeper seems to be a very promising fit for this role, so this component shall henceforth simply be refered to as ZooKeeper.
+After looking at ZooKeeper, we opt against incorporating  ZK in the node manager/ esgf software stack.  Instead we focus on implementing a component that loosely model's its communication style on ZK.  
+
 \item
 A component that serves as a `feeder', to the zookeeper. This would also provide an administrative interface to the node manager. This is the component of the node manager that is meant to be exposed to the federation, and not the ZooKeeper itself, and it includes the ESGF Node Manager API. Henceforth, this component shall simply be refered to as the node manager. The node manager will also be used by local admins, to generate requests for federation membership or certificate signing and allow supernode admins to ratify/sign these requests. The node manager would also be responsible for collection of metrics.
 
@@ -105,13 +107,14 @@ The messaging subcomponent is used by the self-check subcomponent, to alert the 
 Each and every ESGF installation, irrespective of role, i.e. data, compute etc, would have the node manager as a component.  However, the node manager itself can function in different capacities. 
 \begin{enumerate}
 \item \textbf{Membernode}: This is the default capacity of a node manager. It cannot query other node manager instances and can only pass on validated messages. See Section~\ref{commcases} for more. A membernode can volunteer to be a supernode or a standby supernode.
-\item \textbf{Supernode}: This is a membernode which volunteered to function as a supernode and was vetted Responsible for querying nodes which it is responsible for.  A federation would have multiple supernodes which divide the workload among themselves. Supernodes also perform aggregation of gathered metrics. 
+\item \textbf{Supernode}: This is a membernode which volunteered to function as a supernode and was vetted Responsible for querying nodes which it is responsible for.  A federation would have multiple superposed which divide the workload among themselves. Supernodes also perform aggregation of gathered metrics. 
 \item \textbf{Standby supernode}: A standby supernode is a membernode which volunteered to function as a supernode when the number of supernodes in the federation falls below a predefined threshold. These nodes temporarily function as supernodes and return to being standy supernodes, when the supernode count stabilizes in the federation.
 \end{enumerate}
 
 \section{Communication use-cases}
 \label{commcases}
-A bulk of internode communication is handled implicitly by ZooKeeper, releasing us from having to explicitly establish communication for tasks such as leader election, but the ZooKeeper is not exposed to the outside world. Instead, it is controlled/accessed with the node manager, which serves as both a controller for ZooKeeper itself, and also as a wrapper for ZooKeeper. This would need node manager instances to communicate with each other. Let's consider the types of communication between node manager instances.
+%A bulk of internode communication is handled implicitly by ZooKeeper, releasing us from having to explicitly establish communication for tasks such as leader election, but the ZooKeeper is not exposed to the outside world. Instead, it is controlled/accessed with the node manager, which serves as both a controller for ZooKeeper itself, and also as a wrapper for ZooKeeper. This would need node manager instances to communicate with each other. Let's consider the types of communication between node manager instances.
+
 \begin{enumerate}
 \item \textbf{Supernode to membernode}: metric queries, status queries, status change notifcation (standby to supernode, viceversa etc)
 \item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction
@@ -125,7 +128,7 @@ A bulk of internode communication is handled implicitly by ZooKeeper, releasing 
 
 \section{Design Specifics}
 
-\subsection{Use of ZooKeeper}
+\subsection{}
 
 \begin{enumerate}
 \item super-nodes establish project group ZK-node directory instances.  Each project includes the min and max thresholds for super node count.  The threshold may increase if a larger number of project nodes join a group.  We expect that these settings will initially be controlled by a super-node administrator, but could be automated.
