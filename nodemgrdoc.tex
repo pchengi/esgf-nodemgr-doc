@@ -71,13 +71,13 @@ Model deterministic communication
 %\item
 %Assess  API
 %\end{enumerate}
-%
-%\subsection{metrics gathering}
-%\begin{enumerate}
-%\item Gather needed metrics
-%\item design SQL queries
-%\item  implement result aggregation
-%\end{enumerate}
+
+\subsection{metrics gathering}
+\begin{enumerate}
+\item Investigate logger issue
+\item Decouple logger from Node Manager
+\item Ensure generation of registration.xml
+\end{enumerate}
 
 
 
@@ -86,6 +86,7 @@ Model deterministic communication
 \includegraphics[width=5in]{presentation/NM-design.pdf}
 \end{center}
 \newpage
+
 \subsection{Components}
 These are the main components of the solution.
 \begin{enumerate}
@@ -94,9 +95,14 @@ These are the main components of the solution.
 \begin{enumerate}
 \item Membership to projects.
 \item Projects to serve as supernode/standby node (voluntary).
+
+
+
 \end{enumerate}
 
-%A component which takes care of failure detection, failure handling, leader election, shared state etc.
+
+
+
 %Apache ZooKeeper seems to be a very promising fit for this role, so this component shall henceforth simply be refered to as ZooKeeper.
 %After looking at ZooKeeper, we opt against incorporating  ZK in the node manager/ esgf software stack.  Instead we focus on implementing a component that loosely model's its communication style on ZK.  
 
@@ -116,10 +122,14 @@ These are the main components of the solution.
 
 \end{enumerate}
 
+\subsection{Communication handler subcomponent}
+Communication occurs via https client to the apache server listening on the nodes.   The apache service pushes messages back to local API.    We describe the communication use cases and patterns below.
+
+
 \subsection{Metric subcomponent}
 
 This subcomponent produces the metrics that appear on the dashboard or other UI.Much metric ``raw" data will be found in the log files.  A crawler procedure can gather stats from the logs.   The metric service can include aggregate information from the provenance collection system. \yellowline{Also, the currently built-in hooks to log realtime download activity etc would have to be refined to ensure greater accuracy and eliminate problems such as false positives/negatives.}
-An optional part of this is a centralized collection of the log data that can be queried efficiently.  We expect that this would be on data center supernodes.  
+%An optional part of this is a centralized collection of the log data that can be queried efficiently.  We expect that this would be on data center supernodes.  
 
 %Some metrics are based on node state managed by the "feeder" service.  The zookeeper DFS can be used as the metastore for metric metadata.  
 \subsection{Self-check subcomponent}
@@ -146,8 +156,8 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 
 \begin{enumerate}
 \item \textbf{Supernode to membernode}: metric queries, status queries, status change notifcation (standby to supernode, viceversa etc)
-\item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction
-\item \textbf{Membernode to membernode}: passing on authenticated messages received from supernodes.  (this is implicit in zookeeper's communication) 
+\item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction.  Shared information updates.  Peer checks.
+\item \textbf{Membernode to membernode}: passing on authenticated messages received from supernodes.  This communication is TBD (could be tree based using same principe as used within tree network of super nodes. % (this is implicit in zookeeper's communication)  
 \item \textbf{Membernode to supernode}: Pushing local config status etc.
 \end{enumerate}
 
