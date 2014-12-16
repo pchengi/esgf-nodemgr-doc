@@ -59,6 +59,9 @@ Need to maintain backward compatibility with format of registration.xml etc, to 
 Review AVL tree reorganization
 \item
 Model deterministic communication
+\item
+Measurement of node to node latency.  This is needed for all member nodes to all supernode.  TBD  needed for member node - member node, supernode 
+
 \end{enumerate}
 
 
@@ -156,7 +159,8 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 
 \begin{enumerate}
 \item \textbf{Supernode to membernode}: metric queries, status queries, status change notifcation (standby to supernode, viceversa etc)
-\item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction.  Shared information updates (See 1.4.1 item 3).  Peer checks.
+\item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction.  Shared information updates (See 1.4.1 item 3).  
+\item \textbf{superNode health checks}:  This communication unlike other SN communication can be $n^2$ as we expect the messages to be short and infrequent.  
 \item \textbf{Membernode to membernode}: passing on authenticated messages received from supernodes.  This communication is TBD (could be tree based using same principe as used within tree network of super nodes. % (this is implicit in zookeeper's communication)  
 \item \textbf{Membernode to supernode}: Pushing local config status etc.
 \end{enumerate}
@@ -184,12 +188,17 @@ Tree-based node communication among SuperNodes.  Communication among peers is de
 %\item Standby nodes set their status in a subdirectory for the project group
 
 %\item the first standby node will assume super node responsibility if the project SN count threshold dips below the minimum allowed.  A thread in the node manager service may poll the ZK ephemeral nodes to see if the change over is required, then can invoke the SN role library functions.
+
+
 \item SuperNode legacy service for registration.xml pulls node "alive" information to feed to the Dashboard.  
 
 \end{enumerate}
 \begin{center}
 \includegraphics[width=5in]{presentation/Node-comm-v2.pdf}
 \end{center}
+
+\subsection{Member Node reassignment}
+
 
 
 \section{Authentication mechanisms}
