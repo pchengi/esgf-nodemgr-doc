@@ -131,6 +131,8 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 \label{commcases}
 %A bulk of internode communication is handled implicitly by ZooKeeper, releasing us from having to explicitly establish communication for tasks such as leader election, but the ZooKeeper is not exposed to the outside world. Instead, it is controlled/accessed with the node manager, which serves as both a controller for ZooKeeper itself, and also as a wrapper for ZooKeeper. This would need node manager instances to communicate with each other. Let's consider the types of communication between node manager instances.
 
+
+
 \begin{enumerate}
 \item \textbf{Supernode to membernode}: metric queries, status queries, status change notifcation (standby to supernode, viceversa etc)
 \item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction
@@ -144,7 +146,7 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 
 \section{System Design}
 
-\subsection{}
+Tree-based node communication among SuperNodes.  Communication among peers is deterministic based on a node assigned number (taken from the master list of SuperNodes).   Leaf nodes have additional communication with their siblings to increase the number of checks, so all nodes can have 2-3 peers monitoring each at a time.  Standby nodes are assigned potential slots in the event they become activated so each know who the peers will be.  Standby nodes function as member nodes, so these nodes have been assigned a SuperNode and that SuperNode is independent of where the standby nodes will reside in a peer.  Member nodes are shown attached to node # 8 in this example.  However all SuperNodes are expected to have some assigned member nodes, but not essential.  SuperNodes can still function in a relay role without any member nodes and may be needed to take on member nodes as soon as another fails or imbalance occurs. 
 
 \begin{enumerate}
 \item The comprehensive list of supernodes is manually updated in the controlling git repository, which also contains global configuration parameters for supernodes; ex: maximum number of membernodes that can be serviced by supernode etc
@@ -164,7 +166,9 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 \item SuperNode legacy service for registration.xml pulls node "alive" information to feed to the Dashboard.  
 
 \end{enumerate}
-
+\begin{center}
+\includegraphics[width=5in]{presentation/Node-comm-v2.pdf}
+\end{center}
 
 
 \section{Authentication mechanisms}
