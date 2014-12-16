@@ -206,7 +206,8 @@ Tree-based node communication among SuperNodes.  Communication among peers is de
 
 In the event that a supernode becomes unavailable, the managed member nodes must be assigned to other super nodes temporarily.  The strategy to complete this is a greedy algorithm based on the number of nodes to be assigned, and the ranking of super nodes from lowest to greatest available load.  The load information is agreed upon by the tree-based communication prior to assignment.  Disagreements must be resolved.  Additional nodes wait to join the federation until the reassignment is complete.  
 
-Strategy 2:  greedy algorithm based on latencies.  Member nodes are assigned to super nodes using lowest latency in a similar greedy algorithm.  The 
+Strategy 2:  greedy algorithm based on latencies.  Member nodes are assigned to super nodes using lowest latency in a similar greedy algorithm.  The measuring of latencies is performed as an infrequent periodic check based on the current node map (daily/weekly?)
+
 
 
 
