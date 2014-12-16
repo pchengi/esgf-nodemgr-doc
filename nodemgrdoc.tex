@@ -47,6 +47,8 @@ Node manager admin interface.  Allow admins to eg. sign certs, vet nodes,
 Tree-based communication between super nodes and member nodes to reduce communication overheads, ie. avoid $n^2$ patterns.  We expect a ``wide'' tree with ``few" hops. Or consider filled-out binary tree structure (see below). 
 \item 
 Need to maintain backward compatibility with format of registration.xml etc, to not break existing parsers. 
+\item
+Member nodes can function independently from other super nodes. 
 \end{itemize}
 
 
@@ -171,7 +173,7 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 
 \section{System Design}
 
-Tree-based node communication among SuperNodes.  Communication among peers is deterministic based on a node assigned number (taken from the master list of SuperNodes).   Leaf nodes have additional communication with their siblings to increase the number of checks, so all nodes can have 2-3 peers monitoring each at a time.  Standby nodes are assigned potential slots in the event they become activated so each know who the peers will be.  Standby nodes function as member nodes, so these nodes have been assigned a SuperNode and that SuperNode is independent of where the standby nodes will reside in a peer.  Member nodes are shown attached to node \# 8 in this example.  However all SuperNodes are expected to have some assigned member nodes, but not essential.  SuperNodes can still function in a relay role without any member nodes and may be needed to take on member nodes as soon as another fails or imbalance occurs. 
+Tree-based node communication among SuperNodes.  Communication among peers is deterministic based on a node assigned number (taken from the master list of SuperNodes).     Standby nodes are assigned potential slots in the event they become activated so each know who the peers will be.  Standby nodes function as member nodes, so these nodes have been assigned a SuperNode and that SuperNode is independent of where the standby nodes will reside in the tree overlay network structure for super node communication.  Member nodes are shown attached to node \# 8 in this example.  However all SuperNodes are expected to have some assigned member nodes, but not essential.  SuperNodes can still function in a relay role without any member nodes and may be needed to take on member nodes as soon as another fails or imbalance occurs. 
 
 \begin{enumerate}
 \item The comprehensive list of supernodes is manually updated in the controlling git repository, which also contains global configuration parameters for supernodes; ex: maximum number of membernodes that can be serviced by supernode etc
