@@ -115,6 +115,8 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 \label{commcases}
 %A bulk of internode communication is handled implicitly by ZooKeeper, releasing us from having to explicitly establish communication for tasks such as leader election, but the ZooKeeper is not exposed to the outside world. Instead, it is controlled/accessed with the node manager, which serves as both a controller for ZooKeeper itself, and also as a wrapper for ZooKeeper. This would need node manager instances to communicate with each other. Let's consider the types of communication between node manager instances.
 
+
+
 \begin{enumerate}
 \item \textbf{Supernode to membernode}: metric queries, status queries, status change notifcation (standby to supernode, viceversa etc)
 \item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction
@@ -125,6 +127,12 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 \begin{center}
 \includegraphics[width=5in]{presentation/ESG-node-org.pdf}
 \end{center}
+
+\begin{center}
+\includegraphics[width=5in]{presentation/Node-comm-v2.pdf}
+\end{center}
+
+Tree-based node communication among super nodes   ---update caption---.
 
 \section{Design Specifics}
 
