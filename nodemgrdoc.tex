@@ -74,27 +74,43 @@ Assess  API
 \begin{center}
 \includegraphics[width=5in]{presentation/NM-design.pdf}
 \end{center}
-
+\newpage
 \subsection{Components}
-We see two major components in this solution.
+These are the main components of the solution.
 \begin{enumerate}
-\item 
-A component which takes care of failure detection, failure handling, leader election, shared state etc.
-%Apache ZooKeeper seems to be a very promising fit for this role, so this component shall henceforth simply be refered to as ZooKeeper.
-After looking at ZooKeeper, we opt against incorporating  ZK in the node manager/ esgf software stack.  Instead we focus on implementing a component that loosely model's its communication style on ZK.  
-
 \item
-A component that serves as a `feeder', to the zookeeper. This would also provide an administrative interface to the node manager. This is the component of the node manager that is meant to be exposed to the federation, and not the ZooKeeper itself, and it includes the ESGF Node Manager API. Henceforth, this component shall simply be refered to as the node manager. The node manager will also be used by local admins, to generate requests for federation membership or certificate signing and allow supernode admins to ratify/sign these requests. The node manager would also be responsible for collection of metrics.
+\textbf{Local config file} 
+\begin{enumerate}
+\item Membership to projects.
+\item Projects to serve as supernode/standby node (voluntary).
+\end{enumerate}
+
+%A component which takes care of failure detection, failure handling, leader election, shared state etc.
+%Apache ZooKeeper seems to be a very promising fit for this role, so this component shall henceforth simply be refered to as ZooKeeper.
+%After looking at ZooKeeper, we opt against incorporating  ZK in the node manager/ esgf software stack.  Instead we focus on implementing a component that loosely model's its communication style on ZK.  
+
+\item \textbf{Files in central git repository}
+\begin{enumerate}
+\item Project specific config parameters. ex: thredds\_exclude\_variable list
+\item Comprehensive list of supernodes for membernodes to consult.
+\item Global configuration parameters for supernodes: limits for number of members to serve etc
+\end{enumerate}
+\item \textbf{Node Manager Service}
+\begin{enumerate}
+\item Membernodes service status
+\item Current list of supernodes and the membernodes they serve (node map).
+\end{enumerate}
+
+%A component that serves as a `feeder', to the zookeeper. This would also provide an administrative interface to the node manager. This is the component of the node manager that is meant to be exposed to the federation, and not the ZooKeeper itself, and it includes the ESGF Node Manager API. Henceforth, this component shall simply be refered to as the node manager. The node manager will also be used by local admins, to generate requests for federation membership or certificate signing and allow supernode admins to ratify/sign these requests. The node manager would also be responsible for collection of metrics.
 
 \end{enumerate}
 
 \subsection{Metric subcomponent}
 
-This subcomponent produces the metrics that appear on the dashboard or other UI.  Some metrics are based on node state managed by the "feeder" service.  The zookeeper DFS can be used as the metastore for metric metadata.  Much metric "raw" data will be found in the log files.  A crawler procedure can gather stats from the logs.   The metric service can include aggregate information from the provenance collection system. \yellowline{Also, the currently built-in hooks to log realtime download activity etc would have to be refined to ensure greater accuracy and eliminate problems such as false positives/negatives.}
+This subcomponent produces the metrics that appear on the dashboard or other UI.Much metric ``raw" data will be found in the log files.  A crawler procedure can gather stats from the logs.   The metric service can include aggregate information from the provenance collection system. \yellowline{Also, the currently built-in hooks to log realtime download activity etc would have to be refined to ensure greater accuracy and eliminate problems such as false positives/negatives.}
+An optional part of this is a centralized collection of the log data that can be queried efficiently.  We expect that this would be on data center supernodes.  
 
-
-
-An optional part of this is a centralized collection of the log data that can be queried efficiently.  We expect that this would be on data center supernodes.   
+%Some metrics are based on node state managed by the "feeder" service.  The zookeeper DFS can be used as the metastore for metric metadata.  
 \subsection{Self-check subcomponent}
 This is a subcomponent of the node manager which is responsible for carrying out sanity checks at regular intervals, on itself. When it fails the sanity checks, it contacts the local node manager to flag itself ineligible to continue as a supernode/standby supernode/member node. When the node passes a subsequent sanity check, the self-check component contacts the local node manager, to flag itself ready for resumption of duties.  The self-check subcomponent would also use the messaging subcomponent, to send out alert notifications to the local admin, when sanity checks fail.
 
@@ -126,11 +142,18 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 \includegraphics[width=5in]{presentation/ESG-node-org.pdf}
 \end{center}
 
-\section{Design Specifics}
+\section{System Design}
 
 \subsection{}
 
 \begin{enumerate}
+\item The comprehensive list of supernodes is manually updated in the controlling git repository, which also contains global configuration parameters for supernodes; ex: maximum number of membernodes that can be serviced by supernode etc
+\item When a new node is brought up, it fetches the list of supernodes and starts communicating with each of them, in sequence, till it contacts a supernode that admits the member node. When a new node contacts a supernode for membership, these are the possible results:
+\begin{enumerate}
+\item \textbf{No response}: if supernode is down or unreachable.
+\item \textbf{Deny}: if the contacted node is no longer operating as a supernode or if the supernode is already fully subscribed.
+\item \textbf{Accept}: if the supernode agrees to serve it.
+\end{enumerate}
 \item super-nodes establish project group ZK-node directory instances.  Each project includes the min and max thresholds for super node count.  The threshold may increase if a larger number of project nodes join a group.  We expect that these settings will initially be controlled by a super-node administrator, but could be automated.
 
 
