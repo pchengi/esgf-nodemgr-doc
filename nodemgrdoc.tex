@@ -44,29 +44,40 @@ Member nodes pass messages.
 \item
 Node manager admin interface.  Allow admins to eg. sign certs, vet nodes,  
 \item
-Tree-based communication between super nodes and member nodes to reduce communication overheads, ie. avoid $n^2$ patterns.  We expect a ``wide'' tree with ``few" hops.
+Tree-based communication between super nodes and member nodes to reduce communication overheads, ie. avoid $n^2$ patterns.  We expect a ``wide'' tree with ``few" hops. Or consider filled-out binary tree structure (see below). 
 \item 
 Need to maintain backward compatibility with format of registration.xml etc, to not break existing parsers. 
 \end{itemize}
 
 
 \section{Breakup of tasks}
-\subsection{zookeeper evaluation}
+
+\subsection{Communication}
+
 \begin{enumerate}
 \item
-Performance evaluation
+Review AVL tree reorganization
 \item
-Evaluate functionality
-\item
-Assess  API
+Model deterministic communication
 \end{enumerate}
 
-\subsection{metrics gathering}
-\begin{enumerate}
-\item Gather needed metrics
-\item design SQL queries
-\item  implement result aggregation
-\end{enumerate}
+
+%\subsection{zookeeper evaluation}
+%\begin{enumerate}
+%\item
+%Performance evaluation
+%\item
+%Evaluate functionality
+%\item
+%Assess  API
+%\end{enumerate}
+%
+%\subsection{metrics gathering}
+%\begin{enumerate}
+%\item Gather needed metrics
+%\item design SQL queries
+%\item  implement result aggregation
+%\end{enumerate}
 
 
 
