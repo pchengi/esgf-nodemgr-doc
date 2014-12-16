@@ -132,7 +132,7 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 \includegraphics[width=5in]{presentation/Node-comm-v2.pdf}
 \end{center}
 
-Tree-based node communication among super nodes   ---update caption---.
+Tree-based node communication among SuperNodes.  Communication among peers is deterministic based on a node assigned number (taken from the master list of SuperNodes).   Leaf nodes have additional communication with their siblings to increase the number of checks, so all nodes can have 2-3 peers monitoring each at a time.  Standby nodes are assigned potential slots in the event they become activated so each know who the peers will be.  Standby nodes function as member nodes, so these nodes have been assigned a SuperNode and that SuperNode is independent of where the standby nodes will reside in a peer.  Member nodes are shown attached to node # 8 in this example.  However all SuperNodes are expected to have some assigned member nodes, but not essential.  SuperNodes can still function in a relay role without any member nodes and may be needed to take on member nodes as soon as another fails or imbalance occurs. 
 
 \section{Design Specifics}
 
