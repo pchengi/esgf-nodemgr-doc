@@ -1,6 +1,6 @@
 import itertools
 from collections import OrderedDict
-fp=open('inp1','r')
+fp=open('sync-inp1','r')
 lines=fp.readlines()
 numl=len(lines)
 nodes=lines[0].split('\n')[0].split(' ')
@@ -14,7 +14,15 @@ for nodex in nodes:
 		except:
 			mydict[nodex]=OrderedDict()
 		mydict[nodex][nodey]='off'
-print numl
+for i in range(1,numl-1): 
+	adj=lines[i].split('\n')[0].split(' ')
+	adjl=len(adj)
+	x=adj[0]
+	for y in range(1,adjl-1):
+		if x == adj[y]:
+			continue
+		mydict[x][adj[y]]='on'
+		
 for nodex,nodexval in mydict.iteritems():
 	for nodey,nodeyval in nodexval.iteritems():
 		print "%s%s -> %s"%(nodex,nodey,nodeyval)
