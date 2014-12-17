@@ -1,1 +1,15 @@
-Here, we'll see the various kinds of communication that take place.
+Communication can be broadly classified into the following types
+\begin{enumerate}
+\item \textbf{Assignment}: A new node entering the federation fetches the list of supernodes for its project(s) and runs a latency check against all. After determining the fastest supernode \footnote{similar to fastest mirror implementation in Installer}, it contacts it for membership.contacts the initiate communication with supernodes for its projects, seeking membership. The following outcomes are possible:
+\begin{enumerate}
+\item  \textbf{No response}: if supernode is down or unreachable
+\item \textbf{Deny}: if the supernode is no longer operating as a supernode or if the supernode is already fully subscribed.
+\item \textbf{Accept}: if the supernode confirms that it will serve the member node.
+\end{enumerate}
+Till a contacted supernode doesn't confirm the membership request, the new node will continue contacting the remaining supernodes on the list, in the order of latency, from lowest to highest.
+
+\item \textbf{Health Checks}: Supernodes initiate by turns, scheduled all-to-all communication tests between supernodes. All supernodes know the test schedules and the order in which supernodes are supposed to initiate checks. When a scheduled check doesn't occur and no update is available, after a predefined wait, the next supernode kicks in and initiates an all-to-all communication test.  Each contacted supernode in turn communicates with all the nodes, except nodes which have already been traversed, to avoid cycles. Each contacted node updates the The initiating supernode receives an adjacency table from each node it contacts
+
+supernode in the sequence would kick in and 
+\end{enumerate}
+
