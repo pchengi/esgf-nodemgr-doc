@@ -8,8 +8,8 @@ Communication can be broadly classified into the following types
 \end{enumerate}
 Till a contacted supernode doesn't confirm the membership request, the new node will continue contacting the remaining supernodes on the list, in the order of latency, from lowest to highest.
 
-\item \textbf{Health Checks}: Supernodes initiate by turns, scheduled all-to-all communication tests between supernodes. All supernodes know the test schedules and the order in which supernodes are supposed to initiate checks. When a scheduled check doesn't occur and no update is available, after a predefined wait, the next supernode kicks in and initiates an all-to-all communication test.  Each contacted supernode in turn communicates with all the nodes, except nodes which have already been traversed, to avoid cycles. Each contacted node updates the The initiating supernode receives an adjacency table from each node it contacts
+\item \textbf{Health Checks}: Supernodes initiate by turns, scheduled all-to-all communication tests between supernodes. All supernodes know the test schedules and the order in which supernodes are supposed to initiate checks. When a scheduled check doesn't occur and no update is available, after a predefined wait, the next supernode kicks in and initiates an all-to-all communication test.  Each contacted supernode in turn communicates with all the nodes, except nodes which have already been traversed, to avoid cycles. Each contacted node fills in its `adjacency list', listing nodes it can reach and returns this list to the node which called it, leading up to the point where the supernode which initiated the check has the complete and current network circuit map. This complete map is then communicated to all of the supernodes, using the smart broadcast.
 
-supernode in the sequence would kick in and 
+\item \textbf{Smart Broadcast}: 
 \end{enumerate}
 
