@@ -45,10 +45,10 @@ def check_table(my_num):
                     y = conv[my_num]
                     
                     if mydict[x][y] == "off":
-                        sleep(DELAY)
+                        print "sleep", DELAY
                     else:
                         # send ack
-                        if len(val) > 0:
+                        if len(val[0]) > 0:
                             res = handle_req(my_num, val)
                         else:
                             res = "ack"
@@ -65,33 +65,43 @@ def poll_for_msg(my_num):
 
 def handle_req(my_num, pairs):
 
-    outgroups = []
     
-    
+    print pairs
     
     # handle delegation of tasks if necessary
+
+    outgroups = {}
+    
+    for m in pairs[0]:
+        
+        
+        outgroups[m[1]] = []
     
     if len(pairs[1]) > 0:
     
-        for m in pairs[0]:
-        
-            outgroups.append([m[1]])
-        
+
+    
+
+                
         for n in pairs[1]:
             for m in pairs[0]:
 
                 if m[1] == n[0]:
-                    assert (outgroups[m[1]][1] == m[1])
+                    #                    assert (outgroups[m[1]][0]== m[1])
                     outgroups[m[1]].append(n)
+    print outgroups
     results = []
 
-    for z, n in pairs[0], outgroups:
+    for z in pairs[0]:
 
-        comm_table[my_num][z[1]] = n[1:]
-        check_table(z[1], [n[1:], []])
+        dest = z[1]
+        val = outgroups[dest]
+    
+        comm_table[my_num][dest] = [val, []]
+        check_table(dest)
         
-        res = comm_table[n[1], my_num]
-        comm_table[n[1], my_num] = 0
+        res = comm_table[dest][my_num]
+        comm_table[dest][my_num] = 0
         
         results.append(res)
 
@@ -120,7 +130,9 @@ for i in range(NNodes):
 
 print pairs
 
-res = handle_req(0, [pairs[0:NNodes], pairs[NNodes:]])
+print mydict
+
+res = handle_req(0, [pairs[0:NNodes-1], pairs[NNodes-1:]])
 
 
 print res
