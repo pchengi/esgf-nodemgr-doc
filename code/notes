@@ -1,0 +1,3 @@
+Using a permutator to generate all possible all-node combinations failed spectacularly when testing with larger node numbers.
+15p15 simply ran out of memory and got killed.
+
