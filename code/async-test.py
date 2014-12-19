@@ -66,7 +66,7 @@ def poll_for_msg(my_num):
 def handle_req(my_num, pairs):
 
     
-    print pairs
+    #    print pairs
     
     # handle delegation of tasks if necessary
 
@@ -84,14 +84,17 @@ def handle_req(my_num, pairs):
 
                 
         for n in pairs[1]:
+            
             for m in pairs[0]:
 
                 if m[1] == n[0]:
                     #                    assert (outgroups[m[1]][0]== m[1])
                     outgroups[m[1]].append(n)
-    print outgroups
-    results = []
 
+#    print outgroups
+    results = []
+    unreachable = []
+                        
     for z in pairs[0]:
 
         dest = z[1]
@@ -101,17 +104,19 @@ def handle_req(my_num, pairs):
         check_table(dest)
         
         res = comm_table[dest][my_num]
+        
+        if res == 0:
+            print my_num, dest, 0
+            unreachable.append(val)
+        
+        else:
+            print my_num, dest, 1
+                
         comm_table[dest][my_num] = 0
         
         results.append(res)
 
-    return results
-
-
-
-
-
-
+    return results, unreachable
 
 
 
@@ -130,10 +135,70 @@ for i in range(NNodes):
 
 print pairs
 
-print mydict
+#print mydict
 
-res = handle_req(0, [pairs[0:NNodes-1], pairs[NNodes-1:]])
 
+
+adj_req = pairs[0:NNodes-1]
+remote_req = pairs[NNodes-1:]
+
+active = {}
+
+total = 10
+
+count = 0
+
+while not finished:
+
+
+    
+    res, unr = handle_req(0, [adj_req, remote_req])
+
+    todos = []
+    for x, y, z in zip(adj_req, res, unr):
+        todos = todos + z
+        
+        if not y == 0:
+            active[x[1]] = 1
+            count += 1
+            count += len(y)
+
+    if count == total:
+        finished = True
+        continue
+
+    adj_req = []
+    remote_req = []
+
+    for n in active:
+        remote_tmp  = []
+
+        for m in todos:
+            if m[1] == n:
+                remote_tmp.append([n, m[0]])
+        
+        if len(remote_tmp) > 0:
+            adj_req.append([0, n])
+            remote_req = remote_req + remote_tmp
+
+    missed = []
+
+    for n in todos:
+        found = False
+        for m in remote_req:
+
+            if n == m:
+                found = True
+                break
+        if found == True:
+            missed.append(n)
+
+
+    if len(remote_req) ==0:
+        finished = True
+
+#    remote_req.append(missed)
+# TODO:  optimize for missing node(s) case
 
 print res
 

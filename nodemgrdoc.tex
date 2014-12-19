@@ -161,7 +161,7 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 
 \begin{enumerate}
 \item \textbf{Supernode to membernode}: metric queries, status queries, status change notifcation (standby to supernode, viceversa etc)
-\item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction.  Shared information updates (See 1.4.1 item 3).  
+\item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction.  Shared information updates (See 1.4.1 item 3). 
 \item \textbf{superNode health checks}:  This communication unlike other SN communication can be $n^2$ as we expect the messages to be short and infrequent.  
 \item \textbf{Membernode to membernode}: passing on authenticated messages received from supernodes.  This communication is TBD (could be tree based using same principe as used within tree network of super nodes. % (this is implicit in zookeeper's communication)  
 \item \textbf{Membernode to supernode}: Pushing local config status etc.
@@ -220,6 +220,43 @@ Distinction to be made between user authentication and system authentication, as
 \item Can the \nm implement federated attribute service?
 \item Luca's virtual organization management vs project level management by \nm How do they fit in ?
 \end{enumerate}
+
+\section{API Specification}
+
+There are two APIs provided by the node manager.  First is the node-to-node client/server API.  Second is the node manager service API used on the node.  Requests that involve forwarding are held in queues, so they can wait until a communication problem is resolved. 
+
+\subsection{Node to Node service}
+
+The service is available over apache. The node manager uses the http client to connect to the remote server
+
+\begin{enumerate}
+\item
+Supernode Health check request.  Parameter(s): list of edges.  Responses
+\begin{enumerate}
+\item
+\end{enumerate}
+
+
+\item
+Membernode Health check:  Response: Healthy, Unhealthy with failed services
+\item
+member node metric query.
+\item
+Status push to member node.
+\item
+Configuration push.  Uses the established communication map.  If a node is unreachable.
+\item
+Communication map push.  Originates on temporary leader node.  Recipient branch nodes forward to their neighbors as designated.
+
+\end{enumerate}
+
+\subsection{intranode service API}
+
+
+\begin{enumerate}
+\item
+\end{enumerate}
+
 
 
 \section{Issues and questions}
