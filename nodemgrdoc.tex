@@ -231,11 +231,10 @@ The service is available over apache. The node manager uses the http client to c
 
 \begin{enumerate}
 \item
-Supernode Health check request.  Parameter(s): list of edges.  Responses
-\begin{enumerate}
-\item
-\end{enumerate}
+Supernode Health check request.  Parameter(s): list of edges.  Responds with ack for self
 
+\item
+Health check delegation response.  Contains the point to point connections that have been validated, and/or health of reachable o
 
 \item
 Membernode Health check:  Response: Healthy, Unhealthy with failed services
