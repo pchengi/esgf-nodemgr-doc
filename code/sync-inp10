@@ -1,0 +1,16 @@
+A B C D E F G H I J K L M N O
+A 
+B C D E F G H I J K L M N O
+C B D E F G H I J K L M N O
+D B C E F G H I J K L M N O
+E B C D F G H I J K L M N O
+F B C D E G H I J K L M N O
+G B C D E F H I J K L M N O
+H B C D E F G I J K L M N O
+I B C D E F G H J K L M N O
+J B C D E F G H I K L M N O
+K B C D E F G H I J L M N O
+L B C D E F G H I J K M N O
+M B C D E F G H I J K L N O
+N B C D E F G H I J K L M O
+O B C D E F G H I J K L M N
