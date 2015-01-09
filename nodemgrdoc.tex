@@ -29,6 +29,7 @@
 \section{Overview}
 
 
+
 \section{Design Considerations}
 \begin{itemize}
 \item 
@@ -85,10 +86,57 @@ Measurement of node to node latency.  This is needed for all member nodes to all
 \end{enumerate}
 
 
+\section{Use Cases of ESGF node components}
+
+\begin{center}
+\includegraphics[width=5in]{presentation/ESGF-node-components.pdf}
+
+Figure 1:  relationship of Node Manager among other node components.  Many prominent or anticipated call paths between components are indicated.  Additional relationships are not necessarily shown.  
+\end{center}
+
+
+The following table lists various esgf components and an example of how the component would use the node manager to coordinate the service activities among several nodes.  \\
+\\
+
+\begin{tabular}{|c|l|}
+\hline
+Dashboard &  Manage consistent updates to registration.xml \\
+\hline
+Metrics & Coordinate metric metadata \\
+\hline
+Compute & Maintain repository of federated compute resources \\
+\hline
+Security & Replication of attributes for service failover \\
+\hline
+Update Manager & Consistent record of component versions \\
+\hline
+Notification & Push alert messages out to administrators / users \\
+\hline
+Replication & Data set version information \\
+\hline
+Publication & Consistent project-based configuration \\
+\hline
+Provenance & Consistent provenance metadata \\
+\hline
+Thredds & ??? \\
+\hline
+SOLR & ??? \\
+\hline
+CoG & ??? \\
+\hline
+Logger & (metadata)? \\
+\hline
+\end{tabular}
+
+
 
 \section{System Architecture}
+
+
+
 \begin{center}
-\includegraphics[width=5in]{presentation/NM-design.pdf}
+\includegraphics[width=5in]{presentation/NM-design-v2.pdf}
+Figure 2:  sub-components of the node manager and scheme for communication.  The node manager listens for connections/requests from other nodes via apache httpd and forwards (black arrows).  The messaging subcomponent determines need for communication and forwards requests to an esgf notification service (not shown).  Gray arrows show sub-component control flow.
 \end{center}
 \newpage
 
@@ -141,7 +189,10 @@ This subcomponent produces the metrics that appear on the dashboard or other UI.
 This is a subcomponent of the node manager which is responsible for carrying out sanity checks at regular intervals, on itself. When it fails the sanity checks, it contacts the local node manager to flag itself ineligible to continue as a supernode/standby supernode/member node. When the node passes a subsequent sanity check, the self-check component contacts the local node manager, to flag itself ready for resumption of duties.  The self-check subcomponent would also use the messaging subcomponent, to send out alert notifications to the local admin, when sanity checks fail.
 
 \subsection{Messaging subcomponent}
-The messaging subcomponent is used by the self-check subcomponent, to alert the local admin, when the state of the node changes, i.e. fails a sanity check, or clears one, after having been flagged down by previous checks.
+
+The messaging subcomponent is used by the self-check subcomponent, to alert the local admin, when the state of the node changes, i.e. fails a sanity check, or clears one, after having been flagged down by previous checks.  Messaging coordinates with esgf node notification service.
+
+
 
 
 
@@ -153,6 +204,8 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 \item \textbf{Standby supernode}: A standby supernode is a membernode which volunteered to function as a supernode when the number of supernodes in the federation falls below a predefined threshold. These nodes temporarily function as supernodes and return to being standy supernodes, when the supernode count stabilizes in the federation.
 \end{enumerate}
 
+
+
 \section{Communication use-cases}
 \label{commcases}
 %A bulk of internode communication is handled implicitly by ZooKeeper, releasing us from having to explicitly establish communication for tasks such as leader election, but the ZooKeeper is not exposed to the outside world. Instead, it is controlled/accessed with the node manager, which serves as both a controller for ZooKeeper itself, and also as a wrapper for ZooKeeper. This would need node manager instances to communicate with each other. Let's consider the types of communication between node manager instances.
@@ -160,9 +213,9 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 
 
 \begin{enumerate}
-\item \textbf{Supernode to membernode}: metric queries, status queries, status change notifcation (standby to supernode, viceversa etc)
-\item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction.  Shared information updates (See 1.4.1 item 3). 
-\item \textbf{superNode health checks}:  This communication unlike other SN communication can be $n^2$ as we expect the messages to be short and infrequent.  
+\item \textbf{Supernode to membernode}: metric queries, status queries, status change notification (standby to supernode, vice-versa, etc.)
+\item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction.  Shared information updates (See 1.4.1 item 3)  This communication . 
+\item \textbf{SuperNode health checks}:  This communication unlike other SN communication can be $n^2$ as we expect the messages to be short and infrequent.  
 \item \textbf{Membernode to membernode}: passing on authenticated messages received from supernodes.  This communication is TBD (could be tree based using same principe as used within tree network of super nodes. % (this is implicit in zookeeper's communication)  
 \item \textbf{Membernode to supernode}: Pushing local config status etc.
 \end{enumerate}
@@ -173,7 +226,7 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 
 \section{System Design}
 
-Tree-based node communication among SuperNodes.  Communication among peers is deterministic based on a node assigned number (taken from the master list of SuperNodes).     Standby nodes are assigned potential slots in the event they become activated so each know who the peers will be.  Standby nodes function as member nodes, so these nodes have been assigned a SuperNode and that SuperNode is independent of where the standby nodes will reside in the tree overlay network structure for super node communication.  Member nodes are shown attached to node \# 8 in this example.  However all SuperNodes are expected to have some assigned member nodes, but not essential.  SuperNodes can still function in a relay role without any member nodes and may be needed to take on member nodes as soon as another fails or imbalance occurs. 
+Minimum. Tree-based node communication among SuperNodes for content consistency updates.  Communication among peers is deterministic based on a node assigned number (taken from the master list of SuperNodes).     Standby nodes are assigned potential slots in the event they become activated so each know who the peers will be.  Standby nodes function as member nodes, so these nodes have been assigned a SuperNode and that SuperNode is independent of where the standby nodes will reside in the tree overlay network structure for super node communication.  Member nodes are shown attached to node \# 8 in this example.  However all SuperNodes are expected to have some assigned member nodes, but not essential.  SuperNodes can still function in a relay role without any member nodes and may be needed to take on member nodes as soon as another fails or imbalance occurs. 
 
 \begin{enumerate}
 \item The comprehensive list of supernodes is manually updated in the controlling git repository, which also contains global configuration parameters for supernodes; ex: maximum number of membernodes that can be serviced by supernode etc
@@ -196,7 +249,8 @@ Tree-based node communication among SuperNodes.  Communication among peers is de
 
 \end{enumerate}
 \begin{center}
-\includegraphics[width=5in]{presentation/Node-comm-v2.pdf}
+\includegraphics[width=5in]{presentation/Node-comm-v3.pdf}
+Figure 3: node manager communication.  Black dashed arrows show health check $(n^2)$.  Gray dash represent addition of standby nodes (which under normal circumstances are member nodes).  Dark blue arrows show supernode to member node queries.  Dark green shows minimum spanning tree overlay for update propagation.
 \end{center}
 
 %\subsection{Member Node reassignment}
@@ -214,6 +268,8 @@ Strategy 2:  greedy algorithm based on latencies.  Member nodes are assigned to 
 \section{Authentication mechanisms}
 Distinction to be made between user authentication and system authentication, as certain privileged operations may need to be executed without human intervention. This would need a system or process to be authorized to perform the operation. 
 
+
+
 \section{Feedback and questions from the F2F 2014}
 \begin{enumerate}
 \item Can ZooKeeper be proxied on http/https, to avoid having to open up further ports.
@@ -227,7 +283,7 @@ There are two APIs provided by the node manager.  First is the node-to-node clie
 
 \subsection{Node to Node service}
 
-The service is available over apache. The node manager uses the http client to connect to the remote server
+The service is available over apache. The node manager uses the built-in python http client to connect to a remote server
 
 \begin{enumerate}
 \item
@@ -251,6 +307,7 @@ Communication map push.  Originates on temporary leader node.  Recipient branch 
 
 \subsection{intranode service API}
 
+This API 
 
 \begin{enumerate}
 \item

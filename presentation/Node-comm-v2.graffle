@@ -1080,7 +1080,7 @@ SuperNodes}</string>
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2014-12-16 22:31:26 +0000</string>
+	<string>2015-01-08 16:32:11 +0000</string>
 	<key>Modifier</key>
 	<string>Ames, Sasha</string>
 	<key>NotesVisible</key>
@@ -1161,7 +1161,7 @@ SuperNodes}</string>
 			</dict>
 		</array>
 		<key>Frame</key>
-		<string>{{245, 177}, {917, 701}}</string>
+		<string>{{2248, 391}, {917, 701}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>

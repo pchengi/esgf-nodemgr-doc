@@ -48,7 +48,7 @@
 	<key>Creator</key>
 	<string>Ames, Sasha</string>
 	<key>DisplayScale</key>
-	<string>1 0/72 in = 1 0/72 in</string>
+	<string>1 0/72 in = 1.0000 in</string>
 	<key>GraphDocumentVersion</key>
 	<integer>8</integer>
 	<key>GraphicsList</key>
@@ -197,38 +197,6 @@
 			<array>
 				<string>{207.5, 74}</string>
 				<string>{330, 75}</string>
-			</array>
-			<key>Style</key>
-			<dict>
-				<key>stroke</key>
-				<dict>
-					<key>HeadArrow</key>
-					<string>FilledArrow</string>
-					<key>Legacy</key>
-					<true/>
-					<key>TailArrow</key>
-					<string>FilledArrow</string>
-					<key>Width</key>
-					<real>4</real>
-				</dict>
-			</dict>
-		</dict>
-		<dict>
-			<key>Class</key>
-			<string>LineGraphic</string>
-			<key>FontInfo</key>
-			<dict>
-				<key>Font</key>
-				<string>ArialMT</string>
-				<key>Size</key>
-				<real>9</real>
-			</dict>
-			<key>ID</key>
-			<integer>16</integer>
-			<key>Points</key>
-			<array>
-				<string>{451, 74}</string>
-				<string>{573.5, 75}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -687,7 +655,7 @@ CMIP, ACME}</string>
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2014-12-05 23:14:40 +0000</string>
+	<string>2015-01-09 00:09:33 +0000</string>
 	<key>Modifier</key>
 	<string>Ames, Sasha</string>
 	<key>NotesVisible</key>
@@ -723,7 +691,7 @@ CMIP, ACME}</string>
 		<key>NSPaperSize</key>
 		<array>
 			<string>size</string>
-			<string>{792, 612}</string>
+			<string>{792, 611.99999713897705}</string>
 		</array>
 		<key>NSPrintReverseOrientation</key>
 		<array>
@@ -773,7 +741,7 @@ CMIP, ACME}</string>
 			</dict>
 		</array>
 		<key>Frame</key>
-		<string>{{156, 66}, {1408, 795}}</string>
+		<string>{{156, 88}, {1408, 795}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
