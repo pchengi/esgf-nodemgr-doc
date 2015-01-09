@@ -89,7 +89,7 @@ Measurement of node to node latency.  This is needed for all member nodes to all
 \section{Use Cases of ESGF node components}
 
 \begin{center}
-\includegraphics[width=5in]{presentation/ESGF-node-components.pdf}
+\includegraphics[width=\textwidth]{presentation/ESGF-node-components.pdf}
 
 Figure 1:  relationship of Node Manager among other node components.  Many prominent or anticipated call paths between components are indicated.  Additional relationships are not necessarily shown.  
 \end{center}
@@ -135,7 +135,7 @@ Logger & (metadata)? \\
 
 
 \begin{center}
-\includegraphics[width=5in]{presentation/NM-design-v2.pdf}
+\includegraphics[width=\textwidth]{presentation/NM-design-v2.pdf}
 Figure 2:  sub-components of the node manager and scheme for communication.  The node manager listens for connections/requests from other nodes via apache httpd and forwards (black arrows).  The messaging subcomponent determines need for communication and forwards requests to an esgf notification service (not shown).  Gray arrows show sub-component control flow.
 \end{center}
 \newpage
@@ -221,7 +221,8 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 \end{enumerate}
 
 \begin{center}
-\includegraphics[width=5in]{presentation/ESG-node-org.pdf}
+\includegraphics[width=\textwidth]{presentation/ESG-node-org.pdf}
+Figure 3: Supernodes and member nodes belong to project organizations and share project-specific information.   Multiple supernodes that coordinate service configuration specific to a project will share information among each other, but not with a supernode for a different project.  Example of such configurations include project specific settings for publication and access control.
 \end{center}
 
 \section{System Design}
@@ -249,8 +250,8 @@ Minimum. Tree-based node communication among SuperNodes for content consistency 
 
 \end{enumerate}
 \begin{center}
-\includegraphics[width=5in]{presentation/Node-comm-v3.pdf}
-Figure 3: node manager communication.  Black dashed arrows show health check $(n^2)$.  Gray dash represent addition of standby nodes (which under normal circumstances are member nodes).  Dark blue arrows show supernode to member node queries.  Dark green shows minimum spanning tree overlay for update propagation.
+\includegraphics[width=5in]{presentation/Node-comm-v3.pdf}\\
+Figure 4: node manager communication.  Black dashed arrows show health check $(n^2)$.  Gray dash represent addition of standby nodes (which under normal circumstances are member nodes).  Dark blue arrows show supernode to member node queries.  Dark green shows minimum spanning tree overlay for update propagation.
 \end{center}
 
 %\subsection{Member Node reassignment}
