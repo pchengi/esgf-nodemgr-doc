@@ -141,6 +141,8 @@ Figure 2:  sub-components of the node manager and scheme for communication.  The
 \newpage
 
 \subsection{Components}
+\label{stow}
+
 These are the main components of the solution.
 \begin{enumerate}
 \item
@@ -148,7 +150,6 @@ These are the main components of the solution.
 \begin{enumerate}
 \item Membership to projects.
 \item Projects to serve as supernode/standby node (voluntary).
-
 
 
 \end{enumerate}
@@ -190,7 +191,8 @@ This is a subcomponent of the node manager which is responsible for carrying out
 
 \subsection{Messaging subcomponent}
 
-The messaging subcomponent is used by the self-check subcomponent, to alert the local admin, when the state of the node changes, i.e. fails a sanity check, or clears one, after having been flagged down by previous checks.  Messaging coordinates with esgf node notification service.
+The messaging subcomponent is used by the self-check subcomponent, to alert the local admin, when the state of the node changes, i.e. fails a sanity check,  clears one, after having been flagged down by previous checks, or a component configuration/metadata change fails a global write due to a race condition (i.e., multiple admins try to update a configuration simultaneously).  
+  Messaging coordinates with esgf node notification service.
 
 
 
@@ -214,9 +216,10 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 
 \begin{enumerate}
 \item \textbf{Supernode to membernode}: metric queries, status queries, status change notification (standby to supernode, vice-versa, etc.)
-\item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction.  Shared information updates (See 1.4.1 item 3)  This communication . 
+\item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction.  Shared information updates (See \ref{stow} item 3)  This communication can be carried out by network links between nodes on a MST.   In some circumstances a star topology is adequate.  
 \item \textbf{SuperNode health checks}:  This communication unlike other SN communication can be $n^2$ as we expect the messages to be short and infrequent.  
-\item \textbf{Membernode to membernode}: passing on authenticated messages received from supernodes.  This communication is TBD (could be tree based using same principe as used within tree network of super nodes. % (this is implicit in zookeeper's communication)  
+
+\item \textbf{Membernode to membernode}: passing on authenticated messages received from supernodes.  This communication is TBD (could be tree based using same principe as used within tree network of super nodes.) % (this is implicit in zookeeper's communication)  
 \item \textbf{Membernode to supernode}: Pushing local config status etc.
 \end{enumerate}
 
@@ -226,8 +229,9 @@ Figure 3: Supernodes and member nodes belong to project organizations and share 
 \end{center}
 
 \section{System Design}
+\ref{sysd}
 
-Minimum. Tree-based node communication among SuperNodes for content consistency updates.  Communication among peers is deterministic based on a node assigned number (taken from the master list of SuperNodes).     Standby nodes are assigned potential slots in the event they become activated so each know who the peers will be.  Standby nodes function as member nodes, so these nodes have been assigned a SuperNode and that SuperNode is independent of where the standby nodes will reside in the tree overlay network structure for super node communication.  Member nodes are shown attached to node \# 8 in this example.  However all SuperNodes are expected to have some assigned member nodes, but not essential.  SuperNodes can still function in a relay role without any member nodes and may be needed to take on member nodes as soon as another fails or imbalance occurs. 
+"Minimum Spanning Tree"-based node communication among SuperNodes for content consistency updates.  Communication among peers is deterministic based on a node assigned number (taken from the master list of SuperNodes).     Standby nodes are assigned potential slots in the event they become activated so each know who the peers will be.  Standby nodes function as member nodes, so these nodes have been assigned a SuperNode and that SuperNode is independent of where the standby nodes will reside in the tree overlay network structure for super node communication.  Member nodes are shown attached to nodes \# 3 and 4 in this example (Figure 4).  However all SuperNodes are expected to have some assigned member nodes, but not essential.  SuperNodes can still function in a relay role without any member nodes and may be needed to take on member nodes as soon as another fails or imbalance occurs. 
 
 \begin{enumerate}
 \item The comprehensive list of supernodes is manually updated in the controlling git repository, which also contains global configuration parameters for supernodes; ex: maximum number of membernodes that can be serviced by supernode etc
@@ -235,7 +239,8 @@ Minimum. Tree-based node communication among SuperNodes for content consistency 
 \begin{enumerate}
 \item \textbf{No response}: if supernode is down or unreachable.
 \item \textbf{Deny}: if the contacted node is no longer operating as a supernode or if the supernode is already fully subscribed.
-\item \textbf{Accept}: if the supernode agrees to serve it.
+\item \textbf{Accept}: if the supernode agrees to serve it.  This is a slightly "delayed" response as the supernode must check with others in event of a reassignment lock. 
+\item \textbf{Delayed Accept}:  There is a reassignment in progress, and the node should wait a short while before contact this or other supernodes. 
 \end{enumerate}
 %\item super-nodes establish project group ZK-node directory instances.  Each project includes the min and max thresholds for super node count.  The threshold may increase if a larger number of project nodes join a group.  We expect that these settings will initially be controlled by a super-node administrator, but could be automated.
 
@@ -259,10 +264,11 @@ Figure 4: node manager communication.  Black dashed arrows show health check $(n
 \input{commdesign}
 \subsection{Member Node reassignment}
 
-In the event that a supernode becomes unavailable, the managed member nodes must be assigned to other super nodes temporarily.  The strategy to complete this is a greedy algorithm based on the number of nodes to be assigned, and the ranking of super nodes from lowest to greatest available load.  The load information is agreed upon by the tree-based communication prior to assignment.  Disagreements must be resolved.  Additional nodes wait to join the federation until the reassignment is complete.  
+In the event that a supernode becomes unavailable, the managed member nodes must be assigned to other super nodes temporarily.  The strategy to complete this is a greedy algorithm based on the number of nodes to be assigned, and the ranking of super nodes from lowest to greatest available load.  The load information is agreed upon by the tree-based communication prior to assignment.  Disagreements must be resolved.  Additional nodes wait to join the federation until the reassignment is complete. 
 
 Strategy 2:  greedy algorithm based on latencies.  Member nodes are assigned to super nodes using lowest latency in a similar greedy algorithm.  The measuring of latencies is performed as an infrequent periodic check based on the current node map (daily/weekly?)
 
+\subsection{Federation Entrance/exit}
 
 
 
@@ -288,10 +294,10 @@ The service is available over apache. The node manager uses the built-in python 
 
 \begin{enumerate}
 \item
-Supernode Health check request.  Parameter(s): list of edges.  Responds with ack for self
+Supernode Health check request.  Parameter(s): list of edges.  Responds with ack for self.  Supernode "bootstrap" to initiate a federation uses this method as well, but the message content varies to reflect the distinction. 
 
 \item
-Health check delegation response.  Contains the point to point connections that have been validated, and/or health of reachable o
+Health check delegation response.  Contains the point to point connections that have been validated, and/or health of reachable nodes.
 
 \item
 Membernode Health check:  Response: Healthy, Unhealthy with failed services
@@ -300,21 +306,28 @@ member node metric query.
 \item
 Status push to member node.
 \item
-Configuration push.  Uses the established communication map.  If a node is unreachable.
+Component metadata/configuration push.  Uses the established communication map.  If a (supernode) is unreachable, the request stays in a queue until the node is detected as reachable.  Member nodes will receive delayed updates from new supernode
 \item
 Communication map push.  Originates on temporary leader node.  Recipient branch nodes forward to their neighbors as designated.
+\item
+Standby node to supernode delegation.  Response: acknowledgement or in immediate unhealthy state.
+\item
+Member node reassignment request.  Performed by the supernode (standby) taking over member nodes whose normally designated supernode is unreachable.   Similar message used when the old supernode resumes its duties.
+\item
+Member node reassignment acknowledgement.  This is sent to the new supernode.
+\item
+Data versioning consistency checks.  Supernode to Supernode checks use the MST; super nodes check against their member nodes. Outdated versions are corrected by a point-to-point update.  If a versioning conflict arises, nodes roll back to the previous consistent version until the conflict can be resolved by administrators.  
+\item
+Member node admission request (see \ref{sysd}).   
+
 
 \end{enumerate}
 
 \subsection{intranode service API}
 
-This API 
+Several alternatives for the api for the intranode service, service presented to other esgf components.   The simplest API would allow each component to read and write an ascii blob; thus completely unstructured.  The node manager would keep such a config for each component for each project that the node participates.  For more structure rather than a simple unstructured blob, a JSON or XML object model could be used where get and put would be available.   The object constructor for the API would register the component and project name.  Subsequent calls would be for get, put and delete.  JSON objects can be build using python dictionary and list constructs, and so are straightforward to encode and store in the node manager serving as repository.   Services configured at the project level are done normally via a supernode admin and propagated to other super nodes and the member nodes.
 
-\begin{enumerate}
-\item
-\end{enumerate}
-
-
+The stored items are versioned.  Versioned items should be consistent.  Periodic checks are performed.  We anticipate with proper access control, prescribed workflow for changes, and sound project governance, conflicts due to simultaneous update will be kept to a minimum.
 
 \section{Issues and questions}
 This is to be a place to list out problems that need to be handled.
@@ -330,6 +343,8 @@ Do we use zookeeper?
 \item
 To what extent can we rely if we do,  what do we need to implement for the \nm?
 \item
+\item
+Should all supernodes in ESGF participate in $n^2$ health check scheme regardless of project? Given that we expect the data centers to service multiple projects and likely contain several super nodes, we favor this approach rather than have each have the burden of a per-project health check for some super nodes.
 
 Is zookeeper a fit for management?
 \item
@@ -342,6 +357,7 @@ Deal with "spoofed" node; ensure relayed information is legitimate.
 \item
 %Need to choose centralized query service database system.  Use Hadoop, spark, Hive, Cassandra, or some RDBMS?
 Need the supernode to query nodes for metrics and perform aggregation where necessary.
+
 
 \end{enumerate}
 \section{To revisit}
