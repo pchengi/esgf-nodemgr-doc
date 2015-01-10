@@ -229,7 +229,7 @@ Figure 3: Supernodes and member nodes belong to project organizations and share 
 \end{center}
 
 \section{System Design}
-\ref{sysd}
+\label{sysd}
 
 "Minimum Spanning Tree"-based node communication among SuperNodes for content consistency updates.  Communication among peers is deterministic based on a node assigned number (taken from the master list of SuperNodes).     Standby nodes are assigned potential slots in the event they become activated so each know who the peers will be.  Standby nodes function as member nodes, so these nodes have been assigned a SuperNode and that SuperNode is independent of where the standby nodes will reside in the tree overlay network structure for super node communication.  Member nodes are shown attached to nodes \# 3 and 4 in this example (Figure 4).  However all SuperNodes are expected to have some assigned member nodes, but not essential.  SuperNodes can still function in a relay role without any member nodes and may be needed to take on member nodes as soon as another fails or imbalance occurs. 
 
@@ -319,7 +319,10 @@ Member node reassignment acknowledgement.  This is sent to the new supernode.
 Data versioning consistency checks.  Supernode to Supernode checks use the MST; super nodes check against their member nodes. Outdated versions are corrected by a point-to-point update.  If a versioning conflict arises, nodes roll back to the previous consistent version until the conflict can be resolved by administrators.  
 \item
 Member node admission request (see \ref{sysd}).   
-
+\item
+Member Node decommission. 
+\item 
+Temporary supernode removal for maintenance.  (Note that supernode decommission, a more permanent action, takes place via [1] removal from the list [2] reinitialization of super nodes via bootstrap protocol.
 
 \end{enumerate}
 
