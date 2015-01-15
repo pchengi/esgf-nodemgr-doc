@@ -3,7 +3,23 @@ from django.contrib import admin
 
 from django.http import HttpResponse
 
+
+def init_node_list():
+
+    org_list = [ "aims1" ]
+
+    for n in range(1,9):
+
+        org_list.append("greyworm"+ str(n))
+
+    return org_list
+
+node_list = init_node_list()
+
+
 def healthcheckack(request):
+
+    if request.
 
     return HttpResponse("OK")
     
