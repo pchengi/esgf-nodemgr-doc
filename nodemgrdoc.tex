@@ -67,7 +67,10 @@ Measurement of node to node latency.  This is needed for all member nodes to all
 \item
 Use django test web server as a prototype for setting up a test api for health check and other component services.
 \item
+Investigate task management, worker queue, etc.  frameworks.  For prototyping we can implement python threads with polling/locks on shared objects.  The health check initiator can run as its own process.  Threads needed to manage incoming requests and assemble a node map.  Celery is a well-know queue API, but bases on RabbitMQ.  There are other alternatives implemented but no standard.
+\item
 Integrate with other django web services.  
+
 
 \end{enumerate}
 
@@ -181,7 +184,8 @@ These are the main components of the solution.
 \end{enumerate}
 
 \subsection{Communication handler subcomponent}
-Communication occurs via https client to the apache server listening on the nodes.   The apache service pushes messages back to local API.    We describe the communication use cases and patterns below.
+Communication occurs via https client to the apache server listening on the nodes.   The apache service pushes messages back to local API.   We assume a django-python implementation of the API.  Depending on what mechanism is selected for worker threads/queues.
+ We describe the communication use cases and patterns below.  
 
 
 \subsection{Metric subcomponent}
@@ -221,7 +225,7 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 \begin{enumerate}
 \item \textbf{Supernode to membernode}: metric queries, status queries, status change notification (standby to supernode, vice-versa, etc.)
 \item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction.  Shared information updates (See \ref{stow} item 3)  This communication can be carried out by network links between nodes on a MST.   In some circumstances a star topology is adequate.  
-\item \textbf{SuperNode health checks}:  This communication unlike other SN communication can be $n^2$ as we expect the messages to be short and infrequent.  
+\item \textbf{SuperNode health checks}:  This communication unlike other SN communication can be $n^2$ as we expect the messages to be short and infrequent.   
 
 \item \textbf{Membernode to membernode}: passing on authenticated messages received from supernodes.  This communication is TBD (could be tree based using same principe as used within tree network of super nodes.) % (this is implicit in zookeeper's communication)  
 \item \textbf{Membernode to supernode}: Pushing local config status etc.
@@ -349,9 +353,6 @@ Do we use zookeeper?
 \end{enumerate}
 \item
 To what extent can we rely if we do,  what do we need to implement for the \nm?
-\item
-\item
-Should all supernodes in ESGF participate in $n^2$ health check scheme regardless of project? Given that we expect the data centers to service multiple projects and likely contain several super nodes, we favor this approach rather than have each have the burden of a per-project health check for some super nodes.
 
 Is zookeeper a fit for management?
 \item
@@ -364,7 +365,9 @@ Deal with "spoofed" node; ensure relayed information is legitimate.
 \item
 %Need to choose centralized query service database system.  Use Hadoop, spark, Hive, Cassandra, or some RDBMS?
 Need the supernode to query nodes for metrics and perform aggregation where necessary.
-
+\item
+Should all supernodes in ESGF participate in $n^2$ health check scheme regardless of project? Given that we expect the data centers to service multiple projects and likely contain several super nodes, we favor this approach rather than have each have the burden of a per-project health check for some super nodes.
+\item  Use of Django/Work queue framework.  Django handles incoming connections over http.  However, associated tasks happen in the background.  They need to be pushed off to separate threads if in same process space.  If separate node manager process, need a IPC mechanism.
 
 \end{enumerate}
 \section{To revisit}
