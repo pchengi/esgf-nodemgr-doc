@@ -43,20 +43,21 @@ if __name__ == "__main__":
 
     from django.core.management import execute_from_command_line
 
-    th = None
+#    th = None
     
-    if sys.argv[-1] == "master":
-        print "master node setup"
-        th = Thread(target = do_work)
-        th.start()
+   #  if sys.argv[-1] == "master":
+   #      print "master node setup"
+   #      th = Thread(target = do_work)
+   #      th.start()
         
     
-        execute_from_command_line(sys.argv[0:-1])
-    else:
-        print "not master"
-        execute_from_command_line(sys.argv)
+   #      execute_from_command_line(sys.argv[0:-1])
+   #  else:
+   #      print "not master"
+ 
+    execute_from_command_line(sys.argv)
 
-    if (not th is None):
+   #  if (not th is None):
 
-        th.join
-        print "done"
+   #      th.join
+   #      print "done"

@@ -10,26 +10,43 @@ from healthcheck import RunningCheck, get_node_list
 
 hostname = os.uname()[1]
 
+checkarr = []
+
+def healthcheckreport(request):
+    qd = request.GET
+
+    print "Node Check report ---"
+    print "From: " qd["from"]
+    
+
+    for n in get_node_list():
+
+        
+
 def healthcheckack(request):
 
     qd = request.GET
     
-    
+    checkarr = []
+
     if ("forward" in qd and qd["forward"] == "True"):
         
         fromnode = qd["from"]
 
         print "checking on others"
 
-        tarr = []
-
+#        tarr = []
+        
+        first = True
 # Refactor with manager.py block
         for n in get_node_list():
             
+            
             if (n != hostname and  n != fromnode ):
-                t = RunningCheck(n, False)
+                t = RunningCheck(n, False, first, checkarr)
                 t.start()
-                tarr.append(t)
+                first = False
+ #               tarr.append(t)
 
 
 
@@ -45,3 +62,4 @@ urlpatterns = patterns('',
 
     # url(r'^admin/', include(admin.site.urls)
      url(r'^health-check-api/', healthcheckack, name=healthcheckack),)
+     url(r'^health-check-rep', healthcheckreport, name=healthcheckreport),)

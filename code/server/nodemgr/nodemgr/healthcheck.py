@@ -20,13 +20,16 @@ def get_node_list():
 
 
 
+
 class RunningCheck(Thread):
 
-    def __init__(self, nodename, fwdcheck):
+    def __init__(self, nodename, fwdcheck, first, checkarr):
         super(RunningCheck, self).__init__()
         self.nodename = nodename
         self.fwdcheck = fwdcheck
         self.eltime = -1
+        self.first = first
+        self.checkarr = checkarr
 
     def run(self):
 
@@ -40,8 +43,13 @@ class RunningCheck(Thread):
 
         eltime = time() - ts
         
-        self.eltime = eltime
+        checkarr.append(self.nodename + " " + str(eltime))
 
+        if (first):
+            if len(node_list) > len(checkarr) + 2:
+                sleep(.01)
+        
+        
 
 
 def do_checks(fwdcheck):
