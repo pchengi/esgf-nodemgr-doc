@@ -1,7 +1,9 @@
 from threading import Thread
-from time import time
+from time import time, sleep
 
 from httplib import HTTPConnection as Conn
+
+import os
 
 def init_node_list():
 
@@ -19,37 +21,56 @@ def get_node_list():
     return node_list
 
 
+localhostname = os.uname()[1]
 
 
 class RunningCheck(Thread):
 
-    def __init__(self, nodename, fwdcheck, first, checkarr):
+    def __init__(self, nodename, fwdcheck, first=False, checkarr=None, fromnode=""):
         super(RunningCheck, self).__init__()
         self.nodename = nodename
         self.fwdcheck = fwdcheck
         self.eltime = -1
         self.first = first
         self.checkarr = checkarr
+        self.fromnode = fromnode
+
 
     def run(self):
 
         ts = time()
 
+#        print "check startedt at ", ts
+
         conn = Conn(self.nodename, 80, timeout=30)
-    
-        conn.request("GET", "/health-check-api/?from=" + self.nodename + "&forward=" + str(self.fwdcheck))
-        
-        resp = conn.getresponse()
 
-        eltime = time() - ts
+        eltime = -1
+        error = ""
+        try:
+            conn.request("GET", "/health-check-api/?from=" + localhostname + "&forward=" + str(self.fwdcheck))
         
-        checkarr.append(self.nodename + " " + str(eltime))
+            resp = conn.getresponse()
 
-        if (first):
-            if len(node_list) > len(checkarr) + 2:
-                sleep(.01)
-        
-        
+            eltime = time() - ts
+        except:
+            error = "connectivity problem"
+
+        self.eltime = eltime
+
+        if not self.fwdcheck:
+
+            self.checkarr.append(self.nodename + "=" + str(eltime))
+
+            if (self.first):
+                if len(node_list) > len(self.checkarr) + 2:
+                    sleep(.01)
+                conn = Conn(self.fromnode, 80, timeout=30)
+                url = "/health-check-rep?from=" + localhostname
+
+                for n in self.checkarr:
+                    url = url + "&" + n
+                conn.request("GET", url)
+                resp = conn.getresponse()
 
 
 def do_checks(fwdcheck):
@@ -64,7 +85,8 @@ def do_checks(fwdcheck):
                 t.start()
                 tarr.append(t)
 
-    
+
+
     if (fwdcheck):
     
         for tt in tarr:

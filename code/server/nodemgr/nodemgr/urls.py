@@ -16,21 +16,23 @@ def healthcheckreport(request):
     qd = request.GET
 
     print "Node Check report ---"
-    print "From: " qd["from"]
+    print "From: ", qd["from"]
     
 
     for n in get_node_list():
 
-        
+        if n in qd:
+            print "node", n, "-", qd[n] 
+
+    return HttpResponse("")
 
 def healthcheckack(request):
 
     qd = request.GET
     
-    checkarr = []
-
     if ("forward" in qd and qd["forward"] == "True"):
         
+
         fromnode = qd["from"]
 
         print "checking on others"
@@ -43,7 +45,8 @@ def healthcheckack(request):
             
             
             if (n != hostname and  n != fromnode ):
-                t = RunningCheck(n, False, first, checkarr)
+
+                t = RunningCheck(n, False, first, checkarr, fromnode)
                 t.start()
                 first = False
  #               tarr.append(t)
@@ -54,12 +57,11 @@ def healthcheckack(request):
     
 
 
-
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'nodemgr.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
     # url(r'^admin/', include(admin.site.urls)
-     url(r'^health-check-api/', healthcheckack, name=healthcheckack),)
-     url(r'^health-check-rep', healthcheckreport, name=healthcheckreport),)
+                       url(r'^health-check-api/', healthcheckack, name=healthcheckack),
+                       url(r'^health-check-rep', healthcheckreport, name=healthcheckreport),)

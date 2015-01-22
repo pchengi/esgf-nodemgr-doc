@@ -5,8 +5,8 @@ import sys,time, os
 
 PERIOD = 10
 
+localhostname = os.uname()[1]
 
-hostname = os.uname()[1]
 
 while True:
 
@@ -19,12 +19,16 @@ while True:
     for n in get_node_list():
 
 
-        if n != hostname:
+        if n != localhostname:
             t = RunningCheck(n, True)
             t.start()
             tarr.append(t)
 
-        for tt in tarr:
+
+#    print len(tarr),  " threads"
+
+
+    for tt in tarr:
 
             tt.join()
             print tt.nodename, tt.eltime
