@@ -1,0 +1,41 @@
+{
+   "links": [
+      {
+         "from": "1",
+         "speed": 10,
+         "status": "up",
+         "to": "2"
+      }
+   ],
+   "membernodes": [
+      {
+         "members": [
+            {
+               "health": "good",
+               "hostname": " greyworm2.llnl.gov",
+               "id": "3"
+            },
+            {
+               "health": "good",
+               "hostname": "greyworm3.llnl.gov",
+               "id": "4"
+            }
+         ],
+         "supernode": "1"
+      }
+   ],
+   "supernodes": [
+      {
+         "health": "good",
+         "hostname": "aims1.llnl.gov",
+         "id": "1"
+      },
+      {
+         "health": "good",
+         "hostname": "greyworm1.llnl.gov",
+         "id": "2"
+      }
+   ],
+   "total_membernodes": 7,
+   "total_supernodes": 2
+}
