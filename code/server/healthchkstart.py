@@ -3,6 +3,7 @@ from nodemgr.nodemgr.healthcheck import get_node_list, RunningCheck
 import sys,time, os
 
 
+
 PERIOD = 10
 
 localhostname = os.uname()[1]
@@ -12,6 +13,8 @@ while True:
 
     time.sleep(PERIOD)
 
+
+    
     
     tarr = []
 

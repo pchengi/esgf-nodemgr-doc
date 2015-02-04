@@ -7,6 +7,8 @@ from django.http import HttpResponse #, QueryDict
 
 from healthcheck import RunningCheck, get_node_list
 
+import api
+
 
 hostname = os.uname()[1]
 
@@ -64,4 +66,6 @@ urlpatterns = patterns('',
 
     # url(r'^admin/', include(admin.site.urls)
                        url(r'^health-check-api/', healthcheckack, name=healthcheckack),
-                       url(r'^health-check-rep', healthcheckreport, name=healthcheckreport),)
+                       url(r'^health-check-rep', healthcheckreport, name=healthcheckreport),
+                       url(r'^esgf-nm-api', nodemanagerapi, name=nodemanagerapi),)
+
