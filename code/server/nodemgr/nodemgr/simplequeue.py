@@ -51,6 +51,13 @@ def write_task(data):
 
     f.close()
         
+class RunningWrite(Thread):
+    def __init__(self, data):
+        super(RunningWrite, self).__init__()
+        self.data = data
+    def run():
+        write_task(self.data)
+
 
 def get_next_task():
     

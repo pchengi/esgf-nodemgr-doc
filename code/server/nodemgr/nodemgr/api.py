@@ -12,14 +12,26 @@ def nodemgrapi(request):
     qd = request.GET
 
     action = qd["action"]
+    
+    task = ""
 
-    if action == "add_member":
+    if action in ["add_member"]:
 
-        json = json.dumps(qd)
+        task = json.dumps(qd)
 
-        write_task(qd)
+
+    elif action in ["node_map_update"]:
+        data = request.body
+        qd["update"] = data
+        
+        task = json.dumps(qd)
+
     else:
         resp_code = "INVALID_REQ"
+
+    if (len(task) > 0):
+        rw = RunningWrite(task)
+        rw.start()
 
     return HttpResponse(resp_code)
 

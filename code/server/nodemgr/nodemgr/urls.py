@@ -1,4 +1,4 @@
-import os
+import os, json
 
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
@@ -6,6 +6,8 @@ from django.contrib import admin
 from django.http import HttpResponse #, QueryDict
 
 from healthcheck import RunningCheck, get_node_list
+
+from simplequeue import write_task
 
 import api
 
@@ -17,14 +19,11 @@ checkarr = []
 def healthcheckreport(request):
     qd = request.GET
 
-    print "Node Check report ---"
-    print "From: ", qd["from"]
+
+    qd["action"] = "health_check_report"
     
 
-    for n in get_node_list():
-
-        if n in qd:
-            print "node", n, "-", qd[n] 
+    write_task(json.dumps(qd))
 
     return HttpResponse("")
 
