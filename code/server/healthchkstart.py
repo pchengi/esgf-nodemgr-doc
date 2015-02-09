@@ -1,11 +1,15 @@
 import sys,time, os
 
-from nodemgr.nodemgr.healthcheck import get_node_list, RunningCheck
+from nodemgr.nodemgr.healthcheck import RunningCheck
 from nodemgr.nodemgr.nodemap import NodeMap
+from taskhandler import handle_tasks, health_check_report
+
+if (len(sys.argv) <2):
+    print "Usage:  python", sys.argv[0], "<node-map-file>"
+    exit
 
 
-
-nodemap_instance = NodeMap()
+nodemap_instance = NodeMap(sys.argv[1])
 
 
 PERIOD = 10
@@ -35,15 +39,22 @@ while True:
 
 
 
-    for n in nodemap_instance.get_member_nodes():
-#    print len(tarr),  " threads"
 
+
+
+    report_dict = {}
 
     for tt in tarr:
 
             tt.join()
-            print tt.nodename, tt.eltime
-            # ADD to edge map (TODO) 
+
+            if tt.fwdcheck:
+                
+                tt.nodename, tt.eltime
+
+#    for n in nodemap_instance.get_member_nodes():
+#    print len(tarr),  " threads"
+
     
     handle_tasks(nodemap_instance)
     

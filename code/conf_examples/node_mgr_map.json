@@ -27,7 +27,7 @@
    "supernodes": [
       {
          "health": "good",
-         "hostname": "aims1.llnl.gov",
+         "hostname": "aims2.llnl.gov",
          "id": "1"
       },
       {

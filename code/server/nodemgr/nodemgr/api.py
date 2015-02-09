@@ -22,9 +22,10 @@ def nodemgrapi(request):
 
     elif action in ["node_map_update"]:
         data = request.body
-        qd["update"] = data
+        outd = qd.copy()
+        outd["update"] = data
         
-        task = json.dumps(qd)
+        task = json.dumps(outd)
 
     else:
         resp_code = "INVALID_REQ"

@@ -1,28 +1,35 @@
 from threading import Thread
 from time import time, sleep
 
+from nodemap import NodeMap
+
 from httplib import HTTPConnection as Conn
 
 import os
 
-def init_node_list():
 
-    org_list = [ "aims1.llnl.gov" ]
 
-    for n in range(1,4):
+# def init_node_list():
 
-        org_list.append("greyworm"+ str(n) + ".llnl.gov")
+#     org_list = [ "aims1.llnl.gov" ]
 
-    return org_list
+#     for n in range(1,4):
 
-node_list = init_node_list()
+#         org_list.append("greyworm"+ str(n) + ".llnl.gov")
 
-def get_node_list():
-    return node_list
+#     return org_list
+
+# node_list = init_node_list()
+
+# def get_node_list():
+#     return node_list
 
 
 localhostname = os.uname()[1]
 
+# MAPFILE = "/export/ames4/node_mgr_map.json"
+
+# nodemap_instance = NodeMap(MAPFILE)
 
 class RunningCheck(Thread):
 
@@ -39,10 +46,10 @@ class RunningCheck(Thread):
     def run(self):
 
         ts = time()
-
-#        print "check startedt at ", ts
+        print self.nodename
 
         conn = Conn(self.nodename, 80, timeout=30)
+
 
         eltime = -1
         error = ""
@@ -73,23 +80,23 @@ class RunningCheck(Thread):
                 resp = conn.getresponse()
 
 
-def do_checks(fwdcheck):
+# def do_checks(fwdcheck):
 
-    tarr = []
+#     tarr = []
 
-    for n in get_node_list():
-
-
-        if n != hostname:
-                t = RunningCheck(n, True)
-                t.start()
-                tarr.append(t)
+#     for n in nodemap_instance.get_supernode_list():
 
 
+#         if n != hostname:
+#                 t = RunningCheck(n, True)
+#                 t.start()
+#                 tarr.append(t)
 
-    if (fwdcheck):
+
+
+#     if (fwdcheck):
     
-        for tt in tarr:
+#         for tt in tarr:
 
-            tt.join()
-            print tt.hostname, tt.eltime
+#             tt.join()
+#             tt.hostname, tt.eltime

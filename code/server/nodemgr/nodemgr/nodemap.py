@@ -1,37 +1,46 @@
 import json
 import os
 
-MAPFILE = ""
-
-
 
 class NodeMap():
 
-    def __init__(self):
+    def __init__(self,MAPFILE):
 
-        self.nodemap = json.loads(MAPFILE)
+        self.filename = MAPFILE
+        
+        f = open(MAPFILE)
+
+        self.nodemap = json.loads(f.read())
+        f.close()
         self.myname = os.uname()[1]
 
+        self.snidx = {}
         myid = -1
         for n in self.nodemap["supernodes"]:
-
-            if n["hostname"] == self.myname:
+            
+            hostname = n["hostname"]
+            self.snidx[hostname] = n["id"]
+            
+            if hostname == self.myname:
                 myid = n["id"]
         
+        if myid == -1:
+            print "ERROR: node not in supernode list"
+            exit (1)
         self.myid = myid
+        self.dirty = False
+        
         
 
-    def num_members(x):
+    def num_members(self,x):
 
         return len(x["members"])
 
-    def get_supernode_list():
+    def get_supernode_list(self):
 
-        sns = self.nodemap["supernodes"]
+        return self.snidx.keys()
 
-        return [row["hostname"] for row in sns]
-
-    def get_member_nodes():
+    def get_member_nodes(self):
 
         mns = self.nodemap["membernodes"]
 
@@ -39,16 +48,17 @@ class NodeMap():
 
             if n["supernode"] == self.myid:
                 
-                return [row["hostname"] for row in mns["members"]
+                return [row["hostname"] for row in mns["members"]]
 
+                        
 
-    def assign_node(node_name, project, standby=False):
+    def assign_node(self, node_name, project, standby=False):
 
         
 
         ref = self.nodemap["membernodeds"]
         
-        fewest = min(ref, key=num_members))
+        fewest = min(ref, key=num_members)
 
         mnode_count = int(self.nodemap["total_membernodes"])
         snode_count = int(self.nodemap["total_supernodes"])
@@ -62,18 +72,26 @@ class NodeMap():
         new_node["project"] = project
         fewest["members"].append(new_node)
 
-        self.nodemap("total_membernodes") = mnode_count
+        self.nodemap["total_membernodes"] = mnode_count
+
+        self.dirty = True
 
         if fewest["supernode"] == self.myid:
             return True
+
         return False
 
-    def write_back():
+    def write_back(self):
 
+        # We only write if there are changes
+        if self.dirty == False:
+            return
+        
         outs = json.dumps(self.nodemap, sort_keys=True, indent=4, separators=(',', ': '))
 
-        f = open(MAPFILE, "w")
+        f = open(filename, "w")
         f.write(outs)
         f.close()
+        self.dirty = False
         
 

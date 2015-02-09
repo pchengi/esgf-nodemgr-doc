@@ -5,54 +5,44 @@ from django.contrib import admin
 
 from django.http import HttpResponse #, QueryDict
 
-from healthcheck import RunningCheck, get_node_list
+from healthcheck import RunningCheck
 
 from simplequeue import write_task
-
-import api
+from nodemap import NodeMap
+from api import nodemgrapi
 
 
 hostname = os.uname()[1]
 
 checkarr = []
+MAPFILE = "/export/ames4/node_mgr_map.json"
+
+nodemap_instance = NodeMap(MAPFILE)
 
 def healthcheckreport(request):
     qd = request.GET
 
-
-    qd["action"] = "health_check_report"
+    outd = qd.copy()
+    outd["action"] = "health_check_report"
     
 
-    write_task(json.dumps(qd))
+    write_task(json.dumps(outd))
 
     return HttpResponse("")
 
 def healthcheckack(request):
 
     qd = request.GET
-    
+
+
+
     if ("forward" in qd and qd["forward"] == "True"):
-        
 
-        fromnode = qd["from"]
+        outd = qd.copy()
 
-        print "checking on others"
-
-#        tarr = []
-        
-        first = True
-# Refactor with manager.py block
-        for n in get_node_list():
-            
-            
-            if (n != hostname and  n != fromnode ):
-
-                t = RunningCheck(n, False, first, checkarr, fromnode)
-                t.start()
-                first = False
- #               tarr.append(t)
-
-
+        outd["action"] = "health_check_fwd"
+        write_task(json.dumps(outd))
+        print "checking on others"        
 
     return HttpResponse("OK")
     
@@ -66,5 +56,5 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)
                        url(r'^health-check-api/', healthcheckack, name=healthcheckack),
                        url(r'^health-check-rep', healthcheckreport, name=healthcheckreport),
-                       url(r'^esgf-nm-api', nodemanagerapi, name=nodemanagerapi),)
+                       url(r'^esgf-nm-api', nodemgrapi, name=nodemgrapi),)
 
