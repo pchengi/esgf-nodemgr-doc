@@ -1,11 +1,12 @@
 from threading import Thread
 from time import time, sleep
 
-from nodemap import NodeMap
+from nodemap import get_instance
 
 from httplib import HTTPConnection as Conn
 
 import os
+
 
 
 
@@ -29,7 +30,8 @@ localhostname = os.uname()[1]
 
 # MAPFILE = "/export/ames4/node_mgr_map.json"
 
-# nodemap_instance = NodeMap(MAPFILE)
+
+
 
 class RunningCheck(Thread):
 
@@ -63,6 +65,9 @@ class RunningCheck(Thread):
             error = "connectivity problem"
 
         self.eltime = eltime
+
+        nodemap_instance = get_instance()
+        node_list = nodemap_instance.get_supernode_list()
 
         if not self.fwdcheck:
 

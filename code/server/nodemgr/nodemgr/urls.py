@@ -12,12 +12,12 @@ from nodemap import NodeMap
 from api import nodemgrapi
 
 
-hostname = os.uname()[1]
+#hostname = os.uname()[1]
 
-checkarr = []
-MAPFILE = "/export/ames4/node_mgr_map.json"
+#checkarr = []
+#MAPFILE = "/export/ames4/node_mgr_map.json"
 
-nodemap_instance = NodeMap(MAPFILE)
+#nodemap_instance = NodeMap(MAPFILE)
 
 def healthcheckreport(request):
     qd = request.GET

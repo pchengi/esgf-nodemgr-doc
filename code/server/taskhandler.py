@@ -1,17 +1,16 @@
 import json, os
 
 from nodemgr.nodemgr.simplequeue import get_next_task
-
+from nodemgr.nodemgr.healthcheck import RunningCheck
 hostname = os.uname()[1]
 
 def health_check_fwd(task_d, nmap):
 
-    fromnode = qd["from"]
-
-
+    fromnode = task_d["from"]
 
 #    tarr = []
         
+    checkarr = []
     first = True
 # Refactor with manager.py block
     for n in nmap.get_supernode_list():
@@ -19,7 +18,7 @@ def health_check_fwd(task_d, nmap):
             
         if (n != hostname and  n != fromnode ):
 
-            t = RunningCheck(n, False, first, checkarr, fromnode)
+            t = RunningCheck(n, False, first, checkarr , fromnode)
             t.start()
             first = False
             #               tarr.append(t)  
@@ -43,14 +42,18 @@ def health_check_report(task_d, nmap):
 
             to_id = nmap.snidx[n]
             
-            for ee in edgelist:
-                if ee["from"] == from_id and ee["to"] == to_id:
-                    if speed < 0:
-                        ee["status"] = "down"
-                    ee["speed"] = float(speed)
-                    nmap.dirty = True
-                    break
-            
+            if (int (from_id) < int(to_id)): 
+
+                for ee in edgelist:
+                    if ee["from"] == from_id and ee["to"] == to_id:
+                        if speed < 0:
+                            ee["status"] = "down"
+                        else:
+                            ee["status"] = "up"
+                        ee["speed"] = float(speed)
+                        nmap.dirty = True
+                        break
+    
 
 def node_map_update(task_d, nmap):
     new_map = task_d["update"]
