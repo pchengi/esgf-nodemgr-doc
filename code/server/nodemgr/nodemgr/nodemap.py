@@ -59,8 +59,10 @@ class NodeMap():
 
             if n["supernode"] == self.myid:
                 
-                return [row["hostname"] for row in n["members"]]
-
+                if "members" in n:
+                    return [row["hostname"] for row in n["members"]]
+                else:
+                    return []
 
     def update_membernode_status(self, mn_hostname, status):
 
@@ -100,7 +102,7 @@ class NodeMap():
                             mn["standby"] = standby
                             self.dirty = True
                         found = True
-                        if ref["supernode"] == self.myid:
+                        if int(entry["supernode"]) == self.myid:
                             return True
                         return False
                         
@@ -128,6 +130,7 @@ class NodeMap():
         new_node["hostname"] = node_name
         new_node["standby"] = standby
         new_node["project"] = project
+        new_node["health"] = "unverified"
         fewest["members"].append(new_node)
 
         self.nodemap["total_membernodes"] = mnode_count

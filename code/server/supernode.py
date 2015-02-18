@@ -7,6 +7,9 @@ def member_node_check(nmap):
 
     nodes = nmap.get_member_nodes()
 
+    if len(nodes) == 0:
+        return
+
     tarr = []
 
     for nn in nodes:

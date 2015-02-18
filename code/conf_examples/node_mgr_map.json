@@ -25,12 +25,9 @@
                 {
                     "health": "unreachable",
                     "hostname": "greyworm2.llnl.gov",
-                    "id": "4"
-                },
-                {
-                    "health": "unreachable",
-                    "hostname": "greyworm3.llnl.gov",
-                    "id": "5"
+                    "id": "14",
+                    "project": "acme",
+                    "standby": false
                 }
             ],
             "supernode": "1"
@@ -38,10 +35,11 @@
         {
             "members": [
                 {
-                    "hostname": "greyworm5.llnl.gov",
-                    "id": "10",
+                    "health": "unverified",
+                    "hostname": "greyworm3.llnl.gov",
+                    "id": "15",
                     "project": "acme",
-                    "standby": true
+                    "standby": false
                 }
             ],
             "supernode": "2"
@@ -64,6 +62,6 @@
             "id": "3"
         }
     ],
-    "total_membernodes": 7,
+    "total_membernodes": 12,
     "total_supernodes": 3
 }

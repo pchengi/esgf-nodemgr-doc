@@ -65,7 +65,8 @@ def node_map_update(task_d, nmap):
 def add_member(task_d, nmap):
 
     rc = nmap.assign_node(task_d["from"], task_d["project"], task_d["standby"] == "True")
-#            if (not rc):
+    if (not rc):
+        print "need to forward map"
 
 
 

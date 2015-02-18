@@ -48,7 +48,7 @@ class RunningCheck(Thread):
     def run(self):
 
         ts = time()
-        print self.nodename
+        print "Health check on", self.nodename
 
         conn = Conn(self.nodename, 80, timeout=30)
 
