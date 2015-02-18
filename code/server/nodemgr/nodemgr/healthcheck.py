@@ -56,7 +56,7 @@ class RunningCheck(Thread):
         eltime = -1
         error = ""
         try:
-            conn.request("GET", "/health-check-api/?from=" + localhostname + "&forward=" + str(self.fwdcheck))
+            conn.request("GET", "/health-check-api?from=" + localhostname + "&forward=" + str(self.fwdcheck))
         
             resp = conn.getresponse()
 
