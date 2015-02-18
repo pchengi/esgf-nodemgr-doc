@@ -2,6 +2,8 @@ import json
 import os
 
 
+# this should be set by a global config
+MAXREF = 20
 
 class NodeMap():
     
@@ -14,8 +16,6 @@ class NodeMap():
         if (self.filename != ""):
             print "Initial map already loaded"
             return
-        
-        self.filename = MAPFILE
         
         f = open(MAPFILE)
         
@@ -39,6 +39,8 @@ class NodeMap():
         self.myid = myid
         self.dirty = False
         
+        self.filename = MAPFILE
+        
         
 
     def num_members(self,x):
@@ -57,7 +59,7 @@ class NodeMap():
 
             if n["supernode"] == self.myid:
                 
-                return [row["hostname"] for row in mns["members"]]
+                return [row["hostname"] for row in n["members"]]
 
 
     def update_membernode_status(self, mn_hostname, status):
@@ -68,8 +70,8 @@ class NodeMap():
 
             if n["supernode"] == self.myid:
                 for i in n["members"]:
-                    if i["hostname"] == nm_hostname and i["status"] != status:
-                        i["status"] = status
+                    if i["hostname"] == mn_hostname and i["health"] != status:
+                        i["health"] = status
                         self.dirty = True
 
         
@@ -79,9 +81,42 @@ class NodeMap():
 
         
 
-        ref = self.nodemap["membernodeds"]
+        ref = self.nodemap["membernodes"]
+
+        mincount = MAXREF + 1
+
+        for entry in ref:
+            
+            found = False
+
         
-        fewest = min(ref, key=num_members)
+
+            if ( "members" in entry):
+                members = entry["members"]
+                count = len(members)
+                for mn in members:
+                    if mn["hostname"] == node_name:
+                        if mn["standby"] != standby:
+                            mn["standby"] = standby
+                            self.dirty = True
+                        found = True
+                        if ref["supernode"] == self.myid:
+                            return True
+                        return False
+                        
+                if count < mincount:
+                    mincount = count
+                    fewest = entry
+            else:
+                newlist = []
+                entry["members"] = newlist
+                fewest = entry
+                break
+
+
+#        fewest = min(ref, key=lambda x: len(x["members"]))
+
+
 
         mnode_count = int(self.nodemap["total_membernodes"])
         snode_count = int(self.nodemap["total_supernodes"])
@@ -89,7 +124,7 @@ class NodeMap():
         mnode_count = mnode_count + 1
 
         new_node = {}
-        new_node["id"] = str(nmode_count + snode_count)
+        new_node["id"] = str(mnode_count + snode_count)
         new_node["hostname"] = node_name
         new_node["standby"] = standby
         new_node["project"] = project

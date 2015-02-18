@@ -70,8 +70,9 @@ class RunningCheck(Thread):
         node_list = nodemap_instance.get_supernode_list()
 
         if not self.fwdcheck:
-
-            self.checkarr.append(self.nodename + "=" + str(eltime))
+            
+            if not self.checkarr is None:
+                self.checkarr.append(self.nodename + "=" + str(eltime))
 
             if (self.first):
                 if len(node_list) > len(self.checkarr) + 2:

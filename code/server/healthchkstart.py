@@ -4,7 +4,7 @@ from nodemgr.nodemgr.healthcheck import RunningCheck
 from nodemgr.nodemgr.nodemap import get_instance
 from taskhandler import handle_tasks, health_check_report
 
-from supernode import member_node_check()
+from supernode import member_node_check
 
 if (len(sys.argv) <2):
     print "Usage:  python", sys.argv[0], "<node-map-file>"
@@ -36,6 +36,7 @@ while True:
     tarr = []
 
 # refac0ir with urls.py block
+
     for n in nodemap_instance.get_supernode_list():
 
 
@@ -43,10 +44,6 @@ while True:
             t = RunningCheck(n, True)
             t.start()
             tarr.append(t)
-
-
-
-
 
 
     report_dict = {}

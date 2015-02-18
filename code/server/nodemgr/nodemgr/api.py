@@ -1,8 +1,8 @@
-from simplequeue import write_task
+from simplequeue import RunningWrite
 
 
 from django.http import HttpResponse
-
+import json
 
 def nodemgrapi(request):
 

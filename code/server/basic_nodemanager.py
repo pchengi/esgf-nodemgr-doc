@@ -1,7 +1,7 @@
 import sys
 from time import sleep
 
-from supernode import member_node_check()
+from supernode import member_node_check
 
 from nodemgr.nodemgr.nodemap import get_instance
 from taskhandler import handle_tasks
@@ -14,11 +14,23 @@ nodemap_instance = get_instance()
 
 nodemap_instance.load_map(sys.argv[1])
 
+count = 0
+
+QUANTA = 12
+
 while (True):
 
     sleep(5)
 
     handle_tasks(nodemap_instance)
 
-    sleep(5)
+    
+    if count == 0:
+        member_node_check(nodemap_instance)
+    
+    nodemap_instance.write_back()
 
+    count = count + 1
+
+    if count == QUANTA:
+        count = 0
