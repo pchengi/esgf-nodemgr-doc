@@ -37,26 +37,7 @@ while True:
 
 # refac0ir with urls.py block
 
-    for n in nodemap_instance.get_supernode_list():
 
-
-        if n != localhostname:
-            t = RunningCheck(n, True)
-            t.start()
-            tarr.append(t)
-
-
-    report_dict = {}
-
-    report_dict["from"] = localhostname
-
-    for tt in tarr:
-
-        tt.join()
-
-        report_dict[tt.nodename] = tt.eltime
-    
-    health_check_report(report_dict, nodemap_instance)
     
 
 #    for n in nodemap_instance.get_member_nodes():

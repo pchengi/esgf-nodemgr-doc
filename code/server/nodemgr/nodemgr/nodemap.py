@@ -151,10 +151,12 @@ class NodeMap():
                 memlist = entry["members"]
                 for member in memlist:
 
-                    if member["entry"] == hostname:
+                    if member["hostname"] == hostname:
 
                         memlist.remove(member)
                         self.dirty = True
+                        self.nodemap["total_membernodes"] = self.nodemap["total_membernodes"] - 1
+
                         return True
                 return False
                      

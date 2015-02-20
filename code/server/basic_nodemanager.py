@@ -10,6 +10,8 @@ if (len(sys.argv) <2):
     print "Usage:  python", sys.argv[0], "<node-map-file>"
     exit
 
+
+
 nodemap_instance = get_instance()
 
 nodemap_instance.load_map(sys.argv[1])
@@ -17,6 +19,9 @@ nodemap_instance.load_map(sys.argv[1])
 count = 0
 
 QUANTA = 12
+
+MasterNode = (nodemap_instance.myid == "1")
+
 
 while (True):
 
@@ -26,6 +31,9 @@ while (True):
 
     
     if count == 0:
+        if MasterNode:
+            supernode_check(nodemap_instance)
+
         member_node_check(nodemap_instance)
     
     nodemap_instance.write_back()

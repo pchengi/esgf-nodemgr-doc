@@ -21,15 +21,7 @@
     ],
     "membernodes": [
         {
-            "members": [
-                {
-                    "health": "good",
-                    "hostname": "greyworm7",
-                    "id": "18",
-                    "project": "acme",
-                    "standby": true
-                }
-            ],
+            "members": [],
             "supernode": "1"
         }
     ],
@@ -50,6 +42,6 @@
             "id": "3"
         }
     ],
-    "total_membernodes": 15,
+    "total_membernodes": 0,
     "total_supernodes": 3
 }

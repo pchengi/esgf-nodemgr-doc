@@ -4,6 +4,8 @@ from nodemgr.nodemgr.simplequeue import get_next_task
 from nodemgr.nodemgr.healthcheck import RunningCheck
 hostname = os.uname()[1]
 
+from supernode import send_map_to_members, NMapSender
+
 def health_check_fwd(task_d, nmap):
 
     fromnode = task_d["from"]
@@ -60,7 +62,8 @@ def node_map_update(task_d, nmap):
 
     nmap.replace(new_map)
     
-
+    send_map_to_others(True, nmap)
+    
 
 def add_member(task_d, nmap):
 

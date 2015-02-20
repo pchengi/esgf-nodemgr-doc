@@ -19,11 +19,11 @@ if cmd == "add":
 
     conn = Conn(target, 80, timeout=30)
 
-    try:
-        conn.request("GET", "/esgf-nm-api?action=add_member&from=" + myname + "&project=" + proj + "&standby=" + stdby)
-        resp = conn.get_response     
-    except:
-        print "Error in connection"
+
+    conn.request("GET", "/esgf-nm-api?action=add_member&from=" + myname + "&project=" + proj + "&standby=" + stdby)
+    resp = conn.getresponse()
+    conn.close()
+
 
 elif cmd ==  "remove":
     conf = sys.argv[2]
@@ -34,19 +34,37 @@ elif cmd ==  "remove":
 
     target = ""
 
-    for entry in json.loads(f.read()):
+    targetnum = 0
+    
+    nodemap = json.loads(f.read())
+
+    for entry in nodemap["membernodes"]:
 
         if "members" in entry:
 
-            for
+            for mn in entry["members"]:
+                if mn["hostname"] == myname:
+                    targetnum = int(entry["supernode"])
+                    break
+        if targetnum > 0:
+            for sn in nodemap["supernodes"]:
+                if int(sn["id"]) == targetnum:
+                    target = sn["hostname"]
+                    break
+            
+            break
+        
+
+    if target == "":
+        print "An error has occurred.  The supernode managing this node not found in the node map."
+        exit
 
     conn = Conn(target, 80, timeout=30)
 
-    try:
-        conn.request("GET", "/esgf-nm-api?action=remove_member&from=" + myname )
-        resp = conn.get_response     
-    except:
-        print "Error in connection"
+    conn.request("GET", "/esgf-nm-api?action=remove_member&from=" + myname )
+    resp = conn.getresponse()
+    conn.close()
+    
 
 
     

@@ -24,7 +24,7 @@ def nodemgrapi(request):
         data = request.body
         outd = qd.copy()
         outd["update"] = data
-        
+
         task = json.dumps(outd)
 
     else:
