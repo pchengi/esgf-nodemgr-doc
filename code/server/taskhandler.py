@@ -68,7 +68,12 @@ def add_member(task_d, nmap):
     if (not rc):
         print "need to forward map"
 
-
+def remove_member(task_d, nmap):
+    print task_d["from"]
+    if nmap.remove_member(task_d["from"]):
+        print "removed"
+    else:
+        print "not removed"
 
 def handle_tasks(nmap):
 

@@ -15,7 +15,7 @@ def nodemgrapi(request):
     
     task = ""
 
-    if action in ["add_member"]:
+    if action in ["add_member", "remove_member"]:
 
         task = json.dumps(qd)
 

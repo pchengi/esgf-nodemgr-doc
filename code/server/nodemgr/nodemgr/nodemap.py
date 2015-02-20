@@ -142,6 +142,27 @@ class NodeMap():
 
         return False
 
+    def remove_member(self, hostname):
+
+        for entry in self.nodemap["membernodes"]:
+
+            if entry["supernode"] == self.myid:
+                
+                memlist = entry["members"]
+                for member in memlist:
+
+                    if member["entry"] == hostname:
+
+                        memlist.remove(member)
+                        self.dirty = True
+                        return True
+                return False
+                     
+
+        return False
+
+         
+
     def write_back(self):
 
         # We only write if there are changes
