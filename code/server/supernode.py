@@ -4,7 +4,7 @@ from threading import Thread
 
 from nodemgr.nodemgr.healthcheck import RunningCheck
 from httplib import HTTPConnection
-
+from nodemgr.nodemgr.simplequeue import write_task
 
 class NMapSender(Thread):
 
@@ -21,9 +21,11 @@ class NMapSender(Thread):
         conn.close
 
 
-
+localhostname = os.uname()[1]
 
 def supernode_check(nodemap_instance):
+
+    tarr = []
 
     for n in nodemap_instance.get_supernode_list():
 
@@ -36,6 +38,7 @@ def supernode_check(nodemap_instance):
 
     report_dict = {}
 
+    report_dict["action"] = "health_check_report"
     report_dict["from"] = localhostname
 
     for tt in tarr:
@@ -44,7 +47,9 @@ def supernode_check(nodemap_instance):
 
         report_dict[tt.nodename] = tt.eltime
     
-    health_check_report(report_dict, nodemap_instance)
+    
+    write_task(json.dumps(report_dict))
+#    health_check_report(report_dict, nodemap_instance)
 
 
 def send_map_to_others(members, nmap):
@@ -57,7 +62,7 @@ def send_map_to_others(members, nmap):
         nodes = nmap.get_supernode_list()
 
 
-    if (not nodes is None) or len(nodes) == 0:
+    if (nodes is None) or len(nodes) == 0:
         return
 
     tarr = []
@@ -79,7 +84,7 @@ def member_node_check(nmap):
 
     nodes = nmap.get_member_nodes()
 
-    if (not nodes is None) or len(nodes) == 0:
+    if (nodes is None) or len(nodes) == 0:
         return
 
 

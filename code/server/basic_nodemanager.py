@@ -1,7 +1,7 @@
 import sys
 from time import sleep
 
-from supernode import member_node_check
+from supernode import member_node_check, supernode_check
 
 from nodemgr.nodemgr.nodemap import get_instance
 from taskhandler import handle_tasks
@@ -34,7 +34,8 @@ while (True):
         if MasterNode:
             supernode_check(nodemap_instance)
 
-        member_node_check(nodemap_instance)
+        if nodemap_instance.myid > -1:
+            member_node_check(nodemap_instance)
     
     nodemap_instance.write_back()
 

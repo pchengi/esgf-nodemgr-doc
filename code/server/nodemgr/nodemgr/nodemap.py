@@ -34,8 +34,9 @@ class NodeMap():
                 myid = n["id"]
         
         if myid == -1:
-            print "ERROR: node not in supernode list"
-            exit (1)
+            print "Node not in supernode list.  run as a member node"
+        #     exit (1)
+
         self.myid = myid
         self.dirty = False
         
