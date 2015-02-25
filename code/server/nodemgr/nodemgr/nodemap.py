@@ -67,6 +67,8 @@ class NodeMap():
 
     def update_membernode_status(self, mn_hostname, status):
 
+        update = False
+
         mns = self.nodemap["membernodes"]
 
         for n in mns:
@@ -76,7 +78,8 @@ class NodeMap():
                     if i["hostname"] == mn_hostname and i["health"] != status:
                         i["health"] = status
                         self.dirty = True
-
+                        update = True
+        return update
         
                         
 

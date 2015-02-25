@@ -4,10 +4,16 @@ from simplequeue import RunningWrite
 from django.http import HttpResponse
 import json
 
-def nodemgrapi(request):
+import pdb
 
+def nodemgrapi(request):
+    
+#    print "API request"
+
+#    pdb.set_trace()
 
     resp_code="OK"
+
 
     qd = request.GET
 
@@ -21,6 +27,9 @@ def nodemgrapi(request):
 
 
     elif action in ["node_map_update"]:
+
+        print "update map!"
+
         data = request.body
         outd = qd.copy()
         outd["update"] = data

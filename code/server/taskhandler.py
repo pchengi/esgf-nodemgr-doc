@@ -1,5 +1,5 @@
 import json, os
-
+from time import time
 from nodemgr.nodemgr.simplequeue import get_next_task
 from nodemgr.nodemgr.healthcheck import RunningCheck
 hostname = os.uname()[1]
@@ -60,12 +60,15 @@ def health_check_report(task_d, nmap):
 def node_map_update(task_d, nmap):
     new_map = task_d["update"]
 
-    nmap.replace(new_map)
+    nmap.nodemap = json.loads(new_map)
     
+    nmap.dirty = True
     send_map_to_others(True, nmap)
     
 
 def add_member(task_d, nmap):
+
+    ts = int(time())
 
     rc = nmap.assign_node(task_d["from"], task_d["project"], task_d["standby"] == "True")
     send_map_to_others(False, nmap)

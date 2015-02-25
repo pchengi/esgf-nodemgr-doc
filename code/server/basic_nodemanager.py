@@ -1,7 +1,7 @@
 import sys
 from time import sleep
 
-from supernode import member_node_check, supernode_check
+from supernode import member_node_check, supernode_check, links_check
 
 from nodemgr.nodemgr.nodemap import get_instance
 from taskhandler import handle_tasks
@@ -40,6 +40,11 @@ while (True):
     nodemap_instance.write_back()
 
     count = count + 1
+
+    if count == 4:
+        if MasterNode:
+            links_check(nodemap_instance)
+            
 
     if count == QUANTA:
         count = 0

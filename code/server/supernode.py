@@ -1,5 +1,6 @@
 import os, json
 
+
 from threading import Thread
 
 from nodemgr.nodemgr.healthcheck import RunningCheck
@@ -8,17 +9,26 @@ from nodemgr.nodemgr.simplequeue import write_task
 
 class NMapSender(Thread):
 
-    def __init__(self,nmap, nn):
+    def __init__(self,nmap, nn, ts=0):
+        super(NMapSender, self).__init__()
         self.nodemap = nmap.nodemap
         self.target = nn
-    def run():
+        self.ts = ts
+        self.fromnode = nmap.myid
+    
+
+    def run(self):
 
         conn = HTTPConnection(self.target, 80, timeout=30)
 
-        conn.request("POST", "/esgf-nm-api?action=update_map", json.dumps(self.nodemap) )
+        tstr = ""
+        if self.ts>0:
+            tstr = "&timestamp=" + str(self.ts)
+
+        conn.request("GET", "/esgf-nm-api?action=node_map_update" + tstr + "&from=" + self.fromnode , json.dumps(self.nodemap) )
         foo = conn.getresponse()
 
-        conn.close
+        conn.close()
 
 
 localhostname = os.uname()[1]
@@ -52,7 +62,7 @@ def supernode_check(nodemap_instance):
 #    health_check_report(report_dict, nodemap_instance)
 
 
-def send_map_to_others(members, nmap):
+def send_map_to_others(members, nmap, ts=0):
     
     nodes = []
 
@@ -70,7 +80,7 @@ def send_map_to_others(members, nmap):
     for nn in nodes:
         if nn != nmap.myname:
 
-            nms = NMapSender(nmap, nn)
+            nms = NMapSender(nmap, nn, ts)
 
             nms.start()
             tarr.append(nms)
@@ -111,7 +121,53 @@ def member_node_check(nmap):
     #        print "eltime " , eltime 
 # For now we don't care about time to reach a member node - potential
 # future optimization
-        nmap.update_membernode_status(t.nodename, status)
+        if (nmap.update_membernode_status(t.nodename, status)):
+            send_map_to_others(False, nmap)
+            send_map_to_others(True, nmap)
+
         
 
+def links_check(nmap):
+
+#    print "Links Check"
+
+    changed = False
     
+    snodes = nmap.nodemap["supernodes"]
+
+    for i in range(nmap.nodemap["total_supernodes"]):
+        
+        
+        
+        nid = str(i+1)
+
+        if (nid == nmap.myid):
+            snodes[i]["health"] = "good"
+            continue
+
+        print "check on", i
+
+        for v in nmap.nodemap["links"]:
+            
+            down = True
+
+            if (nid == v["from"] or nid == v["to"]) and (v["status"] != "down"):
+                down = False
+#                print " found an up link"
+                break
+
+        if down and snodes[i]["health"] != "unreachable":
+            snodes[i]["health"] = "unreachable"
+            changed = True
+#            print "  changed bad"
+        elif (not down) and snodes[i]["health"] == "unreachable":
+            snodes[i]["health"] = "good"
+            changed = True
+#            print "  change to good"
+
+    if changed:
+        nmap.dirty = True
+        send_map_to_others(False, nmap)
+        send_map_to_others(True, nmap)
+            
+                    
