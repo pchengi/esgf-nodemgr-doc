@@ -1,59 +1,48 @@
-import os
+import os, json
 
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 from django.http import HttpResponse #, QueryDict
 
-from healthcheck import RunningCheck, get_node_list
+from healthcheck import RunningCheck
 
-import api
+from simplequeue import write_task
+from nodemap import NodeMap
+from api import nodemgrapi
 
 
-hostname = os.uname()[1]
+#hostname = os.uname()[1]
 
-checkarr = []
+#checkarr = []
+#MAPFILE = "/export/ames4/node_mgr_map.json"
+
+#nodemap_instance = NodeMap(MAPFILE)
 
 def healthcheckreport(request):
     qd = request.GET
 
-    print "Node Check report ---"
-    print "From: ", qd["from"]
+    outd = qd.copy()
+    outd["action"] = "health_check_report"
     
 
-    for n in get_node_list():
-
-        if n in qd:
-            print "node", n, "-", qd[n] 
+    write_task(json.dumps(outd))
 
     return HttpResponse("")
 
 def healthcheckack(request):
 
     qd = request.GET
-    
+
+
+
     if ("forward" in qd and qd["forward"] == "True"):
-        
 
-        fromnode = qd["from"]
+        outd = qd.copy()
 
-        print "checking on others"
-
-#        tarr = []
-        
-        first = True
-# Refactor with manager.py block
-        for n in get_node_list():
-            
-            
-            if (n != hostname and  n != fromnode ):
-
-                t = RunningCheck(n, False, first, checkarr, fromnode)
-                t.start()
-                first = False
- #               tarr.append(t)
-
-
+        outd["action"] = "health_check_fwd"
+        write_task(json.dumps(outd))
+        print "checking on others"        
 
     return HttpResponse("OK")
     
@@ -65,7 +54,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     # url(r'^admin/', include(admin.site.urls)
-                       url(r'^health-check-api/', healthcheckack, name=healthcheckack),
+                       url(r'^health-check-api', healthcheckack, name=healthcheckack),
                        url(r'^health-check-rep', healthcheckreport, name=healthcheckreport),
-                       url(r'^esgf-nm-api', nodemanagerapi, name=nodemanagerapi),)
+                       url(r'^esgf-nm-api', nodemgrapi, name=nodemgrapi),)
 

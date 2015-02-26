@@ -1,27 +1,36 @@
 from threading import Thread
 from time import time, sleep
 
+from nodemap import get_instance
+
 from httplib import HTTPConnection as Conn
 
 import os
 
-def init_node_list():
 
-    org_list = [ "aims1.llnl.gov" ]
 
-    for n in range(1,4):
 
-        org_list.append("greyworm"+ str(n) + ".llnl.gov")
+# def init_node_list():
 
-    return org_list
+#     org_list = [ "aims1.llnl.gov" ]
 
-node_list = init_node_list()
+#     for n in range(1,4):
 
-def get_node_list():
-    return node_list
+#         org_list.append("greyworm"+ str(n) + ".llnl.gov")
+
+#     return org_list
+
+# node_list = init_node_list()
+
+# def get_node_list():
+#     return node_list
 
 
 localhostname = os.uname()[1]
+
+# MAPFILE = "/export/ames4/node_mgr_map.json"
+
+
 
 
 class RunningCheck(Thread):
@@ -39,15 +48,15 @@ class RunningCheck(Thread):
     def run(self):
 
         ts = time()
-
-#        print "check startedt at ", ts
+        print "Health check on", self.nodename
 
         conn = Conn(self.nodename, 80, timeout=30)
+
 
         eltime = -1
         error = ""
         try:
-            conn.request("GET", "/health-check-api/?from=" + localhostname + "&forward=" + str(self.fwdcheck))
+            conn.request("GET", "/health-check-api?from=" + localhostname + "&forward=" + str(self.fwdcheck))
         
             resp = conn.getresponse()
 
@@ -57,9 +66,13 @@ class RunningCheck(Thread):
 
         self.eltime = eltime
 
-        if not self.fwdcheck:
+        nodemap_instance = get_instance()
+        node_list = nodemap_instance.get_supernode_list()
 
-            self.checkarr.append(self.nodename + "=" + str(eltime))
+        if not self.fwdcheck:
+            
+            if not self.checkarr is None:
+                self.checkarr.append(self.nodename + "=" + str(eltime))
 
             if (self.first):
                 if len(node_list) > len(self.checkarr) + 2:
@@ -73,23 +86,23 @@ class RunningCheck(Thread):
                 resp = conn.getresponse()
 
 
-def do_checks(fwdcheck):
+# def do_checks(fwdcheck):
 
-    tarr = []
+#     tarr = []
 
-    for n in get_node_list():
-
-
-        if n != hostname:
-                t = RunningCheck(n, True)
-                t.start()
-                tarr.append(t)
+#     for n in nodemap_instance.get_supernode_list():
 
 
+#         if n != hostname:
+#                 t = RunningCheck(n, True)
+#                 t.start()
+#                 tarr.append(t)
 
-    if (fwdcheck):
+
+
+#     if (fwdcheck):
     
-        for tt in tarr:
+#         for tt in tarr:
 
-            tt.join()
-            print tt.hostname, tt.eltime
+#             tt.join()
+#             tt.hostname, tt.eltime

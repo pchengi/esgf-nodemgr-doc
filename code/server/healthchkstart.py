@@ -1,38 +1,54 @@
-from nodemgr.nodemgr.healthcheck import get_node_list, RunningCheck
-
 import sys,time, os
 
+from nodemgr.nodemgr.healthcheck import RunningCheck
+from nodemgr.nodemgr.nodemap import get_instance
+from taskhandler import handle_tasks, health_check_report
+
+from supernode import member_node_check
+
+if (len(sys.argv) <2):
+    print "Usage:  python", sys.argv[0], "<node-map-file>"
+    exit
 
 
-PERIOD = 10
+nodemap_instance = get_instance()
+
+nodemap_instance.load_map(sys.argv[1])
+
+
+PERIOD = 5
 
 localhostname = os.uname()[1]
+
+
 
 
 while True:
 
     time.sleep(PERIOD)
+    
+    handle_tasks(nodemap_instance)
+    nodemap_instance.write_back()
+
+    time.sleep(PERIOD)
 
 
-    
-    
     tarr = []
 
 # refac0ir with urls.py block
-    for n in get_node_list():
 
 
-        if n != localhostname:
-            t = RunningCheck(n, True)
-            t.start()
-            tarr.append(t)
+    
 
-
+#    for n in nodemap_instance.get_member_nodes():
 #    print len(tarr),  " threads"
 
+    member_node_check(nodemap_instance)
 
-    for tt in tarr:
+    
+    handle_tasks(nodemap_instance)
 
-            tt.join()
-            print tt.nodename, tt.eltime
-            # ADD to edge map (TODO) 
+
+    
+    nodemap_instance.write_back()
+
