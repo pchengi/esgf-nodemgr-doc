@@ -2,9 +2,16 @@ from simplequeue import RunningWrite
 
 
 from django.http import HttpResponse
-import json
+import json, os
 
-import pdb
+#import pdb
+
+from nodemap import get_instance
+
+nodemap_instance = get_instance()
+
+nodemap_instance.load_map(os.environ.get("ESGF_NODEMGR_MAP"))
+nodemap_instance.set_ro()
 
 def nodemgrapi(request):
     
@@ -21,7 +28,12 @@ def nodemgrapi(request):
     
     task = ""
 
-    if action in ["add_member", "remove_member"]:
+    if action == "get_node_map":
+        
+        nodemap_instance.reload()
+        resp_code = nodemap_instance.get_indv_node_status_json()
+        
+    elif action in ["add_member", "remove_member"]:
 
         task = json.dumps(qd)
 
@@ -43,5 +55,5 @@ def nodemgrapi(request):
         rw = RunningWrite(task)
         rw.start()
 
-    return HttpResponse(resp_code)
+    return HttpResponse(resp_code, content_type="text/plain")
 
