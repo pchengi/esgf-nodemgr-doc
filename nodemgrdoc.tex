@@ -162,6 +162,18 @@ These are the main components of the solution.
 \end{enumerate}
 
 
+Use of git:  
+
+- solves consistency issue as their protocols would handle race conditions between administrators submitting changes. 
+
+- as they are established, we should expect a highly available web service.  They have similar issues of failover to be highly available.
+
+Cons;
+
+ - Authentication / security issues
+ 
+  - tricky to resolve site connectivity issues.  For instance, the key supernode might not be able to connect t github and get the update.  Then, we need to administer a failover and have an alternate supernode handle that.  Failure to connect to github is a health check failure for a supernode, but the node can still be a member node (demotion).  
+
 
 
 %Apache ZooKeeper seems to be a very promising fit for this role, so this component shall henceforth simply be refered to as ZooKeeper.
@@ -277,7 +289,7 @@ In the event that a supernode becomes unavailable, the managed member nodes must
 Strategy 2:  greedy algorithm based on latencies.  Member nodes are assigned to super nodes using lowest latency in a similar greedy algorithm.  The measuring of latencies is performed as an infrequent periodic check based on the current node map (daily/weekly?)
 
 \subsection{Federation Entrance/exit}
-
+Member nodes contact super nodes.  The supernode receiving the connection adds the the member to whatever.  This function is one of several where race conditions may arise (explain).
 
 
 \section{Authentication mechanisms}
