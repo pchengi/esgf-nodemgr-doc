@@ -55,12 +55,12 @@ Drawbacks
 \section{Desirable features for next-gen Node Manager}
 \begin{frame}{Desirable features for next-gen Node Manager}
 \begin{itemize}
-\item Fault-tolerant distributed system, without a single point of failure.
-\item High scalability without overloading resources.
-\item Minimise communication overheads.
-\item PAN federation administration: handling cert requests, node memberships etc
+\item Fault-tolerant distributed system, without a single point of failure
+\item High scalability without overloading resources
+\item Minimise communication overheads
+\item PAN federation administration: handling cert requests, node memberships, etc.
 \item Consistent and highly available common configuration files
-\item Mechanism to ensure replica consistency across federation.
+\item Mechanism to enable component redundancy via consistency
 \end{itemize}
 \end{frame}
 
@@ -70,7 +70,7 @@ Node managers can be of three different types.
 \begin{enumerate}
 \item Supernodes
 \begin{itemize}
-\item A validated and reliable source for configuration directives, metrics, information about components etc, at project level.
+\item A validated and reliable source for configuration directives, metrics, information about components, etc., at project level.
 \item Multiple concurrent supernodes for scalability, fault tolerance and load sharing.
 \item Supernodes query other Node Managers for metrics and status.
 \item A single Node Manager can serve as supernode to multiple projects or even as supernode to one and membernode to another etc.
@@ -92,7 +92,7 @@ Node managers can be of three different types.
 
 
 \section{View of federated Node Managers}
-\begin{frame}{View of federated Node Managers}
+\begin{frame}{View of federated Node Managers with projects }
 \begin{center}
 \includegraphics[scale=0.35]{ESG-node-org.pdf}
 \end{center}
@@ -148,13 +148,20 @@ Logger & (metadata)? \\
 \section{Node Manager components}
 \begin{frame}{Node Manager components}
 \begin{itemize}
-\item \textbf{Health Check}
-Health Check - a heart beat "monituot
+
 \item \textbf{Communication management}
-\item
+\begin{itemize}
+\item influenced by Zookeeper
+\item Supernodes health check each other and member nodes
+\item handles node failue
+\end{itemize}
 
 
-\item \textbf{ESGF Node Manager API}, to serve as a wrapper, 
+\item \textbf{ESGF Node Manager API} two subtypes
+\begin{itemize}
+\item P2P api - part of communication management
+\item Services API - repository for ESGF components to share information, look up status
+\end{itemize}
 
 
 \item \textbf{Metric collector}: query member nodes and aggregate them (supernodes)
@@ -299,25 +306,42 @@ Communication set up asynchronously. Responses added to queue.
 \begin{itemize}
 \item Security: factor for both user/machine executed elevated privilege operations.
 \item Design to guard against spoofing of membernodes/supernodes etc.
+\item 
+Additional design and planning:
+\item
+\textbf{bootstrap:} how to stand up initial set of supernodes
+\item
+\textbf{transition roadmap} how to cut over from existing node manager without creating massive downtime for ESGF
+
+
 \end{itemize}
 \end{frame}
 
 \section{Status of Effort}
 \begin{frame}{Implementation Status}
 
+\begin{itemize}
+\item
 Federation prototyping ongoing.   single source health check complete
-
- TODO - node reassignment
-
- multiple source health check
+\item
+ Prototype implementation items to be completed
+ \item
+  node reassignment
+\item
+"multiple source" health check
+\item
 
  conflict resolution
+\item
 
  dashboard support
- 
+\item
+Integrate django-based API with other django services running on ESGF node / httpd
+
+ \item
 
 Summer - start testing in wide-area environment - will need your help!
-
+\end{itemize}
 \end{frame}
 
 
