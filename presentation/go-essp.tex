@@ -301,14 +301,14 @@ Communication set up asynchronously. Responses added to queue.
 
 
 
-\section{Future - Node Manager design considerations}
+\section{Node Manager design considerations}
 \begin{frame}{Node Manager design considerations}
 \begin{itemize}
 \item Security: factor for both user/machine executed elevated privilege operations.
 \item Design to guard against spoofing of membernodes/supernodes etc.
-\item 
-Additional design and planning:
 \item
+ Which communications need to be secure? For instance, health checks might not need encryption but detailed status might.
+\item 
 \textbf{bootstrap:} how to stand up initial set of supernodes
 \item
 \textbf{transition roadmap} how to cut over from existing node manager without creating massive downtime for ESGF
@@ -337,9 +337,10 @@ Federation prototyping ongoing.   single source health check complete
  dashboard support
 \item
 Integrate django-based API with other django services running on ESGF node / httpd
+\item
+secure (https) communications
 
  \item
-
 Summer - start testing in wide-area environment - will need your help!
 \end{itemize}
 \end{frame}
