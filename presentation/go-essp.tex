@@ -17,7 +17,8 @@
 }
 
 \title{Scalable ESGF Node Manager}
-\author{Sasha Ames / Prashanth D.}
+\subtitle{GO-ESSP Monthly Teleconference}
+\author{Sasha Ames / Prashanth Dwarakanath}
 \institute{LLNL / LIU}
 \date{March 3 2015}
 \begin{document}
@@ -35,7 +36,7 @@
 \tableofcontents
 \end{frame}
 
-\section{Background}
+\section{Background and Required Features}
 \begin{frame}{Background}
 The current ESGF Node Manager handles:
 \begin{itemize}
@@ -52,7 +53,6 @@ Drawbacks
 
 \end{frame}
 
-\section{Desirable features for next-gen Node Manager}
 \begin{frame}{Desirable features for next-gen Node Manager}
 \begin{itemize}
 \item Fault-tolerant distributed system, without a single point of failure
@@ -64,41 +64,7 @@ Drawbacks
 \end{itemize}
 \end{frame}
 
-\section{Node Manager types}
-\begin{frame}{Node Manager types}
-Node managers can be of three different types.
-\begin{enumerate}
-\item Supernodes
-\begin{itemize}
-\item A validated and reliable source for configuration directives, metrics, information about components, etc., at project level.
-\item Multiple concurrent supernodes for scalability, fault tolerance and load sharing.
-\item Supernodes query other Node Managers for metrics and status.
-\item A single Node Manager can serve as supernode to multiple projects or even as supernode to one and membernode to another etc.
-\item Administrator action required to add/remove from ESGF
-\end{itemize}
-\item Membernodes
-\begin{itemize}
-\item Default Node Manager configuration
-\item Cannot query other Node Managers.
-\item May join or leave ESGF "at will"
-\end{itemize}
-\item Standby supernodes
-\begin{itemize}
-\item The Node Managers run as supernodes only when too few supernodes are operational.
-\end{itemize}
-\end{enumerate}
-\end{frame}
 
-
-
-\section{View of federated Node Managers}
-\begin{frame}{View of federated Node Managers with projects }
-\begin{center}
-\includegraphics[scale=0.35]{ESG-node-org.pdf}
-\end{center}
-\end{frame}
-
-\section{Node Manager role in ESGF Node}
 \begin{frame}{Node Manager role in ESGF Node}
 
 \begin{columns}
@@ -145,27 +111,61 @@ Logger & (metadata)? \\
 
 \end{frame}
 
-\section{Node Manager components}
+\section{Node Manager Design}
+\begin{frame}{Node Manager types}
+Node managers can be of three different types.
+\begin{enumerate}
+\item Supernodes
+\begin{itemize}
+\item A validated and reliable source for configuration directives, metrics, information about components, etc., at project level.
+\item Multiple concurrent supernodes for scalability, fault tolerance and load sharing (but not too many).
+\item Supernodes query other Node Managers for metrics and status.
+\item A single Node Manager can serve as supernode to multiple projects or even as supernode to one and membernode to another etc.
+\item Administrator action required to add/remove from ESGF
+\end{itemize}
+\item Membernodes
+\begin{itemize}
+\item Default Node Manager configuration
+\item Cannot query other Node Managers.
+\item May join or leave ESGF "at will"
+\end{itemize}
+\item Standby supernodes
+\begin{itemize}
+\item The Node Managers run as supernodes only when too few supernodes are operational.
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+
+
+
+\begin{frame}{View of federated Node Managers with projects }
+\begin{center}
+\includegraphics[scale=0.35]{ESG-node-org.pdf}
+\end{center}
+\end{frame}
+
+
 \begin{frame}{Node Manager components}
 \begin{itemize}
 
 \item \textbf{Communication management}
 \begin{itemize}
-\item influenced by Zookeeper
-\item Supernodes health check each other and member nodes
-\item handles node failue
+\item Influenced by ZooKeeper
+\item Supernodes "health check" each other and member nodes, "rotating" role
+\item Handles node failures
 \end{itemize}
 
 
 \item \textbf{ESGF Node Manager API} two subtypes
 \begin{itemize}
-\item P2P api - part of communication management
+\item P2P API - part of communication management
 \item Services API - repository for ESGF components to share information, look up status
 \end{itemize}
 
 
 \item \textbf{Metric collector}: query member nodes and aggregate them (supernodes)
-\item \textbf{Self-check component}: run sanity checks on self.
+\item \textbf{Self-check component}: run sanity checks on self (used with health check)
 
 
 
@@ -183,7 +183,7 @@ Logger & (metadata)? \\
 
 
 
-\section{Node Manager component diagram}
+
 \begin{frame}{Node Manager component diagram}
 \begin{center}
 \includegraphics[scale=0.45]{NM-design-v2.pdf}
@@ -199,7 +199,7 @@ Member nodes need to be redistributed for node-checks, file distribution in even
 \item
 Option 1.  Distribute to active super nodes
 \item
-Option 2. Promote a standby node.  Distribute remaining nodes to "new" supernode, place of promoted node.
+Option 2.  Promote a standby node.  Distribute remaining nodes to "new" supernode, place of promoted node.
 \item
 Choice of options depends on setting, resources.  
 \end{itemize}
@@ -278,7 +278,7 @@ Example: "race condition" of multiple member nodes joining in close succession.
 
 \end{frame}
 
-\section{Prototyping}
+\section{Prototype, Status and Ongoing Work}
 \begin{frame}{Prototype of the Node Manager}
 \begin{itemize}
 \item
@@ -301,46 +301,52 @@ Communication set up asynchronously. Responses added to queue.
 
 
 
-\section{Future - Node Manager design considerations}
-\begin{frame}{Node Manager design considerations}
+
+\begin{frame}{Node Manager Considerations (Needed Design Tasks)}
 \begin{itemize}
 \item Security: factor for both user/machine executed elevated privilege operations.
 \item Design to guard against spoofing of membernodes/supernodes etc.
+\item
+ Which communications need to be secure? For instance, health checks might not need encryption but detailed status might.
+
 \item 
-Additional design and planning:
+\textbf{Bootstrap:} how to stand up initial set of supernodes
 \item
-\textbf{bootstrap:} how to stand up initial set of supernodes
-\item
-\textbf{transition roadmap} how to cut over from existing node manager without creating massive downtime for ESGF
+\textbf{Transition roadmap} how to cut over from existing node manager without creating massive downtime for ESGF
 
 
 \end{itemize}
 \end{frame}
 
-\section{Status of Effort}
+
 \begin{frame}{Implementation Status}
 
 \begin{itemize}
 \item
-Federation prototyping ongoing.   single source health check complete
+Federation prototyping ongoing.   Complete:
+\begin{itemize}
 \item
- Prototype implementation items to be completed
+Single supernode source health check 
+\item
+Node map distribution and web download
+\end{itemize}
+
+\item
+ Prototype implementation items to be completed:
+ \begin{itemize}
  \item
-  node reassignment
+  Node reassignment
 \item
-"multiple source" health check
+"Multiple supernode source" health check to rotate role
 \item
-
- conflict resolution
+Conflict resolution
 \item
-
- dashboard support
+Dashboard support
 \item
 Integrate django-based API with other django services running on ESGF node / httpd
-
+ \end{itemize}
  \item
-
-Summer - start testing in wide-area environment - will need your help!
+Summer 2014 ?  - Begin prototype testing in wide-area environment - will need your help!
 \end{itemize}
 \end{frame}
 
