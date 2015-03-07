@@ -9,7 +9,10 @@ class NodeMap():
     
     def __init__(self):
         self.filename = ""
-        
+        self.readonly = False
+
+    def set_ro(self):
+        self.readonly = True
 
     def load_map(self,MAPFILE):
 
@@ -170,6 +173,9 @@ class NodeMap():
          
 
     def write_back(self):
+        if self.readonly:
+            print "Warning. attempt to write read only structure"
+            return
 
         # We only write if there are changes
         if self.dirty == False:
@@ -182,6 +188,26 @@ class NodeMap():
         f.write(outs)
         f.close()
         self.dirty = False
+
+    def get_indv_node_status_json(self):
+
+        tmparr = []
+
+        for n in self.nodemap["supernodes"]:
+            tmparr.append(n)
+        for n in self.nodemap["membernodes"]:
+            for x in n["members"]:
+
+                tmparr.append(x)
+
+        
+        return json.dumps(tmparr, indent=4, separators=(',', ': '))
+            
+    def reload(self):
+        f = open(self.filename)
+        
+        self.nodemap = json.loads(f.read())
+        f.close()        
         
 
 
@@ -189,3 +215,5 @@ nodemap_instance = NodeMap()
 
 def get_instance():
     return nodemap_instance
+
+

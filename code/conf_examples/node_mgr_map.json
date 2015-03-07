@@ -8,7 +8,7 @@
         },
         {
             "from": "2",
-            "speed": 0.00499987602234,
+            "speed": 0.00566911697388,
             "status": "up",
             "to": "3"
         },
@@ -23,10 +23,17 @@
         {
             "members": [
                 {
-                    "health": "good",
+                    "health": "unreachable",
                     "hostname": "greyworm2.llnl.gov",
                     "id": "6",
                     "project": "acme",
+                    "standby": false
+                },
+                {
+                    "health": "good",
+                    "hostname": "greyworm6.llnl.gov",
+                    "id": "9",
+                    "project": "cmip",
                     "standby": false
                 }
             ],
@@ -39,6 +46,13 @@
                     "hostname": "greyworm3.llnl.gov",
                     "id": "7",
                     "project": "acme",
+                    "standby": false
+                },
+                {
+                    "health": "good",
+                    "hostname": "greyworm7",
+                    "id": "10",
+                    "project": "cmip",
                     "standby": false
                 }
             ],
@@ -74,6 +88,6 @@
             "id": "3"
         }
     ],
-    "total_membernodes": 5,
+    "total_membernodes": 7,
     "total_supernodes": 3
 }
