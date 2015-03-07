@@ -161,19 +161,21 @@ These are the main components of the solution.
 
 \end{enumerate}
 
+\item
+\textbf{Use of git:  }
 
-Use of git:  
-
-- solves consistency issue as their protocols would handle race conditions between administrators submitting changes. 
-
-- as they are established, we should expect a highly available web service.  They have similar issues of failover to be highly available.
-
+\begin{itemize}
+\item
+Solves consistency issue as their protocols would handle race conditions between administrators submitting changes. 
+\item
+-As they are established, we should expect a highly available web service.  They have similar issues of failover to be highly available.
+\item
 Cons;
-
- - Authentication / security issues
- 
-  - tricky to resolve site connectivity issues.  For instance, the key supernode might not be able to connect t github and get the update.  Then, we need to administer a failover and have an alternate supernode handle that.  Failure to connect to github is a health check failure for a supernode, but the node can still be a member node (demotion).  
-
+\item
+ Authentication / security issues
+ \item
+ tricky to resolve site connectivity issues.  For instance, the key supernode might not be able to connect t github and get the update.  Then, we need to administer a failover and have an alternate supernode handle that.  Failure to connect to github is a health check failure for a supernode, but the node can still be a member node (demotion).  
+\end{itemize}
 
 
 %Apache ZooKeeper seems to be a very promising fit for this role, so this component shall henceforth simply be refered to as ZooKeeper.
@@ -238,6 +240,10 @@ Each and every ESGF installation, irrespective of role, i.e. data, compute etc, 
 \item \textbf{Supernode to membernode}: metric queries, status queries, status change notification (standby to supernode, vice-versa, etc.)
 \item \textbf{Supernode to supernode}: Shoot the node in the head, in case of malfunction.  Shared information updates (See \ref{stow} item 3)  This communication can be carried out by network links between nodes on a MST.   In some circumstances a star topology is adequate.  
 \item \textbf{SuperNode health checks}:  This communication unlike other SN communication can be $n^2$ as we expect the messages to be short and infrequent.   
+\item \textbf{Supernode join:}  Supernodes should be able to be added while the federation is up and running without downtime.  Any supernode can handle this and propagate the node map.
+
+\item \textbf{Supernode extended leave-resume, reassign:}  We expect super nodes to be down for short term.  Extended leave is another issue. We maintain the supernode id rather than reassign to another node.  If the super node moves hostname, that we accommodate in a similar fashion without federation downtime.  What is not handled is a permanent delete of a supernode.  
+
 
 \item \textbf{Membernode to membernode}: passing on authenticated messages received from supernodes.  This communication is TBD (could be tree based using same principe as used within tree network of super nodes.) % (this is implicit in zookeeper's communication)  
 \item \textbf{Membernode to supernode}: Pushing local config status etc.
