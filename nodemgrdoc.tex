@@ -1,4 +1,7 @@
 \documentclass[oneside,12pt]{memoir}
+
+\usepackage[normalem]{ulem}
+
 \def\mychaplineone{Developer notes for}
 \def\mychaplinetwo{ESGF Node Manager}
 %\def\mychaplinethree{And Some More...}
@@ -41,7 +44,7 @@ A node that serves as the "super-node" for project A can be a member node for pr
 \item
 Vetting for a super node. Hand-picked initial super-nodes.  
 \item
-Member nodes pass messages.  
+\sout{Member nodes pass messages. }  Member nodes are the endpoints for messages, ie. they will receive messages, reply to queries, or submit a limited set of requests.  
 \item
 Node manager admin interface.  Allow admins to eg. sign certs, vet nodes,  
 \item
@@ -342,7 +345,7 @@ Member node reassignment request.  Performed by the supernode (standby) taking o
 \item
 Member node reassignment acknowledgement.  This is sent to the new supernode.
 \item
-Data versioning consistency checks.  Supernode to Supernode checks use the MST; super nodes check against their member nodes. Outdated versions are corrected by a point-to-point update.  If a versioning conflict arises, nodes roll back to the previous consistent version until the conflict can be resolved by administrators.  
+Data versioning consistency checks.  Supernode to Supernode checks use the MST; super nodes check against their member nodes. Outdated versions are corrected by a point-to-point update.  If a versioning conflict arises, nodes roll back to the previous consistent version until the conflict can be resolved by administrators.
 \item
 Member node admission request (see \ref{sysd}).   
 \item
@@ -357,6 +360,18 @@ Temporary supernode removal for maintenance.  (Note that supernode decommission,
 Several alternatives for the api for the intranode service, service presented to other esgf components.   The simplest API would allow each component to read and write an ascii blob; thus completely unstructured.  The node manager would keep such a config for each component for each project that the node participates.  For more structure rather than a simple unstructured blob, a JSON or XML object model could be used where get and put would be available.   The object constructor for the API would register the component and project name.  Subsequent calls would be for get, put and delete.  JSON objects can be build using python dictionary and list constructs, and so are straightforward to encode and store in the node manager serving as repository.   Services configured at the project level are done normally via a supernode admin and propagated to other super nodes and the member nodes.
 
 The stored items are versioned.  Versioned items should be consistent.  Periodic checks are performed.  We anticipate with proper access control, prescribed workflow for changes, and sound project governance, conflicts due to simultaneous update will be kept to a minimum.
+
+\subsection{conflict resolution}
+
+Conflicts may arise due to some race conditions.  The most likely scenario is that a supernode is added around the same time that another one goes down (temporarily).    This problem can be problematic if the messages regarding these events arrive out of order.  A symptom is that member nodes are getting mixed messages or multiple supernode reassignments.
+
+  The task manager on each supernode keeps a record of the timestamp of the latest task.  If a task arrives that is stamped earlier than the latest (or in unlikely event of a tie, has a greater id stamp; the smaller node id that generated the message breaks unlikely ties), then the node needs to replay the log. 
+  The supernode will store the file followed by $N$ histories in a "journal" back a period of $T$.  
+    The node needs to check for duplicated messages over this period.  Moreover, all messages should be assumed that duplication is possible.  Thus, either implement checks in a history, or check if the message would become meaningless based on the state.  Eg, member nodes already have valid assignments.   The hope is that these conflicts work themselves out after minutes, so patience is required on the user's part. \\
+\\
+\\
+\textbf{ TODO: Include a picture of conflict journal and replay.}
+
 
 \section{Issues and questions}
 This is to be a place to list out problems that need to be handled.
@@ -385,9 +400,12 @@ Deal with "spoofed" node; ensure relayed information is legitimate.
 Need the supernode to query nodes for metrics and perform aggregation where necessary.
 \item
 Should all supernodes in ESGF participate in $n^2$ health check scheme regardless of project? Given that we expect the data centers to service multiple projects and likely contain several super nodes, we favor this approach rather than have each have the burden of a per-project health check for some super nodes.
-\item  Use of Django/Work queue framework.  Django handles incoming connections over http.  However, associated tasks happen in the background.  They need to be pushed off to separate threads if in same process space.  If separate node manager process, need a IPC mechanism.
+\item  Use of Django/Work queue framework.  Django handles incoming connections over http.  However, associated tasks happen in the background.  They need to be pushed off to separate threads if in same process space.  If separate node manager process, need a IPC mechanism.  Easy IPC can happen through a shared directory where files represent tasks and are produced/consumed.  The django "listeners" become the task producers and a single python process is the consumer.   Python can fork threads for tasks that should occur asynchronously, but update to state must be synchronous as some of the scenarios involve merging updates from multiple nodes.
+
+
 
 \end{enumerate}
+
 \section{To revisit}
 \begin{enumerate}
 \item Support for automated replication of datasets
