@@ -11,5 +11,6 @@ Till a contacted supernode doesn't confirm the membership request, the new node 
 \item \textbf{Health Checks}: Supernodes initiate by turns, scheduled all-to-all communication tests between supernodes. All supernodes know the test schedules and the order in which supernodes are supposed to initiate checks. When a scheduled check doesn't occur and no update is available, after a predefined wait, the next supernode kicks in and initiates an all-to-all communication test.  Each contacted supernode in turn communicates with all the nodes, except nodes which have already been traversed, to avoid cycles. Each contacted node fills in its `adjacency list', listing nodes it can reach and returns this list to the node which called it, leading up to the point where the supernode which initiated the check has the complete and current network circuit map. This complete map is then communicated to all of the supernodes, using the smart broadcast.
 
 \item \textbf{Smart Broadcast}: 
+Supernode may asynchronously contact all its peers.  If a peer is not directly reachable, the supernode can calculate single source shortest path to the tagret node, then forward the request with the path through other peer nodes.  
 \end{enumerate}
 
