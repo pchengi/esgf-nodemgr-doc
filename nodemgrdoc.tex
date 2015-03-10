@@ -1,6 +1,7 @@
 \documentclass[oneside,12pt]{memoir}
 
 \usepackage[normalem]{ulem}
+\usepackage{appendix}
 
 \def\mychaplineone{Developer notes for}
 \def\mychaplinetwo{ESGF Node Manager}
@@ -16,7 +17,7 @@
   bibliography = {References},
 }
 \def\nm{Node Manager{ }}
-\def\vernum{December 19, 2014}
+\def\vernum{March 10, 2014}
 \setcounter{tocdepth}{2}
 \thispagestyle{empty}
 \titleGM
@@ -29,7 +30,7 @@
 \mainmatter
 \setcounter{secnumdepth}{2}
 \chapter{Solution Design}
-\section{Overview}
+%\section{Overview}
 
 
 
@@ -219,7 +220,9 @@ This is a subcomponent of the node manager which is responsible for carrying out
 The messaging subcomponent is used by the self-check subcomponent, to alert the local admin, when the state of the node changes, i.e. fails a sanity check,  clears one, after having been flagged down by previous checks, or a component configuration/metadata change fails a global write due to a race condition (i.e., multiple admins try to update a configuration simultaneously).  
   Messaging coordinates with esgf node notification service.
 
+\subsection{NM Store}
 
+File system or database usage to maintain node manager configuration.  The status of the node gets kept here so that information can be available to the django-based internode-api.
 
 
 
@@ -306,12 +309,6 @@ Distinction to be made between user authentication and system authentication, as
 
 
 
-\section{Feedback and questions from the F2F 2014}
-\begin{enumerate}
-\item Can ZooKeeper be proxied on http/https, to avoid having to open up further ports.
-\item Can the \nm implement federated attribute service?
-\item Luca's virtual organization management vs project level management by \nm How do they fit in ?
-\end{enumerate}
 
 \section{API Specification}
 
@@ -355,43 +352,28 @@ Temporary supernode removal for maintenance.  (Note that supernode decommission,
 
 \end{enumerate}
 
-\subsection{intranode service API}
+\subsection{Intranode Service API}
 
 Several alternatives for the api for the intranode service, service presented to other esgf components.   The simplest API would allow each component to read and write an ascii blob; thus completely unstructured.  The node manager would keep such a config for each component for each project that the node participates.  For more structure rather than a simple unstructured blob, a JSON or XML object model could be used where get and put would be available.   The object constructor for the API would register the component and project name.  Subsequent calls would be for get, put and delete.  JSON objects can be build using python dictionary and list constructs, and so are straightforward to encode and store in the node manager serving as repository.   Services configured at the project level are done normally via a supernode admin and propagated to other super nodes and the member nodes.
 
 The stored items are versioned.  Versioned items should be consistent.  Periodic checks are performed.  We anticipate with proper access control, prescribed workflow for changes, and sound project governance, conflicts due to simultaneous update will be kept to a minimum.
 
-\subsection{conflict resolution}
+\section{Conflict Resolution}
 
 Conflicts may arise due to some race conditions.  The most likely scenario is that a supernode is added around the same time that another one goes down (temporarily).    This problem can be problematic if the messages regarding these events arrive out of order.  A symptom is that member nodes are getting mixed messages or multiple supernode reassignments.
 
   The task manager on each supernode keeps a record of the timestamp of the latest task.  If a task arrives that is stamped earlier than the latest (or in unlikely event of a tie, has a greater id stamp; the smaller node id that generated the message breaks unlikely ties), then the node needs to replay the log. 
   The supernode will store the file followed by $N$ histories in a "journal" back a period of $T$.  
     The node needs to check for duplicated messages over this period.  Moreover, all messages should be assumed that duplication is possible.  Thus, either implement checks in a history, or check if the message would become meaningless based on the state.  Eg, member nodes already have valid assignments.   The hope is that these conflicts work themselves out after minutes, so patience is required on the user's part. \\
-\\
-\\
-\textbf{ TODO: Include a picture of conflict journal and replay.}
-
+\begin{center}
+\includegraphics[width=\textwidth]{presentation/timeline.pdf}
+Figure 5: Events timeline for node map with versions.  Inserting a late event forces a replay of the timeline from the previous version of the event.  V1 will become invalidated in this example. 
+\end{center}
 
 \section{Issues and questions}
 This is to be a place to list out problems that need to be handled.
 \begin{enumerate}
-\item
-Do we use zookeeper?
-\begin{enumerate}
-\item \redline{Implementing dynamic changes by adding or removing ZKs might be problematic.}
-\item \redline{ZK seems to be designed to operate behind a firewall, preferably with all hosts on the same subnet.}
-\item \redline{ZK not designed with focus on security, as common implementations are cluster management etc, all behind firewall}
-\item \redline{Getting hosts to open up additional ports is cumbersome and a backward step} 
-\end{enumerate}
-\item
-To what extent can we rely if we do,  what do we need to implement for the \nm?
 
-Is zookeeper a fit for management?
-\item
-Can zookeeper manage group-level access control?  We think it can.  Need to evaluate.
-\item
-Is zookeeper python API adequate?
 
 \item
 Deal with "spoofed" node; ensure relayed information is legitimate. 
@@ -412,7 +394,44 @@ Should all supernodes in ESGF participate in $n^2$ health check scheme regardles
 \item Support for an update manager service (to supplant present esgf-installer)
 \item Metrics collection: what needs to be done for aggregation? Does it clash with what Sandro intends to do?
 \end{enumerate}
-%\nocite{KandR}
+%\nocite{KandR
+
+
+%\appendix
+\begin{appendices}
+
+
+\chapter{Feedback and questions from the F2F 2014}
+\begin{enumerate}
+\item Can ZooKeeper be proxied on http/https, to avoid having to open up further ports.
+\item Can the \nm implement federated attribute service?
+\item Luca's virtual organization management vs project level management by \nm How do they fit in ?
+\end{enumerate}
+
+
+
+\chapter{ZooKeeper Questions}
+Kept for posterity, as our evaluation of ZooKeeper showed that it had the desired functionality for many of the consistency needs.  In event we decide to revisit, we have a point of reference. 
+\begin{enumerate}
+
+\item
+Do we use zookeeper?
+\begin{enumerate}
+\item \redline{Implementing dynamic changes by adding or removing ZKs might be problematic.}
+\item \redline{ZK seems to be designed to operate behind a firewall, preferably with all hosts on the same subnet.}
+\item \redline{ZK not designed with focus on security, as common implementations are cluster management etc, all behind firewall}
+\item \redline{Getting hosts to open up additional ports is cumbersome and a backward step} 
+\end{enumerate}
+\item
+To what extent can we rely if we do,  what do we need to implement for the \nm?
+
+Is zookeeper a fit for management?
+\item
+Can zookeeper manage group-level access control?  We think it can.  Need to evaluate.
+\item
+Is zookeeper python API adequate?
+\end{enumerate}
+\end{appendices}
 \printbibliography
 \hypertarget{mymarker}{}
 \printindex
