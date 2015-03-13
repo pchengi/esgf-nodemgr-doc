@@ -1,0 +1,93 @@
+{
+    "links": [
+        {
+            "from": "1",
+            "speed": -1.0,
+            "status": "down",
+            "to": "2"
+        },
+        {
+            "from": "2",
+            "speed": 0.00566911697388,
+            "status": "up",
+            "to": "3"
+        },
+        {
+            "from": "1",
+            "speed": -1.0,
+            "status": "down",
+            "to": "3"
+        }
+    ],
+    "membernodes": [
+        {
+            "members": [
+                {
+                    "health": "unreachable",
+                    "hostname": "greyworm2.llnl.gov",
+                    "id": "6",
+                    "project": "acme",
+                    "standby": false
+                },
+                {
+                    "health": "good",
+                    "hostname": "greyworm6.llnl.gov",
+                    "id": "9",
+                    "project": "cmip",
+                    "standby": false
+                }
+            ],
+            "supernode": "1"
+        },
+        {
+            "members": [
+                {
+                    "health": "good",
+                    "hostname": "greyworm3.llnl.gov",
+                    "id": "7",
+                    "project": "acme",
+                    "standby": false
+                },
+                {
+                    "health": "good",
+                    "hostname": "greyworm7",
+                    "id": "10",
+                    "project": "cmip",
+                    "standby": false
+                }
+            ],
+            "supernode": "2"
+        },
+        {
+            "members": [
+                {
+                    "health": "good",
+                    "hostname": "greyworm5.llnl.gov",
+                    "id": "8",
+                    "project": "acme",
+                    "standby": true
+                }
+            ],
+            "supernode": "3"
+        }
+    ],
+    "supernodes": [
+        {
+            "health": "good",
+            "hostname": "aims2.llnl.gov",
+            "id": "1"
+        },
+        {
+            "health": "good",
+            "hostname": "greyworm1.llnl.gov",
+            "id": "2"
+        },
+        {
+            "health": "good",
+            "hostname": "greyworm4.llnl.gov",
+            "id": "3"
+        }
+    ],
+    "total_membernodes": 7,
+    "total_supernodes": 3
+}

@@ -1,0 +1,22 @@
+Esgf Node Manager the prototype
+
+This prototype serves to evaluate several of the distributed systems concepts prescribed for the design of the 2015-gen ESGF node manager.
+
+Prerequisites:  Python 2.7 installation.  Django installation.  easy_install will install django for you.
+
+Setup:
+
+To date, a single environment variable is needed in addition to Python 2.7+.X + Django:
+
+export ESGF_NODEMGR_MAP="<your nodemap file>"
+
+Node Map examples are found in conf_examples.  Fill out entries for supernodes. and have n*(n-1)/2 entries for links. 
+
+
+run_server.sh will start django (in foreground) and the node manager main process (in background).
+
+Utilities:
+
+member_node_cmd.py when run on a member node lets you add/remove the node from the federation. the node manager must be running on that node.
+
+add_supernode.py is meant to run offline to add a supernode entry to a conf file.  The script takes care of adding th  
