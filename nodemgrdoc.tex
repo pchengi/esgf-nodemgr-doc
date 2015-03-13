@@ -355,17 +355,37 @@ Temporary SuperNode removal for maintenance.  (Note that SuperNode decommission,
 
 \subsection{Intranode Service API}
 
-Several alternatives for the api for the intranode service, service presented to other esgf components.   The simplest API would allow each component to read and write an ascii blob; thus completely unstructured.  The node manager would keep such a config for each component for each project that the node participates.  For more structure rather than a simple unstructured blob, a JSON or XML object model could be used where get and put would be available.   The object constructor for the API would register the component and project name.  Subsequent calls would be for get, put and delete.  JSON objects can be build using python dictionary and list constructs, and so are straightforward to encode and store in the node manager serving as repository.   Services configured at the project level are done normally via a SuperNode admin and propagated to other SuperNodes and the member nodes.
+The Service API is the API that other software modules running on ESGF nodes.  An example is the publisher can use the API to put configuration metadata into the federation to be shared among other member nodes.  We present Several alternatives for this API: first, what sort of interface is available (methods); second how (what means) of connection would modules have to access the API.\\
+\\
+ The simplest API would allow each component to read and write an ASCII blob; thus completely unstructured data from the perspective of the Node Manager.  The node manager would keep such a config for each component for each project that the node participates.   Any structure would be the responsibility of the client to serialize, e.g. json objects.  \\
+ \\
+   The object constructor for the API would register the component and project name.  Subsequent calls would be for get, put and delete. 
+    JSON objects can be build using python dictionary and list constructs, and so are straightforward to encode and store in the node manager serving as repository.   Services configured at the project level are done normally via a SuperNode admin and propagated to other SuperNodes and the member nodes.  A more in-depth alternative would be to allow for key-values to exist within the API.  Thus, the node manager could serialize a dictionary for each.\\
+\\
+The stored items are versioned.  Versioned items should be consistent.  Periodic checks are performed.  We anticipate with proper access control, prescribed workflow for changes, and sound project governance, conflicts due to simultaneous update will be kept to a minimum.  An option would be for the repository to be updated via git to handle conflict resolution rather than mantained via node manager based updates (see Conflict Resolution).\\
+\\
+There are several alternatives for means of connection with the API:
 
-The stored items are versioned.  Versioned items should be consistent.  Periodic checks are performed.  We anticipate with proper access control, prescribed workflow for changes, and sound project governance, conflicts due to simultaneous update will be kept to a minimum.
+\begin{itemize}
+\item \textbf{Python API for direct access to files:}  While we expect that most applications will not make frequent changes in the case of configuration, this mode of access is not desirable.  Nonetheless, its feasible for a component to import the internal api, or directly modify the underlying store.  There could be on-node and off node synchronization issues.  On node if the node manager in-memory copy becomes out of sync if another process makes a modification.  
+\item Write to task queue. This option would not have the synchronization issues, as the node manager would make the updates.  The calling application must be configured with the settings for the task queue, which is most likely ok, but somewhat less abstract
+\item Task queue wrapper library.  The library has the task queue settings.  This is similar to what is done within the node manager internal for Django url listeners.
+\item ``localhost'' http connections.  Use urls for the node manager.  This makes the API similar to the node-to-node API.   Localhosts need to know how to construct the urls, attach data. (The current prototype uses GET).  A drawback is a potential security hole that external nodes can access as well as local connections.
+\item Wrapper library around urls.  Abstracts away the url syntax and http connection semantics.  We may be able to add some security, e.g. shared secret on localhost that external nodes would not have.
+
+\end{itemize}
+
 
 \section{Conflict Resolution}
 
-Conflicts may arise due to some race conditions.  The most likely scenario is that a SuperNode is added around the same time that another one goes down (temporarily).    This problem can be problematic if the messages regarding these events arrive out of order.  A symptom is that member nodes are getting mixed messages or multiple SuperNode reassignments.
-
+Conflicts may arise due to some race conditions.  The most likely scenario is that a SuperNode is added around the same time that another one goes down (temporarily).    This problem can be problematic if the messages regarding these events arrive out of order.  A symptom is that member nodes are getting mixed messages or multiple SuperNode reassignments.  
   The task manager on each SuperNode keeps a record of the timestamp of the latest task.  If a task arrives that is stamped earlier than the latest (or in unlikely event of a tie, has a greater id stamp; the smaller node id that generated the message breaks unlikely ties), then the node needs to replay the log. 
   The SuperNode will store the file followed by $N$ histories in a "journal" back a period of $T$.  
     The node needs to check for duplicated messages over this period.  Moreover, all messages should be assumed that duplication is possible.  Thus, either implement checks in a history, or check if the message would become meaningless based on the state.  Eg, member nodes already have valid assignments.   The hope is that these conflicts work themselves out after minutes, so patience is required on the user's part. \\
+    \\
+   For instance, in terms of how this may become an issue in practice, consider a SuperNode forwarding an update message creates a separate thread to communicate with others regarding a change.  Because the change occurred in time on the original server, it has been assigned a timestamp.  Due to load on the server, that thread does not get to run for seconds and when it is finally set to run, the timestamp is earlier than another event.  So when the communication occurs, the event is written after an event with a later timestamp.  The recipient node catches this and then replays the log.   \\
+ 
+    
 \begin{center}
 \includegraphics[width=\textwidth]{presentation/timeline.pdf}
 Figure 5: Events timeline for node map with versions.  Inserting a late event forces a replay of the timeline from the previous version of the event.  V1 will become invalidated in this example. 
