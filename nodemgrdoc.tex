@@ -362,7 +362,9 @@ The Service API is the API that other software modules running on ESGF nodes.  A
    The object constructor for the API would register the component and project name.  Subsequent calls would be for get, put and delete. 
     JSON objects can be build using python dictionary and list constructs, and so are straightforward to encode and store in the node manager serving as repository.   Services configured at the project level are done normally via a SuperNode admin and propagated to other SuperNodes and the member nodes.  A more in-depth alternative would be to allow for key-values to exist within the API.  Thus, the node manager could serialize a dictionary for each.\\
 \\
-The stored items are versioned.  Versioned items should be consistent.  Periodic checks are performed.  We anticipate with proper access control, prescribed workflow for changes, and sound project governance, conflicts due to simultaneous update will be kept to a minimum.  An option would be for the repository to be updated via git to handle conflict resolution rather than mantained via node manager based updates (see Conflict Resolution).\\
+The stored items are versioned.  Versioned items should be consistent.  Periodic checks are performed.  We anticipate with proper access control, prescribed workflow for changes, and sound project governance, conflicts due to simultaneous update will be kept to a minimum.  An option would be for the repository to be updated via \em{git} to handle conflict resolution rather than mantained via node manager based updates (see Conflict Resolution).
+When using git, the SuperNodes would send messages to others informing of a change, but not the specific contents of that change.  The recipient nodes would pull the change from the git repo.  
+\\
 \\
 There are several alternatives for means of connection with the API:
 
