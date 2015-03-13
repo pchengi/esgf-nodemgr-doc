@@ -17,6 +17,48 @@
             "speed": -1.0,
             "status": "down",
             "to": "3"
+        },
+        {
+            "from": "1",
+            "speed": 0,
+            "status": "unverified",
+            "to": "11"
+        },
+        {
+            "from": "2",
+            "speed": 0,
+            "status": "unverified",
+            "to": "11"
+        },
+        {
+            "from": "3",
+            "speed": 0,
+            "status": "unverified",
+            "to": "11"
+        },
+        {
+            "from": "1",
+            "speed": 0,
+            "status": "unverified",
+            "to": "12"
+        },
+        {
+            "from": "2",
+            "speed": 0,
+            "status": "unverified",
+            "to": "12"
+        },
+        {
+            "from": "3",
+            "speed": 0,
+            "status": "unverified",
+            "to": "12"
+        },
+        {
+            "from": "11",
+            "speed": 0,
+            "status": "unverified",
+            "to": "12"
         }
     ],
     "membernodes": [
@@ -69,6 +111,14 @@
                 }
             ],
             "supernode": "3"
+        },
+        {
+            "members": [],
+            "supernode": "11"
+        },
+        {
+            "members": [],
+            "supernode": "12"
         }
     ],
     "supernodes": [
@@ -86,8 +136,18 @@
             "health": "good",
             "hostname": "greyworm4.llnl.gov",
             "id": "3"
+        },
+        {
+            "health": "new",
+            "hostname": "anitelu",
+            "id": "11"
+        },
+        {
+            "health": "new",
+            "hostname": "tux352",
+            "id": "12"
         }
     ],
     "total_membernodes": 7,
-    "total_supernodes": 3
+    "total_supernodes": 5
 }

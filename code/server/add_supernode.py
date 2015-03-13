@@ -26,7 +26,7 @@ tmp_supernode["hostname"] = sys.argv[1]
 sn_ids = []
 
 for n in obj["supernodes"]:
-    ids.append(n["id"])
+    sn_ids.append(n["id"])
 
 
 obj["supernodes"].append(tmp_supernode)
