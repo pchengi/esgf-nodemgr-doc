@@ -17,7 +17,7 @@
   bibliography = {References},
 }
 \def\nm{Node Manager{ }}
-\def\vernum{March 10, 2014}
+\def\vernum{March 18, 2014}
 \setcounter{tocdepth}{2}
 \thispagestyle{empty}
 \titleGM
@@ -57,44 +57,6 @@ Member nodes can function independently from other SuperNodes.
 \end{itemize}
 
 
-\section{Breakup of tasks}
-
-\subsection{Communication}
-
-\begin{enumerate}
-\item
-Review AVL tree reorganization
-\item
-Model deterministic communication
-\item
-Measurement of node to node latency.  This is needed for all member nodes to all SuperNode.  TBD  needed for member node - member node, SuperNode 
-\item
-Use django test web server as a prototype for setting up a test api for health check and other component services.
-\item
-Investigate task management, worker queue, etc.  frameworks.  For prototyping we can implement python threads with polling/locks on shared objects.  The health check initiator can run as its own process.  Threads needed to manage incoming requests and assemble a node map.  Celery is a well-know queue API, but bases on RabbitMQ.  There are other alternatives implemented but no standard.
-\item
-Integrate with other django web services.  
-
-
-\end{enumerate}
-
-
-%\subsection{zookeeper evaluation}
-%\begin{enumerate}
-%\item
-%Performance evaluation
-%\item
-%Evaluate functionality
-%\item
-%Assess  API
-%\end{enumerate}
-
-\subsection{metrics gathering}
-\begin{enumerate}
-\item Investigate logger issue
-\item Decouple logger from Node Manager
-\item Ensure generation of registration.xml
-\end{enumerate}
 
 
 \section{Use Cases of ESGF node components}
@@ -174,13 +136,15 @@ These are the main components of the solution.
 \item
 Solves consistency issue as their protocols would handle race conditions between administrators submitting changes. 
 \item
--As they are established, we should expect a highly available web service.  They have similar issues of failover to be highly available.
+As they (github) are established, we should expect a highly available web service.  They have similar issues of failover to be highly available.
 \item
-Cons;
+Cons:
+\begin{itemize}
 \item
- Authentication / security issues
+ Authentication / security issues: administrators making changes need push rights on github, requiring administration.  Eg., new administrator not granted permission in time for required change.
  \item
- tricky to resolve site connectivity issues.  For instance, the key SuperNode might not be able to connect t github and get the update.  Then, we need to administer a failover and have an alternate SuperNode handle that.  Failure to connect to github is a health check failure for a SuperNode, but the node can still be a member node (demotion).  
+ Tricky to resolve site connectivity issues.  For instance, the key SuperNode might not be able to connect to github and retrieve an update.  Then, we need to administer a failover and have an alternate SuperNode handle that.  Failure to connect to github is a health check failure for a SuperNode, but the node can still be a member node (demotion).  
+\end{itemize}
 \end{itemize}
 
 
@@ -315,9 +279,9 @@ Distinction to be made between user authentication and system authentication, as
 
 There are two APIs provided by the node manager.  First is the node-to-node client/server API.  Second is the node manager service API used on the node.  Requests that involve forwarding are held in queues, so they can wait until a communication problem is resolved. 
 
-\subsection{Node to Node service}
+\subsection{Node-to-Node API}
 
-The service is available over apache. The node manager uses the built-in python http client to connect to a remote server
+The API is available as URLs (over apache). The node manager uses the built-in python http client to connect to a remote server
 
 \begin{enumerate}
 \item
@@ -353,29 +317,56 @@ Temporary SuperNode removal for maintenance.  (Note that SuperNode decommission,
 
 \end{enumerate}
 
-\subsection{Intranode Service API}
+\subsection{Service API (within a single Node)}
 
-The Service API is the API that other software modules running on ESGF nodes.  An example is the publisher can use the API to put configuration metadata into the federation to be shared among other member nodes.  We present Several alternatives for this API: first, what sort of interface is available (methods); second how (what means) of connection would modules have to access the API.\\
+The Service API is the API that other software modules running on ESGF nodes may use to access federated information managed by the Node Manager.  An example is the publisher can use the API to put configuration metadata into the federation to be shared among other member nodes.  We present Several alternatives for this API: first, what sort of interface is available (methods); second how (what means) of connection would modules have to access the API.\\
 \\
  The simplest API would allow each component to read and write an ASCII blob; thus completely unstructured data from the perspective of the Node Manager.  The node manager would keep such a config for each component for each project that the node participates.   Any structure would be the responsibility of the client to serialize, e.g. json objects.  \\
- \\
-   The object constructor for the API would register the component and project name.  Subsequent calls would be for get, put and delete. 
-    JSON objects can be build using python dictionary and list constructs, and so are straightforward to encode and store in the node manager serving as repository.   Services configured at the project level are done normally via a SuperNode admin and propagated to other SuperNodes and the member nodes.  A more in-depth alternative would be to allow for key-values to exist within the API.  Thus, the node manager could serialize a dictionary for each.\\
+ 
+ We envision the following methods to this API:
+ 
+ \begin{itemize}
+\item
+\textbf{Register:}  run as a ``bootstrap'' to set up a new client (ESGF component) / project entry 
+ \item
+ \textbf{Put:} For a particular new client (ESGF component) / project entry, add/update a ``blob'' of data
+\item
+
+\textbf{Get:}  Retrieve the blob.
+\item
+\textbf{Delete}  Removes the blob (Need a use case for this)
+   
+   \end{itemize}
+   
+    JSON objects can be build using python dictionary and list constructs, and so are straightforward to encode and store in the node manager serving as repository for the data blobs under the API.   Services configured at the project level are done normally via a SuperNode admin and propagated to other SuperNodes and the member nodes.  A more in-depth alternative would be to allow for key-values to exist within the API.  Thus, the node manager could serialize a dictionary for each.\\
 \\
-The stored items are versioned.  Versioned items should be consistent.  Periodic checks are performed.  We anticipate with proper access control, prescribed workflow for changes, and sound project governance, conflicts due to simultaneous update will be kept to a minimum.  An option would be for the repository to be updated via \em{git} to handle conflict resolution rather than mantained via node manager based updates (see Conflict Resolution).
+The stored items are versioned.  Versioned items should be consistent.  Periodic checks are performed.  We anticipate with proper access control, prescribed workflow for changes, and sound project governance, conflicts due to simultaneous update will be kept to a minimum.  An option would be for the repository to be updated via \emph{git} to handle conflict resolution rather than maintained via node manager based updates (see Conflict Resolution).
 When using git, the SuperNodes would send messages to others informing of a change, but not the specific contents of that change.  The recipient nodes would pull the change from the git repo.  
 \\
 \\
+
+\subsubsection{API Interface Style}
+
 There are several alternatives for means of connection with the API:
 
 \begin{itemize}
 \item \textbf{Python API for direct access to files:}  While we expect that most applications will not make frequent changes in the case of configuration, this mode of access is not desirable.  Nonetheless, its feasible for a component to import the internal api, or directly modify the underlying store.  There could be on-node and off node synchronization issues.  On node if the node manager in-memory copy becomes out of sync if another process makes a modification.  
 \item Write to task queue. This option would not have the synchronization issues, as the node manager would make the updates.  The calling application must be configured with the settings for the task queue, which is most likely ok, but somewhat less abstract
 \item Task queue wrapper library.  The library has the task queue settings.  This is similar to what is done within the node manager internal for Django url listeners.
-\item ``localhost'' http connections.  Use urls for the node manager.  This makes the API similar to the node-to-node API.   Localhosts need to know how to construct the urls, attach data. (The current prototype uses GET).  A drawback is a potential security hole that external nodes can access as well as local connections.
+\item ``localhost'' http connections.  Use urls for the node manager.  This makes the API similar to the node-to-node API.   Localhosts need to know how to construct the urls, attach data. (The current prototype uses GET).  A drawback is a potential security hole that external nodes can access as well as local connections. 
 \item Wrapper library around urls.  Abstracts away the url syntax and http connection semantics.  We may be able to add some security, e.g. shared secret on localhost that external nodes would not have.
 
 \end{itemize}
+
+\subsubsection{URL security solutions}
+
+Several alternatives:
+
+\begin{description}
+
+\item[Shared Secret] The secret can be generated on the node during install, perhaps a hash derived node name, local time, phrase input, etc.  The client would need to present the secret to the API, which upon validation would process  requests, otherwise reject them.  This would allow an administrator access to the secret for troubleshooting using an external client.
+\item[Alternative Port]  Run on a port inaccessible off node, ie. removed via iptables and/or blocked via firewall.  localhost:port connections would still be valid.  
+\end{description}
 
 
 \section{Conflict Resolution}
@@ -392,6 +383,46 @@ Conflicts may arise due to some race conditions.  The most likely scenario is th
 \includegraphics[width=\textwidth]{presentation/timeline.pdf}
 Figure 5: Events timeline for node map with versions.  Inserting a late event forces a replay of the timeline from the previous version of the event.  V1 will become invalidated in this example. 
 \end{center}
+
+\section{Breakup of tasks}
+
+\subsection{Communication}
+
+\begin{enumerate}
+\item
+Review AVL tree reorganization
+\item
+Model deterministic communication
+\item
+Measurement of node to node latency.  This is needed for all member nodes to all SuperNode.  TBD  needed for member node - member node, SuperNode 
+\item
+Use django test web server as a prototype for setting up a test api for health check and other component services.
+\item
+Investigate task management, worker queue, etc.  frameworks.  For prototyping we can implement python threads with polling/locks on shared objects.  The health check initiator can run as its own process.  Threads needed to manage incoming requests and assemble a node map.  Celery is a well-know queue API, but bases on RabbitMQ.  There are other alternatives implemented but no standard.
+\item
+Integrate with other django web services.  
+
+
+\end{enumerate}
+
+
+%\subsection{zookeeper evaluation}
+%\begin{enumerate}
+%\item
+%Performance evaluation
+%\item
+%Evaluate functionality
+%\item
+%Assess  API
+%\end{enumerate}
+
+\subsection{Metrics gathering}
+\begin{enumerate}
+\item Investigate logger issue
+\item Decouple logger from Node Manager
+\item Ensure generation of registration.xml
+\end{enumerate}
+
 
 \section{Issues and questions}
 This is to be a place to list out problems that need to be handled.
