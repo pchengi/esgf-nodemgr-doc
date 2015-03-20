@@ -29,35 +29,40 @@
 \tableofcontents
 \mainmatter
 \setcounter{secnumdepth}{2}
-\chapter{Solution Design}
+
 %\section{Overview}
 
+\chapter{Requirements and Features}
 
+\section{Features List}
 
-\section{Design Considerations}
+This list of features should not reflect specific design decisions meant as a means to satisfy any of the requirements, ie. it should be kept at a ``top'' level of abstraction.
 \begin{itemize}
-\item 
-
-
-We are interested in a hierarchical framework for node management rather than a pure p2p.  In this case nodes elect "SuperNodes" that perform additional tasks than "member-nodes".  Our goal for scalability is to have a balance of super vs member nodes to ensure that no SuperNode becomes oversubscribed.  Super-nodes operate at the "project" level.   
 \item
-A node that serves as the "SuperNode" for project A can be a member node for project B.  Super-nodes can serve in that role for multiple projects.    Configuring a node for eligibility for selection to become a SuperNode is voluntary, but important for the federation to have an "adequate" number of candidates.
+\emph{Scalability}:  Federation can grow to NN nodes without degradation in performance
 \item
-Vetting for a SuperNode. Hand-picked initial SuperNodes.  
+Verify reachability via "heartbeat" 
 \item
-\sout{Member nodes pass messages. }  Member nodes are the endpoints for messages, ie. they will receive messages, reply to queries, or submit a limited set of requests.  
+Maintain and propagate node map
+\item
+Provide statistics for dashboard
+\item
+Collect download statistics
+\item
+Add new node to federation
+\item
+Remove a node from federation
+\item
+Self-health check on each node
+\item
+Manage CSR request signing (requests/responses)
+\item
+Repository for ESGF component-specific config at project level, replicated to other nodes in project
+\item
+Eventual consistency guarantees, i.e. conflict resolution
 \item
 Node manager admin interface.  Allow admins to eg. sign certs, vet nodes,  
-\item
-Tree-based communication between SuperNodes and member nodes to reduce communication overheads, ie. avoid $n^2$ patterns.  We expect a ``wide'' tree with ``few" hops. Or consider filled-out binary tree structure (see below). 
-\item 
-Need to maintain backward compatibility with format of registration.xml etc, to not break existing parsers. 
-\item
-Member nodes can function independently from other SuperNodes. 
 \end{itemize}
-
-
-
 
 \section{Use Cases of ESGF node components}
 
@@ -93,15 +98,50 @@ Publication & Consistent project-based configuration \\
 \hline
 Provenance & Consistent provenance metadata \\
 \hline
-Thredds & ??? \\
+Thredds & urls storage \\
 \hline
-SOLR & ??? \\
+SOLR / Search & Store shards lists \\
 \hline
 CoG & ??? \\
 \hline
 Logger & (metadata)? \\
 \hline
 \end{tabular}
+
+
+\chapter{Name of the Solution}
+
+A suggested name is \textbf{ESGF CH2}.  \textbf{C} for Client-server, \textbf{2H} for Hierarchical and Hybrid.  Our design choices depict a hierarchical solution, yet the design resembles P2P as well; thus, we may refer to it as a ``hybrid''.
+
+
+\chapter{Solution Design}
+
+\section{Design Considerations}
+This section allows us to specific specific design decisions that support the desirable features of the Node Manager and steer the subsequent specific design patterns we use.
+
+\begin{itemize}
+\item 
+
+
+We are interested in a hierarchical framework for node management rather than a pure p2p.  In this case nodes elect "SuperNodes" that perform additional tasks than "member-nodes".  Our goal for scalability is to have a balance of super vs member nodes to ensure that no SuperNode becomes oversubscribed.  Super-nodes operate at the "project" level.   
+\item
+A node that serves as the "SuperNode" for project A can be a member node for project B.  Super-nodes can serve in that role for multiple projects.    Configuring a node for eligibility for selection to become a SuperNode is voluntary, but important for the federation to have an "adequate" number of candidates.
+\item
+Vetting for a SuperNode. Hand-picked initial SuperNodes.  
+\item
+\sout{Member nodes pass messages. }  Member nodes are the endpoints for messages, ie. they will receive messages, reply to queries, or submit a limited set of requests.  
+
+\item
+Tree-based communication between SuperNodes and member nodes to reduce communication overheads, ie. avoid $n^2$ patterns.  We expect a ``wide'' tree with ``few" hops. Or consider filled-out binary tree structure (see below). 
+\item 
+Need to maintain backward compatibility with format of registration.xml etc, to not break existing parsers. 
+\item
+Member nodes can function independently from other SuperNodes. 
+\end{itemize}
+
+
+
+
 
 
 
@@ -115,10 +155,10 @@ Figure 2:  sub-components of the node manager and scheme for communication.  The
 \end{center}
 \newpage
 
-\subsection{Components}
+\subsection{Configuration Components}
 \label{stow}
 
-These are the main components of the solution.
+These are the main components of the solution with respect to configuration of the ESGF Node.
 \begin{enumerate}
 \item
 \textbf{Local config file} 
@@ -366,8 +406,11 @@ Several alternatives:
 
 \item[Shared Secret] The secret can be generated on the node during install, perhaps a hash derived node name, local time, phrase input, etc.  The client would need to present the secret to the API, which upon validation would process  requests, otherwise reject them.  This would allow an administrator access to the secret for troubleshooting using an external client.
 \item[Alternative Port]  Run on a port inaccessible off node, ie. removed via iptables and/or blocked via firewall.  localhost:port connections would still be valid.  
+\item[Incoming IP filtering]  Establish the django listener to only accept local connections.  Testing is possible with browser running on localhost.
+
 \end{description}
 
+We can a use a combination of these.
 
 \section{Conflict Resolution}
 
@@ -428,6 +471,10 @@ Integrate with other django web services.
 This is to be a place to list out problems that need to be handled.
 \begin{enumerate}
 
+\item
+Need to determine in which circumstances using \emph{git} as a "Super Repository"  for config data for purposes of reliability and consistency is appropriate.
+\item
+Settle on the particular interface style for the API.  We are leaning toward local http connection, but need to decide on a technique for securing the API to local connections.
 
 \item
 Deal with "spoofed" node; ensure relayed information is legitimate. 
@@ -437,7 +484,8 @@ Need the SuperNode to query nodes for metrics and perform aggregation where nece
 \item
 Should all SuperNodes in ESGF participate in $n^2$ health check scheme regardless of project? Given that we expect the data centers to service multiple projects and likely contain several SuperNodes, we favor this approach rather than have each have the burden of a per-project health check for some SuperNodes.
 \item  Use of Django/Work queue framework.  Django handles incoming connections over http.  However, associated tasks happen in the background.  They need to be pushed off to separate threads if in same process space.  If separate node manager process, need a IPC mechanism.  Easy IPC can happen through a shared directory where files represent tasks and are produced/consumed.  The django "listeners" become the task producers and a single python process is the consumer.   Python can fork threads for tasks that should occur asynchronously, but update to state must be synchronous as some of the scenarios involve merging updates from multiple nodes.
-
+\item
+For what specific information should the Node Manager rely on the PostgreSQL database for storage?
 
 
 \end{enumerate}
