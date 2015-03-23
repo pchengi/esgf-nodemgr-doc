@@ -33,6 +33,71 @@ class NMapSender(Thread):
 
 localhostname = os.uname()[1]
 
+def node_redist(nm_inst, sn_id):
+
+    MAX_PER_SN = 3
+
+# Find entry for down node
+    
+    free_slots = []
+
+    for n in nm_inst["membernodes"]:
+
+        if n["supernode"] == sn_id:
+
+
+            x = n
+        else:
+            if len(n["members"]) < MAX_PER_SN:
+                free_slots.append([n["supernode"], MAX_PER_SN])
+            
+
+    x["status"] = "reassigned"  
+        
+    idx = 0
+
+    mem = x["members"]
+
+    sum = 0
+    for z in free_slots:
+        sum+=z[1]
+
+# need to promote a member node if nothing available
+    if sum < len(mem):
+        return false
+        
+    for z in free_slots:
+
+        for i in range(z[1]):
+
+            cl = mem[idx].copy()
+            
+            cl["temp_assign"] = True
+            cl["prev_owner"] = sn_id
+            
+            z[0].append(cl)
+            
+            idx=idx+1
+
+def return_nodes(nm_inst, sn_id):
+
+    for n in nm_inst["members"]:
+
+
+        if n["supernode"] == sn_id:
+            n["status"] = "OK"
+        else:
+            for x in n["members"]:
+                if x["temp_assign"] and x["prev_owner"] == sn_id:
+                    n["members"].remove(x)
+
+
+
+
+
+                
+
+
 def supernode_check(nodemap_instance):
 
     tarr = []
