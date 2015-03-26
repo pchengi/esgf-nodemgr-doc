@@ -3,19 +3,19 @@
         {
             "from": "1",
             "speed": -1.0,
-            "status": "down",
+            "status": "init",
             "to": "2"
         },
         {
             "from": "2",
             "speed": -1.0,
-            "status": "up",
+            "status": "init",
             "to": "3"
         },
         {
             "from": "1",
             "speed": -1.0,
-            "status": "down",
+            "status": "init",
             "to": "3"
         }
     ],
@@ -26,7 +26,7 @@
         },
         {
             "supernode": "2"
-        }
+        },
         {
             "supernode": "3"
         }

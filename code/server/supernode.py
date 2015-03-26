@@ -85,6 +85,10 @@ def return_nodes(nm_inst, sn_id):
 
 
         if n["supernode"] == sn_id:
+
+            if n["status"] == 
+            
+
             n["status"] = "OK"
         else:
             for x in n["members"]:
@@ -200,6 +204,10 @@ def links_check(nmap):
     
     snodes = nmap.nodemap["supernodes"]
 
+    new_down = []
+
+    new_back_up = []
+    
     for i in range(nmap.nodemap["total_supernodes"]):
         
         
@@ -224,14 +232,37 @@ def links_check(nmap):
         if down and snodes[i]["health"] != "unreachable":
             snodes[i]["health"] = "unreachable"
             changed = True
+
+            new_down.append(snodes[i]["id"])
+
 #            print "  changed bad"
         elif (not down) and snodes[i]["health"] == "unreachable":
             snodes[i]["health"] = "good"
             changed = True
 #            print "  change to good"
+            new_back_up.append(snodes[i]["id"])
 
     if changed:
         nmap.dirty = True
+
+        
+        i =0
+
+        need_to promote 
+        for sn_id in new_down:
+            
+            if (not node_redist(nmap, sn_id)):
+
+                for id2 in new_down[i:]:
+                    promote_members(nmap, id2)
+                break
+            i = i + 1
+
+
+        for sn_id in new_back_up:
+            node_return(nmap, sn_id)
+
+
         send_map_to_others(False, nmap)
         send_map_to_others(True, nmap)
             

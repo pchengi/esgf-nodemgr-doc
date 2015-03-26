@@ -18,7 +18,7 @@ def write_out():
 
     outf = open(REPO_DIR_PATH, "w")
     
-    dat = json.dumps(repo_obj)
+    dat = json.dumps(repo_obj, sort_keys=True, indent=4, separators=(',', ': '))
 
     outf.write(dat)
     outf.close()
@@ -29,35 +29,75 @@ repo_obj = init()
 
 # this gets called once per project
 
+#  False if project already exists, True if entry created
 def init_proj(project):
+
+    for n in repo_obj["collection"]:
+
+        if n["project"] == project:
+            return False
+
     tmpd = {}
     tmpd["project"] = project
     tmpd["applications"] = []
+
    
     repo_obj["collection"].append(tmpd)
     
     write_out()
 
-    
 
+
+    path = repo_obj["root_path"] + "/" + project 
+
+
+
+    try:
+        os.mkdir(path)
+    except:
+        print "WARN: directory exists"
+
+    return True
+
+#  False if project not found
+#  True if entry created
+#  None if doesn't exist (test for boolean type)
 def init_directory(application, project):
 
-    for n in repo_obj:
+    found = False
+    for n in repo_obj["collection"]:
+
         if n["project"] == project:
 
+            found = True
             app_list = n["applications"]
             
+            for x in app_list:
+
+                if x["name"] == application:
+                    return
+            
+
             tmpd = {}
             tmpd["name"] = application
             tmpd["files"] = []
             
             app_list.append(tmpd)
+    
+    if not found:
+
+        return False
+
     write_out()
 
-    
+    path = repo_obj["root_path"] + "/" + project + "/" + application
+
+    os.mkdir(path)
+
+    return True
 
     
-
+# Returns empty string on success; error message string on failure
 def put_file(application, project, name, data):
     
 
@@ -67,13 +107,16 @@ def put_file(application, project, name, data):
     version = 1
 
     for n in repo_obj["collection"]:
-        
+ 
+        found = False
         if n["project"] == project:
-
+    
             for x in n["applications"]:
     
+                print x
                 if x["name"] == application:
                     
+                    found = True
                     fs = x["files"]
 
                     if name in fs:
@@ -87,6 +130,9 @@ def put_file(application, project, name, data):
                 
                         fs["name"] = full_path
         
+    if not Found:
+
+        return "project/application missing"
 
     outfname = full_path + "." + str(version)
 
@@ -96,7 +142,8 @@ def put_file(application, project, name, data):
     outf.close()
 
     write_out()
-
+    
+    return ""
                         
 
 
@@ -123,7 +170,7 @@ def get_latest(application, project, name):
     if version == 0:
         return ""
 
-    full_path = path + "/" project + "/" + application + "/" + name + "." + str(version)
+    full_path = path + "/" + project + "/" + application + "/" + name + "." + str(version)
 
     f = open(full_path)
 

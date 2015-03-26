@@ -8,14 +8,14 @@
         },
         {
             "from": "2",
-            "speed": 0.00566911697388,
+            "speed": 0.0137779712677,
             "status": "up",
             "to": "3"
         },
         {
             "from": "1",
-            "speed": -1.0,
-            "status": "down",
+            "speed": 0.007368803024291992,
+            "status": "up",
             "to": "3"
         }
     ],
@@ -23,51 +23,19 @@
         {
             "members": [
                 {
-                    "health": "unreachable",
-                    "hostname": "greyworm2.llnl.gov",
-                    "id": "6",
-                    "project": "acme",
-                    "standby": false
-                },
-                {
                     "health": "good",
-                    "hostname": "greyworm6.llnl.gov",
-                    "id": "9",
-                    "project": "cmip",
+                    "hostname": "greyworm2.llnl.gov",
+                    "id": "4",
+                    "project": "acme",
                     "standby": false
                 }
             ],
             "supernode": "1"
         },
         {
-            "members": [
-                {
-                    "health": "good",
-                    "hostname": "greyworm3.llnl.gov",
-                    "id": "7",
-                    "project": "acme",
-                    "standby": false
-                },
-                {
-                    "health": "good",
-                    "hostname": "greyworm7",
-                    "id": "10",
-                    "project": "cmip",
-                    "standby": false
-                }
-            ],
             "supernode": "2"
         },
         {
-            "members": [
-                {
-                    "health": "good",
-                    "hostname": "greyworm5.llnl.gov",
-                    "id": "8",
-                    "project": "acme",
-                    "standby": true
-                }
-            ],
             "supernode": "3"
         }
     ],
@@ -88,6 +56,6 @@
             "id": "3"
         }
     ],
-    "total_membernodes": 7,
+    "total_membernodes": 1,
     "total_supernodes": 3
 }
