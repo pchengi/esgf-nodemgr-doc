@@ -40,7 +40,7 @@ def health_check_report(task_d, nmap):
 
         if n != "from" and n != "action":
             
-            speed = task_d[n]
+            speed = float(task_d[n])
 
             to_id = nmap.snidx[n]
             
@@ -55,7 +55,16 @@ def health_check_report(task_d, nmap):
                         ee["speed"] = float(speed)
                         nmap.dirty = True
                         break
-    
+            elif (int (from_id) > int(to_id)):
+                for ee in edgelist:
+                    if ee["to"] == from_id and ee["to"] == from_id:
+                        if speed < 0:
+                            ee["status"] = "down"
+                        else:
+                            ee["status"] = "up"
+                        ee["speed"] = float(speed)
+                        nmap.dirty = True
+                        break
 
 def node_map_update(task_d, nmap):
     new_map = task_d["update"]
@@ -77,7 +86,7 @@ def add_member(task_d, nmap):
 
 
 def remove_member(task_d, nmap):
-    print task_d["from"]
+    print "From", task_d["from"]
     if nmap.remove_member(task_d["from"]):
         print "removed"
     else:

@@ -106,6 +106,7 @@ def put_file(application, project, name, data):
     full_path = path + "/" + project + "/" + application + "/" + name
     version = 1
 
+
     for n in repo_obj["collection"]:
  
         found = False
@@ -113,24 +114,31 @@ def put_file(application, project, name, data):
     
             for x in n["applications"]:
     
-                print x
                 if x["name"] == application:
                     
                     found = True
                     fs = x["files"]
 
-                    if name in fs:
-                        version = fs["version"]
-                        version = version + 1
+                    there = False
+                    for f in fs:
 
-                    else:
+                        if f["name"] == name:
+                            
+                            there = True
+                            version = f["version"]
+                            version = version + 1
+                            f["version"] = version
+
+                    if not there:
                  
-                        fs["version"] = version
+                        new_entry = {}
+                        new_entry["version"] = version
 
-                
-                        fs["name"] = full_path
+                        new_entry["name"] = name
+                        fs.append(new_entry)
+
         
-    if not Found:
+    if not found:
 
         return "project/application missing"
 
@@ -149,6 +157,8 @@ def put_file(application, project, name, data):
 
 def get_latest(application, project, name):
 
+    repo_obj = init()
+
     path = repo_obj["root_path"]
 
     version = 0
@@ -163,8 +173,10 @@ def get_latest(application, project, name):
                     
                     fs = x["files"]
 
-                    if name in fs:
-                        version = fs["version"]
+
+                    for f in fs:
+                        if f["name"] == name:
+                            version = f["version"]
              
 
     if version == 0:

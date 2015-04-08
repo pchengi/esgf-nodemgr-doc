@@ -4,6 +4,7 @@ from time import time, sleep
 from nodemap import get_instance
 
 from httplib import HTTPConnection as Conn
+from httplib import HTTPException
 
 import os
 
@@ -60,9 +61,13 @@ class RunningCheck(Thread):
         
             resp = conn.getresponse()
 
+            if resp.status == 500:
+                print "500 error: " + resp.read()
+            
             eltime = time() - ts
-        except:
+        except Exception as e:
             error = "connectivity problem"
+            print e
 
         self.eltime = eltime
 
@@ -82,9 +87,15 @@ class RunningCheck(Thread):
 
                 for n in self.checkarr:
                     url = url + "&" + n
-                conn.request("GET", url)
-                resp = conn.getresponse()
+                    
+                error = ""
+                try:
+                    conn.request("GET", url)
+                    resp = conn.getresponse()
 
+                except HTTPException as e:
+                    error = "connectivity problem"
+                    print e                
 
 # def do_checks(fwdcheck):
 

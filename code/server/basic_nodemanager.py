@@ -20,12 +20,16 @@ count = 0
 
 QUANTA = 12
 
+LINK_CHECK_TIME=6
+
+SLEEP_TIME= 5
+
 MasterNode = (nodemap_instance.myid == "1")
 
 
 while (True):
 
-    sleep(5)
+    sleep(SLEEP_TIME)
 
     handle_tasks(nodemap_instance)
 
@@ -41,7 +45,7 @@ while (True):
 
     count = count + 1
 
-    if count == 4:
+    if count == LINK_CHECK_TIME:
         if MasterNode:
             links_check(nodemap_instance)
             

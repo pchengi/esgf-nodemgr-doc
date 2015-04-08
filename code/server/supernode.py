@@ -4,8 +4,10 @@ import os, json
 from threading import Thread
 
 from nodemgr.nodemgr.healthcheck import RunningCheck
-from httplib import HTTPConnection
+from httplib import HTTPConnection, HTTPException
 from nodemgr.nodemgr.simplequeue import write_task
+
+import pdb
 
 class NMapSender(Thread):
 
@@ -25,8 +27,17 @@ class NMapSender(Thread):
         if self.ts>0:
             tstr = "&timestamp=" + str(self.ts)
 
-        conn.request("GET", "/esgf-nm-api?action=node_map_update" + tstr + "&from=" + self.fromnode , json.dumps(self.nodemap) )
-        foo = conn.getresponse()
+        
+
+        try:
+            conn.request("GET", "/esgf-nm-api?action=node_map_update" + tstr + "&from=" + self.fromnode , json.dumps(self.nodemap) )
+            resp = conn.getresponse()
+            if resp.status == 500:
+                print resp.read()
+
+        except Exception as e:
+            print "Connection problem: " + str(e)
+
 
         conn.close()
 
@@ -34,6 +45,9 @@ class NMapSender(Thread):
 localhostname = os.uname()[1]
 
 def node_redist(nm_inst, sn_id):
+
+
+#    pdb.set_trace()
 
     MAX_PER_SN = 3
 
@@ -49,7 +63,7 @@ def node_redist(nm_inst, sn_id):
             x = n
         else:
             if len(n["members"]) < MAX_PER_SN:
-                free_slots.append([n["supernode"], MAX_PER_SN])
+                free_slots.append([n, MAX_PER_SN - len(n["members"])])
             
 
     x["status"] = "reassigned"  
@@ -58,13 +72,13 @@ def node_redist(nm_inst, sn_id):
 
     mem = x["members"]
 
-    sum = 0
+    summ = 0
     for z in free_slots:
-        sum+=z[1]
+        summ+=z[1]
 
 # need to promote a member node if nothing available
-    if sum < len(mem):
-        return false
+    if summ < len(mem):
+        return False
         
     for z in free_slots:
 
@@ -74,19 +88,25 @@ def node_redist(nm_inst, sn_id):
             
             cl["temp_assign"] = True
             cl["prev_owner"] = sn_id
-            
-            z[0].append(cl)
+
+            print z
+
+            z[0]["members"].append(cl)
             
             idx=idx+1
+            if idx == len(mem):
+                return True
 
-def return_nodes(nm_inst, sn_id):
+
+def node_return(nm_inst, sn_id):
 
     for n in nm_inst["members"]:
 
 
         if n["supernode"] == sn_id:
 
-            if n["status"] == 
+            if n["status"] == "OK":
+                return
             
 
             n["status"] = "OK"
@@ -200,6 +220,8 @@ def links_check(nmap):
 
 #    print "Links Check"
 
+#    pdb.set_trace()
+
     changed = False
     
     snodes = nmap.nodemap["supernodes"]
@@ -248,10 +270,11 @@ def links_check(nmap):
         
         i =0
 
-        need_to promote 
+#        need_to promote 
         for sn_id in new_down:
-            
-            if (not node_redist(nmap, sn_id)):
+
+            print "Supernode down and dealing with it", sn_id
+            if (not node_redist(nmap.nodemap, sn_id)):
 
                 for id2 in new_down[i:]:
                     promote_members(nmap, id2)
@@ -260,7 +283,7 @@ def links_check(nmap):
 
 
         for sn_id in new_back_up:
-            node_return(nmap, sn_id)
+            node_return(nmap.nodemap, sn_id)
 
 
         send_map_to_others(False, nmap)
