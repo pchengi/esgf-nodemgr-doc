@@ -100,7 +100,7 @@ def node_redist(nm_inst, sn_id):
 
 def node_return(nm_inst, sn_id):
 
-    for n in nm_inst["members"]:
+    for n in nm_inst["membernodes"]:
 
 
         if n["supernode"] == sn_id:
@@ -112,7 +112,8 @@ def node_return(nm_inst, sn_id):
             n["status"] = "OK"
         else:
             for x in n["members"]:
-                if x["temp_assign"] and x["prev_owner"] == sn_id:
+                
+                if "temp_assign" in x and x["temp_assign"] and x["prev_owner"] == sn_id:
                     n["members"].remove(x)
 
 
