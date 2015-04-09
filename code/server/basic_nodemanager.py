@@ -1,20 +1,25 @@
 import sys
-from time import sleep
+from time import sleep, time
 
-from supernode import member_node_check, supernode_check, links_check
+from supernode import member_node_check, supernode_check, links_check, supernode_init, my_turn
 
-from nodemgr.nodemgr.nodemap import get_instance
+from nodemgr.nodemgr.nodemap import get_instance as nm_get_instance
 from taskhandler import handle_tasks
+
+from time_store import get_instance as ts_get_instance
 
 if (len(sys.argv) <2):
     print "Usage:  python", sys.argv[0], "<node-map-file>"
     exit
 
 
-
-nodemap_instance = get_instance()
+nodemap_instance = nm_get_instance()
 
 nodemap_instance.load_map(sys.argv[1])
+
+timestore_instance = ts_get_instance()
+
+timestore_instance.filename = sys.argv[2]
 
 count = 0
 
@@ -28,6 +33,13 @@ MasterNode = (nodemap_instance.myid == "1")
 
 
 while (True):
+
+    # this is the inital timestamp to be distributed to supernodes for determining when each performs its lead in the health check.  
+    if MasterNode:
+        timestore_instance.ts = int(time())
+
+        supernode_init(nodemap_instance, timestore_instance.ts)
+
 
     sleep(SLEEP_TIME)
 
@@ -46,7 +58,7 @@ while (True):
     count = count + 1
 
     if count == LINK_CHECK_TIME:
-        if MasterNode:
+        if myturn:
             links_check(nodemap_instance)
             
 

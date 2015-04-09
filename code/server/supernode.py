@@ -7,6 +7,8 @@ from nodemgr.nodemgr.healthcheck import RunningCheck
 from httplib import HTTPConnection, HTTPException
 from nodemgr.nodemgr.simplequeue import write_task
 
+
+
 import pdb
 
 class NMapSender(Thread):
@@ -41,6 +43,35 @@ class NMapSender(Thread):
 
         conn.close()
 
+
+
+class SNInitSender(Thread):
+
+    def __init__(self, nn, ts):
+        super(I, self).__init__()
+
+        self.target = nn
+        self.ts = ts
+        self.fromnode = nmap.myid
+    
+
+    def run(self):
+
+        conn = HTTPConnection(self.target, 80, timeout=30)
+
+
+        tstr = "&timestamp=" + str(self.ts)
+
+        try:
+            conn.request("GET", "/esgf-nm-api?action=sn_init" + tstr + "&from=" + self.fromnode)
+            resp = conn.getresponse()
+            if resp.status == 500:
+                print resp.read()
+
+        except Exception as e:
+            print "Connection problem: " + str(e)
+
+        conn.close()
 
 localhostname = os.uname()[1]
 
@@ -152,6 +183,8 @@ def supernode_check(nodemap_instance):
 #    health_check_report(report_dict, nodemap_instance)
 
 
+
+
 def send_map_to_others(members, nmap, ts=0):
     
     nodes = []
@@ -179,6 +212,31 @@ def send_map_to_others(members, nmap, ts=0):
         t.join()
 
 
+def supernode_init(nmap, ts):
+
+    nodes = nmap.get_supernode_list()
+
+    for nn in nodes:
+        if nn != nmap.myname:
+
+            inits = InitSender(nn, ts)
+
+            inits.start()
+            tarr.append(inits)
+
+    for t in tarr:
+        t.join()
+    
+
+def my_turn(time_delta, sn_id, total_sn, total_period):
+
+    mod_delta = time_delta % ( total_sn * total_period)
+    
+    if ( mod_delta  >= (sn_id -1) * total_period && mod_delta <  sn_id * total_period): 
+        return True
+    else:
+        return False
+        
 
 def member_node_check(nmap):
 

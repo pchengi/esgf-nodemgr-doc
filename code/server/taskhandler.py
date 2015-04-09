@@ -6,6 +6,9 @@ hostname = os.uname()[1]
 
 from supernode import send_map_to_others, NMapSender
 
+from time_store import get_instance
+
+
 def health_check_fwd(task_d, nmap):
 
     fromnode = task_d["from"]
@@ -91,6 +94,16 @@ def remove_member(task_d, nmap):
         print "removed"
     else:
         print "not removed"
+
+
+def sn_init(task_d, nmap):
+
+    ts_inst = get_instance()
+
+    ts_inst.ts = int(task_d["ts"])
+
+    ts_inst.write()
+
 
 def handle_tasks(nmap):
 
