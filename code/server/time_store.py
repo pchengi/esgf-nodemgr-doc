@@ -1,7 +1,7 @@
 
 class TimeStore():
 
-    def __init__():
+    def __init__(self):
         self.filename = ""
         self.ts = 0
 

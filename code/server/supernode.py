@@ -47,8 +47,8 @@ class NMapSender(Thread):
 
 class SNInitSender(Thread):
 
-    def __init__(self, nn, ts):
-        super(I, self).__init__()
+    def __init__(self, nn, ts, nmap):
+        super(SNInitSender, self).__init__()
 
         self.target = nn
         self.ts = ts
@@ -216,10 +216,12 @@ def supernode_init(nmap, ts):
 
     nodes = nmap.get_supernode_list()
 
+    tarr = []
+
     for nn in nodes:
         if nn != nmap.myname:
 
-            inits = InitSender(nn, ts)
+            inits = SNInitSender(nn, ts, nmap)
 
             inits.start()
             tarr.append(inits)
@@ -228,11 +230,15 @@ def supernode_init(nmap, ts):
         t.join()
     
 
-def my_turn(time_delta, sn_id, total_sn, total_period):
+def my_turn(time_delta,  sn_id, total_sn, total_period):
+
+
 
     mod_delta = time_delta % ( total_sn * total_period)
+
+    print "turn check:", mod_delta, sn_id, total_period
     
-    if ( mod_delta  >= (sn_id -1) * total_period && mod_delta <  sn_id * total_period): 
+    if ( mod_delta  >= (sn_id -1) * total_period and mod_delta <  sn_id * total_period): 
         return True
     else:
         return False

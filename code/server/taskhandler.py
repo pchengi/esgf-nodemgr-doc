@@ -98,9 +98,12 @@ def remove_member(task_d, nmap):
 
 def sn_init(task_d, nmap):
 
+
+    print "timestore update"
+
     ts_inst = get_instance()
 
-    ts_inst.ts = int(task_d["ts"])
+    ts_inst.ts = int(task_d["timestamp"])
 
     ts_inst.write()
 
