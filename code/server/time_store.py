@@ -5,7 +5,7 @@ class TimeStore():
         self.filename = ""
         self.ts = 0
 
-    def write():
+    def write(self):
         
         outf = open(self.filename, "w")
         outf.write(str(self.ts))

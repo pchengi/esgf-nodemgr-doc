@@ -33,7 +33,7 @@ def nodemgrapi(request):
         nodemap_instance.reload()
         resp_code = nodemap_instance.get_indv_node_status_json()
         
-    elif action in ["add_member", "remove_member"]:
+    elif action in ["add_member", "remove_member", "sn_init"]:
 
         task = json.dumps(qd)
 
