@@ -7,7 +7,11 @@ MAX_TASK = 4096
 
 MAX_COUNT = 256
 
-TASK_DIR = "/export/ames4/tasks"
+TASK_DIR = os.environ.get("ESGF_NM_TASKS")
+
+if len(TASK_DIR) < 1:
+    print "Need to set ESGF_NM_TASKS"
+    exit
 
 
 TASK_PID = os.getpid()

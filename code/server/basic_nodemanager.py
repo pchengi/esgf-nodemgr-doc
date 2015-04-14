@@ -31,23 +31,32 @@ SLEEP_TIME= 5
 
 MasterNode = (nodemap_instance.myid == "1")
 
+supernode_count = len(nodemap_instance.nodemap["supernodes"])
+
+
+if MasterNode:
+
+    timestore_instance.ts = int(time())
+    supernode_init(nodemap_instance, timestore_instance.ts)
 
 while (True):
 
     # this is the inital timestamp to be distributed to supernodes for determining when each performs its lead in the health check.  
-    if MasterNode:
-        timestore_instance.ts = int(time())
 
-        supernode_init(nodemap_instance, timestore_instance.ts)
 
+        
 
     sleep(SLEEP_TIME)
 
     handle_tasks(nodemap_instance)
 
     
+    
     if count == 0:
-        if MasterNode:
+        cur_ts = time()
+        
+
+        if timestore_instance.ts > 0 and my_turn(cur_ts - timestore_instance.ts, int(nodemap_instance.myid), supernode_count, QUANTA * SLEEP_TIME ):
             supernode_check(nodemap_instance)
 
         if nodemap_instance.myid > -1:
@@ -57,10 +66,13 @@ while (True):
 
     count = count + 1
 
+
     if count == LINK_CHECK_TIME:
-        if myturn:
+        cur_ts = time()
+        if timestore_instance.ts > 0 and my_turn(cur_ts - timestore_instance.ts, int(nodemap_instance.myid), supernode_count, QUANTA * SLEEP_TIME ):
             links_check(nodemap_instance)
             
 
     if count == QUANTA:
         count = 0
+        supernode_count = len(nodemap_instance.nodemap["supernodes"])        

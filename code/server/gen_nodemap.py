@@ -62,7 +62,7 @@ for fr in range(1, sn_count):
         new_link = {}
         
         new_link["from"] = str(fr)
-        new_link["to"] = tt
+        new_link["to"] = str(tt)
         new_link["status"] = "unverified"
         new_link["speed"] = 0
 

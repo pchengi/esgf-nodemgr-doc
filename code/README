@@ -6,7 +6,7 @@ Prerequisites:  Python 2.7 installation.  Django installation.  easy_install wil
 
 Setup:
 
-Set several environment variables
+Set several environment variables:
 
 export ESGF_NODEMGR_MAP="<your nodemap file>"
 export ESGF_NM_TASKS="<directory to hold tasks>"
@@ -21,22 +21,29 @@ Use "uname -a" to retrieve hostname information for each node name.  The name sh
 ###  for manual editing: Node Map examples are found in conf_examples.  Fill out entries for supernodes. and have n*(n-1)/2 entries for links. 
 
 
-run_server.sh will start django (in foreground) and the node manager main process (in background).
+run_server.sh will start django (in foreground) and the node manager main process (in background).  Both need to be running.  
 
 Alternatively, you can run the django process and basic_nodemanager.py processes in separate windows, but must start with following:
 
 django:  
 
-  
+server/nodemgr/manage.py runserver <host-mask:port>  [eg. 0.0.0.0:80]
 
 node manager process:
 
-  python 
+  python server/basic_nodemanager.py <map-file> <timestamp-file>
 
+
+1) Start up the node manager on supernodes #2-N (where N is total supernodes) first.
+2) Start up on supernode #1.  It will bootstrap the health check by capturing and deploying the timestamp that all nodes will use (assumes ntp)
+
+3) Start up member nodes.  use command below to contact a supernode and add to federation
+
+Next see below to start adding member nodes.
 
 Utilities:
 
-member_node_cmd.py when run on a member node lets you add/remove the node from the federation. The node manager must be running on that node.
+member_node_cmd.py when run on a member node lets you add/remove the node from the federation. The node manager must be running on that node.  Use node name from "uname -a"
 
 add_supernode.py can be used to add additional supernode entries and associated link entries.
 
