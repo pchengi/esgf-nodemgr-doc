@@ -103,6 +103,10 @@ def node_redist(nm_inst, sn_id):
 
     mem = x["members"]
 
+    if len(mem) == 0:
+        print "No nodes to reassign"
+        return True
+
     summ = 0
     for z in free_slots:
         summ+=z[1]
@@ -110,6 +114,7 @@ def node_redist(nm_inst, sn_id):
 # need to promote a member node if nothing available
     if summ < len(mem):
         return False
+    
         
     for z in free_slots:
 
@@ -236,13 +241,17 @@ def my_turn(time_delta,  sn_id, total_sn, total_period):
 
     mod_delta = time_delta % ( total_sn * total_period)
 
-    print "turn check:", mod_delta, sn_id, total_period
+#    print "turn check:", mod_delta, sn_id, total_period
     
     if ( mod_delta  >= (sn_id -1) * total_period and mod_delta <  sn_id * total_period): 
         return True
     else:
         return False
         
+def calc_time(curr, start, q, sl):
+
+    return int((( curr - start) / sl ) % q)
+
 
 def member_node_check(nmap):
 

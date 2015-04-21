@@ -7,7 +7,13 @@ if len(sys.argv) < 2:
     exit
 
 
-f = open(os.environ.get("ESGF_NODEMGR_MAP"))
+MAP_FN = os.environ.get("ESGF_NODEMGR_MAP")
+
+if MAP_FN is None or len(MAP_FN) < 1:
+    print "Need to set ESGF_NODEMGR_MAP"
+    exit
+
+f = open(MAP_FN)
 obj = json.loads(f.read())
 f.close()
 
@@ -50,7 +56,7 @@ for n in sn_ids:
     obj["links"].append(new_link)
 
 
-outf = open(os.environ.get("ESGF_NODEMGR_MAP"), "w")
+outf = open(MAP_FN, "w")
 outs = json.dumps(obj,  sort_keys=True, indent=4, separators=(',', ': '))
 outf.write(outs)
 outf.close()

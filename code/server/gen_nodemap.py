@@ -53,6 +53,7 @@ new_json["supernodes"] = supernodes
 sn_count = len(supernodes)
 
 new_json["total_supernodes"] = sn_count
+new_json["total_membernodes"] = 0
 
 for fr in range(1, sn_count):
 

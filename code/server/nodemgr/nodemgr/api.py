@@ -9,8 +9,13 @@ import json, os
 from nodemap import get_instance
 
 nodemap_instance = get_instance()
+MAP_FN = os.environ.get("ESGF_NODEMGR_MAP")
 
-nodemap_instance.load_map(os.environ.get("ESGF_NODEMGR_MAP"))
+if MAP_FN is None or len(MAP_FN) < 2:
+    print "Need to set ESGF_NODEMGR_MAP"
+    exit
+
+nodemap_instance.load_map(MAP_FN)
 nodemap_instance.set_ro()
 
 def nodemgrapi(request):
@@ -54,6 +59,7 @@ def nodemgrapi(request):
     if (len(task) > 0):
         rw = RunningWrite(task)
         rw.start()
+
 
     return HttpResponse(resp_code, content_type="text/plain")
 

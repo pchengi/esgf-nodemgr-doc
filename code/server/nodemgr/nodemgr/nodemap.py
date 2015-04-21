@@ -200,8 +200,9 @@ class NodeMap():
 
                 tmparr.append(x)
 
-        
-        return json.dumps(tmparr, indent=4, separators=(',', ': '))
+        STR = json.dumps(tmparr, indent=4, separators=(',', ': '))
+
+        return STR
             
     def reload(self):
         f = open(self.filename)
