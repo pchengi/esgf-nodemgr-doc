@@ -54,7 +54,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     # url(r'^admin/', include(admin.site.urls)
-                       url(r'^health-check-api', healthcheckack, name=healthcheckack),
-                       url(r'^health-check-rep', healthcheckreport, name=healthcheckreport),
-                       url(r'^esgf-nm-api', nodemgrapi, name=nodemgrapi),)
+                       url(r'^health-check-api', healthcheckack),
+                       url(r'^health-check-rep', healthcheckreport),
+                       url(r'^esgf-nm-api', nodemgrapi))
 

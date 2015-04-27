@@ -2,21 +2,39 @@
     "links": [
         {
             "from": "1",
-            "speed": -1.0,
-            "status": "down",
+            "speed": 0.015400886535644531,
+            "status": "up",
             "to": "2"
         },
         {
-            "from": "2",
-            "speed": 0.00560092926025,
+            "from": "1",
+            "speed": 0.00957012176514,
             "status": "up",
             "to": "3"
         },
         {
             "from": "1",
-            "speed": 0.007411003112792969,
+            "speed": 0.00829100608826,
+            "status": "up",
+            "to": "4"
+        },
+        {
+            "from": "2",
+            "speed": 0.0107929706573,
             "status": "up",
             "to": "3"
+        },
+        {
+            "from": "2",
+            "speed": 0.00911402702332,
+            "status": "up",
+            "to": "4"
+        },
+        {
+            "from": "3",
+            "speed": 0.0107429027557,
+            "status": "up",
+            "to": "4"
         }
     ],
     "membernodes": [
@@ -24,37 +42,34 @@
             "members": [
                 {
                     "health": "good",
-                    "hostname": "greyworm2.llnl.gov",
-                    "id": "4",
-                    "project": "acme",
-                    "standby": true
+                    "hostname": "greyworm3.llnl.gov",
+                    "id": "5",
+                    "project": "ACME",
+                    "standby": false
                 }
             ],
+            "status": "OK",
             "supernode": "1"
         },
         {
             "members": [
                 {
                     "health": "good",
-                    "hostname": "greyworm5.llnl.gov",
-                    "id": "5",
-                    "project": "acme",
+                    "hostname": "greyworm7",
+                    "id": "6",
+                    "project": "ACME",
                     "standby": false
                 }
             ],
             "supernode": "2"
         },
         {
-            "members": [
-                {
-                    "health": "good",
-                    "hostname": "greyworm3.llnl.gov",
-                    "id": "6",
-                    "project": "acme",
-                    "standby": false
-                }
-            ],
+            "members": [],
             "supernode": "3"
+        },
+        {
+            "members": [],
+            "supernode": "4"
         }
     ],
     "supernodes": [
@@ -70,10 +85,15 @@
         },
         {
             "health": "good",
-            "hostname": "greyworm4.llnl.gov",
+            "hostname": "greyworm2.llnl.gov",
             "id": "3"
+        },
+        {
+            "health": "good",
+            "hostname": "greyworm4.llnl.gov",
+            "id": "4"
         }
     ],
-    "total_membernodes": 3,
-    "total_supernodes": 3
+    "total_membernodes": 2,
+    "total_supernodes": 4
 }

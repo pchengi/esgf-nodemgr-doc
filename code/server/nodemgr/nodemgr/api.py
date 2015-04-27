@@ -29,8 +29,11 @@ def nodemgrapi(request):
 
     qd = request.GET
 
-    action = qd["action"]
-    
+    try:
+        action = qd["action"]
+    except:
+        return HttpResponse("INVALID_URL")
+        
     task = ""
 
     if action == "get_node_map":
