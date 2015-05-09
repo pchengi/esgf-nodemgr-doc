@@ -362,12 +362,20 @@ Temporary SuperNode removal for maintenance.  (Note that SuperNode decommission,
 The Service API is the API that other software modules running on ESGF nodes may use to access federated information managed by the Node Manager.  An example is the publisher can use the API to put configuration metadata into the federation to be shared among other member nodes.  We present Several alternatives for this API: first, what sort of interface is available (methods); second how (what means) of connection would modules have to access the API.\\
 \\
  The simplest API would allow each component to read and write an ASCII blob; thus completely unstructured data from the perspective of the Node Manager.  The node manager would keep such a config for each component for each project that the node participates.   Any structure would be the responsibility of the client to serialize, e.g. json objects.  \\
+ \\
+ This information is collected and disseminated on a \emph{per project} basis.  Nodes that serve as SuperNodes for particular projects are the sources for shared configuration information, while member nodes that subscribe to particular projects are the recipients of specifically those projects info (multiple are permitted).
  
  We envision the following methods to this API:
  
  \begin{itemize}
 \item
-\textbf{Register:}  run as a ``bootstrap'' to set up a new client (ESGF component) / project entry 
+\textbf{Register:}  run as a ``bootstrap'' to set up a new client (ESGF component) / project entry.
+Registration has two phases:  \begin{enumerate}
+\item
+Component registration:  invoked as part of the ESGF / component installation once components are upgraded to integrate with the Node Manager for the purpose of federated configuration management.  
+\item
+Project registration: can also occur during installation.  If a node joins an additional project after installation, an administrator tool e.g. "esg-node" can update the node manager to add the project.
+\end{enumerate}
  \item
  \textbf{Put:} For a particular new client (ESGF component) / project entry, add/update a ``blob'' of data
 \item
@@ -443,7 +451,7 @@ Use django test web server as a prototype for setting up a test api for health c
 \item
 Investigate task management, worker queue, etc.  frameworks.  For prototyping we can implement python threads with polling/locks on shared objects.  The health check initiator can run as its own process.  Threads needed to manage incoming requests and assemble a node map.  Celery is a well-know queue API, but bases on RabbitMQ.  There are other alternatives implemented but no standard.
 \item
-Integrate with other django web services.  
+Integrate with Apache using proxy setup.  Run on some port in a python virtualenv.
 
 
 \end{enumerate}
@@ -465,6 +473,19 @@ Integrate with other django web services.
 \item Decouple logger from Node Manager
 \item Ensure generation of registration.xml
 \end{enumerate}
+
+\subsection{Administrator Console/Interface}
+\begin{itemize}
+\item
+Currently handled by esg-node
+\item
+What items for SuperNode?
+\item
+What for member nodes?
+\item
+Shared items, e.g. project membership
+\end{itemize}
+
 
 
 \section{Issues and questions}
