@@ -8,6 +8,7 @@ from supernode import send_map_to_others, NMapSender
 
 from time_store import get_instance
 
+from user_api import put_file
 
 def health_check_fwd(task_d, nmap):
 
@@ -76,7 +77,12 @@ def node_map_update(task_d, nmap):
     
     nmap.dirty = True
     send_map_to_others(True, nmap)
+
+def nm_repo_update(task_d, nmap):
     
+    upd = task_d["update"]
+
+    put_file(
 
 def add_member(task_d, nmap):
 

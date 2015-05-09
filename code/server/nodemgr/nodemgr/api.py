@@ -45,8 +45,9 @@ def nodemgrapi(request):
 
         task = json.dumps(qd)
 
+    
 
-    elif action in ["node_map_update"]:
+    elif action in ["node_map_update", "nm_repo_update"]:
 
         print "update map!"
 
@@ -56,6 +57,7 @@ def nodemgrapi(request):
 
         task = json.dumps(outd)
 
+        
     else:
         resp_code = "INVALID_REQ"
 

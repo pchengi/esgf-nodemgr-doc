@@ -27,19 +27,19 @@ def write_out():
 
 repo_obj = init()
 
-# this gets called once per project
+# this gets called once per application, script during installation
 
 #  False if project already exists, True if entry created
-def init_proj(project):
+def init_directory(application):
 
     for n in repo_obj["collection"]:
 
-        if n["project"] == project:
+        if n["application"] == application:
             return False
 
     tmpd = {}
-    tmpd["project"] = project
-    tmpd["applications"] = []
+    tmpd["application"] = application
+    tmpd["projects"] = []
 
    
     repo_obj["collection"].append(tmpd)
@@ -48,8 +48,7 @@ def init_proj(project):
 
 
 
-    path = repo_obj["root_path"] + "/" + project 
-
+    path = repo_obj["root_path"] + "/" + application
 
 
     try:
@@ -59,40 +58,32 @@ def init_proj(project):
 
     return True
 
-#  False if project not found
+
 #  True if entry created
 #  None if doesn't exist (test for boolean type)
-def init_directory(application, project):
+def init_project(project):
 
-    found = False
+
     for n in repo_obj["collection"]:
 
-        if n["project"] == project:
+        application = n["application"]
 
-            found = True
-            app_list = n["applications"]
+        for x in n["projects"]:
+        
+            if x["name"] == project:
+                return False
             
-            for x in app_list:
-
-                if x["name"] == application:
-                    return
             
+        new_proj = {}
+        new_proj["files"] =[]
+        new_proj["name"] = project
 
-            tmpd = {}
-            tmpd["name"] = application
-            tmpd["files"] = []
-            
-            app_list.append(tmpd)
-    
-    if not found:
-
-        return False
+        n["projects"].append(new_proj)
+        
+        path = repo_obj["root_path"] + "/" + application + "/" + project 
+        os.mkdir(path)
 
     write_out()
-
-    path = repo_obj["root_path"] + "/" + project + "/" + application
-
-    os.mkdir(path)
 
     return True
 
@@ -103,18 +94,18 @@ def put_file(application, project, name, data):
 
     path = repo_obj["root_path"]
 
-    full_path = path + "/" + project + "/" + application + "/" + name
+    full_path = path + "/" + application + "/"+ project + "/" + name
     version = 1
 
 
     for n in repo_obj["collection"]:
  
         found = False
-        if n["project"] == project:
+        if n["application"] == application:
     
-            for x in n["applications"]:
+            for x in n["projects"]:
     
-                if x["name"] == application:
+                if x["name"] == project:
                     
                     found = True
                     fs = x["files"]
