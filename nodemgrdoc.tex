@@ -221,6 +221,13 @@ This subcomponent produces the metrics that appear on the dashboard or other UI.
 \subsection{Self-check subcomponent}
 This is a subcomponent of the node manager which is responsible for carrying out sanity checks at regular intervals, on itself. When it fails the sanity checks, it contacts the local node manager to flag itself ineligible to continue as a SuperNode/standby SuperNode/member node. When the node passes a subsequent sanity check, the self-check component contacts the local node manager, to flag itself ready for resumption of duties.  The self-check subcomponent would also use the messaging subcomponent, to send out alert notifications to the local admin, when sanity checks fail.
 
+\subsubsection{Specific Checks}
+Use this list to mention specific items on the node to use for self-check.
+\begin{description}
+\item[Mountpoints]  All TDS roots should be checked.  If they time out due to problem with the mount, the situation means the node is unhealthy.
+
+\end{description}
+
 \subsection{Messaging subcomponent}
 
 The messaging subcomponent is used by the self-check subcomponent, to alert the local admin, when the state of the node changes, i.e. fails a sanity check,  clears one, after having been flagged down by previous checks, or a component configuration/metadata change fails a global write due to a race condition (i.e., multiple admins try to update a configuration simultaneously).  
