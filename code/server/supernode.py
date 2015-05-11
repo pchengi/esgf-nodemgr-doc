@@ -217,6 +217,36 @@ def send_map_to_others(members, nmap, ts=0):
         t.join()
 
 
+def send_repo_upd_to_others(task_d, nmap):
+
+    # get supernodes -  omit project for now
+    nodes = nmap.get_supernode_list()
+
+    # but get the project here
+    nodes = nodes + nmap.get_member_nodes(task_d["project"])    
+    
+    
+   
+    if (nodes is None) or len(nodes) == 0:
+        return 
+
+    tarr = []
+
+    for nn in nodes:
+        if nn != nmap.myname:
+
+            nms = NMRepoSender(task_d, nn, ts)
+
+            nms.start()
+            tarr.append(nms)
+
+    for t in tarr:
+        t.join()
+        return
+
+    
+
+
 def supernode_init(nmap, ts):
 
     nodes = nmap.get_supernode_list()
