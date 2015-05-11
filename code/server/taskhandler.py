@@ -4,7 +4,7 @@ from nodemgr.nodemgr.simplequeue import get_next_task
 from nodemgr.nodemgr.healthcheck import RunningCheck
 hostname = os.uname()[1]
 
-from supernode import send_map_to_others, NMapSender
+from supernode import send_map_to_others
 
 from time_store import get_instance
 
@@ -78,11 +78,16 @@ def node_map_update(task_d, nmap):
     nmap.dirty = True
     send_map_to_others(True, nmap)
 
+
 def nm_repo_update(task_d, nmap):
     
     upd = task_d["update"]
 
-    put_file(
+    put_file(task_d["application"], task_d["project"], task_d["name"], upd)
+
+    if task_d
+
+
 
 def add_member(task_d, nmap):
 

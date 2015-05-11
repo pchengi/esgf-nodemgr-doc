@@ -51,11 +51,21 @@ class NodeMap():
 
         return len(x["members"])
 
-    def get_supernode_list(self):
+    def get_supernode_list(self, project=""):
 
-        return self.snidx.keys()
+        if len(project) > 0:
+            sns = self.nodemap("supernodes")
+            arr = []
+            for n in sns:
 
-    def get_member_nodes(self):
+                if project in n["projects"]:
+                    arr.append(n["hostname"])
+            return arr
+        else:
+
+            return self.snidx.keys()
+
+    def get_member_nodes(self, project=""):
 
         mns = self.nodemap["membernodes"]
 
@@ -64,7 +74,15 @@ class NodeMap():
             if n["supernode"] == self.myid:
                 
                 if "members" in n:
-                    return [row["hostname"] for row in n["members"]]
+                    
+                    
+                    if len(project) > 0:
+                        arr = []
+                        for row in n["members"]:
+                            if project  == row["project"]:  # move to multi membership
+                                arr.append(row["hostname"])
+                    else:
+                        return [row["hostname"] for row in n["members"]]
                 else:
                     return []
 
