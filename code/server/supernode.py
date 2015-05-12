@@ -26,9 +26,9 @@ class NMapSender(Thread):
         conn = HTTPConnection(self.target, 80, timeout=30)
 
         tstr = ""
+
         if self.ts>0:
             tstr = "&timestamp=" + str(self.ts)
-
         
 
         try:
@@ -72,6 +72,49 @@ class SNInitSender(Thread):
             print "Connection problem: " + str(e)
 
         conn.close()
+
+class NMRepoSender(Thread):
+
+    def __init__(self, nn, task_d, nmap, ts):
+        super(NMRepoSender, self).__init__()
+
+        self.target = nn
+        self.task_d = task_d
+        self.fromnode = nmap.myid
+        self.ts = ts
+    
+    def get_url_str(self):
+        
+        parts = ["application", "project", "name", "send"]
+
+        arr = []
+        for n in parts:
+            arr.append("&")
+            arr.append(n)
+            arr.append("=")
+            arr.append(self.task_d[n])
+        
+        return ''.join(arr)
+        
+
+    def run(self):
+
+        conn = HTTPConnection(self.target, 80, timeout=30)
+
+
+        tstr = "&timestamp=" + str(self.ts)
+
+        try:
+            conn.request("GET", "/esgf-nm-api?action=nm_repo_update" + tstr + "&from=" + self.fromnode + get_url_str(), json.dumps(self.task_d["update"]) )
+            resp = conn.getresponse()
+            if resp.status == 500:
+                print resp.read()
+
+        except Exception as e:
+            print "Connection problem: " + str(e)
+
+        conn.close()
+
 
 localhostname = os.uname()[1]
 
@@ -222,9 +265,12 @@ def send_repo_upd_to_others(task_d, nmap):
     # get supernodes -  omit project for now
     nodes = nmap.get_supernode_list()
 
+
+    clond = task_d.copy()
+
+    clond["send"] = False
+
     # but get the project here
-    nodes = nodes + nmap.get_member_nodes(task_d["project"])    
-    
     
    
     if (nodes is None) or len(nodes) == 0:
@@ -239,6 +285,16 @@ def send_repo_upd_to_others(task_d, nmap):
 
             nms.start()
             tarr.append(nms)
+
+    nodes = nmap.get_member_nodes(task_d["project"])    
+
+    for nn in nodes:
+
+        nms = NMRepoSender(task_d, nn, ts)
+
+        nms.start()
+        tarr.append(nms)
+
 
     for t in tarr:
         t.join()

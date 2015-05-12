@@ -85,8 +85,9 @@ def nm_repo_update(task_d, nmap):
 
     put_file(task_d["application"], task_d["project"], task_d["name"], upd)
 
-    if task_d
-
+    if task_d["send"]:
+        
+        send_repo_upd_to_others(task_d, nmap)
 
 
 def add_member(task_d, nmap):
