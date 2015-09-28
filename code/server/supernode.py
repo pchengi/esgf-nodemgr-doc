@@ -11,6 +11,8 @@ from nodemgr.nodemgr.simplequeue import write_task
 
 import pdb
 
+PORT = int(os.environ.get("ESGF_NM_PORT"))
+
 class NMapSender(Thread):
 
     def __init__(self,nmap, nn, ts=0):
@@ -23,7 +25,7 @@ class NMapSender(Thread):
 
     def run(self):
 
-        conn = HTTPConnection(self.target, 80, timeout=30)
+        conn = HTTPConnection(self.target, PORT, timeout=30)
 
         tstr = ""
 
@@ -57,7 +59,7 @@ class SNInitSender(Thread):
 
     def run(self):
 
-        conn = HTTPConnection(self.target, 80, timeout=30)
+        conn = HTTPConnection(self.target, PORT, timeout=30)
 
 
         tstr = "&timestamp=" + str(self.ts)
@@ -99,7 +101,7 @@ class NMRepoSender(Thread):
 
     def run(self):
 
-        conn = HTTPConnection(self.target, 80, timeout=30)
+        conn = HTTPConnection(self.target, PORT, timeout=30)
 
 
         tstr = "&timestamp=" + str(self.ts)
