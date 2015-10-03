@@ -32,6 +32,7 @@ localhostname = os.uname()[1]
 # MAPFILE = "/export/ames4/node_mgr_map.json"
 
 
+PORT = int(os.environ.get("ESGF_NM_PORT"))
 
 
 class RunningCheck(Thread):
@@ -51,7 +52,7 @@ class RunningCheck(Thread):
         ts = time()
         print "Health check on", self.nodename
 
-        conn = Conn(self.nodename, 80, timeout=30)
+        conn = Conn(self.nodename, PORT, timeout=30)
 
 
         eltime = -1
@@ -82,7 +83,7 @@ class RunningCheck(Thread):
             if (self.first):
                 if len(node_list) > len(self.checkarr) + 2:
                     sleep(.01)
-                conn = Conn(self.fromnode, 80, timeout=30)
+                conn = Conn(self.fromnode, PORT, timeout=30)
                 url = "/health-check-rep?from=" + localhostname
 
                 for n in self.checkarr:

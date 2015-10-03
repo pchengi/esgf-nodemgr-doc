@@ -13,6 +13,8 @@ import pdb
 
 PORT = int(os.environ.get("ESGF_NM_PORT"))
 
+
+
 class NMapSender(Thread):
 
     def __init__(self,nmap, nn, ts=0):
@@ -26,6 +28,8 @@ class NMapSender(Thread):
     def run(self):
 
         conn = HTTPConnection(self.target, PORT, timeout=30)
+
+        print self.target, PORT 
 
         tstr = ""
 
@@ -58,6 +62,8 @@ class SNInitSender(Thread):
     
 
     def run(self):
+
+        print self.target, PORT 
 
         conn = HTTPConnection(self.target, PORT, timeout=30)
 
@@ -101,6 +107,8 @@ class NMRepoSender(Thread):
 
     def run(self):
 
+
+        print self.target, PORT 
         conn = HTTPConnection(self.target, PORT, timeout=30)
 
 
