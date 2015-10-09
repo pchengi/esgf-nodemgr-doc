@@ -30,6 +30,15 @@ def parse_properties():
 
     return pdict
 
+def get_user_count():
+
+    return
+
+def get_metrics():
+
+    return
+    
+
 def add_sn(pdict,sn):
 
 
@@ -118,7 +127,14 @@ def gen_reg_xml(arr_in):
 
 
 #        <OpenIDProvider endpoint="https://pcmdi9.llnl.gov/esgf-idp/idp/openidServer.htm"/>
+
+
 #        <FrontEnd endpoint="http://pcmdi9.llnl.gov/esgf-web-fe/"/>
+        if "index.service.endpoint" in x:
+            outarr.append('<        IndexService port="80" endpoint="')
+            outarr.append(x["index.service.endpoint"]) 
+            outarr.append('">\n')
+
 #        <IndexService port="8983" endpoint="http://pcmdi9.llnl.gov/esg-search/search"/>
 #        <AttributeService endpoint="https://pcmdi9.llnl.gov/esgf-idp/saml/soap/secure/attributeService.htm">
 
@@ -128,12 +144,15 @@ def gen_reg_xml(arr_in):
 #        outarr.append(x[""]) 
         outarr.append('">\n')
 
-#        outarr.append('" ="')
-#        outarr.append(x[""]) 
-        outarr.append('">\n')
 
 
-        # <CA hash="dunno" endpoint="dapp2p.cccma.ec.gc.ca" dn="dunno"/>
+
+
+
+        if "thredds.service.endpoint" in x:
+            outarr.append('"       <ThreddsService enpoint="')
+            outarr.append(x["thredds.service.endpoint"]) 
+            outarr.append('">\n')
 
         # <ThreddsService endpoint="http://dapp2p.cccma.ec.gc.ca/thredds"/>
         # <GridFTPService endpoint="gsiftp://dapp2p.cccma.ec.gc.ca">
@@ -144,10 +163,15 @@ def gen_reg_xml(arr_in):
         #     <DownloadedData count="0" size="0" users="0"/>
         #     <RegisteredUsers count="0"/>
         # </Metrics>
-        # <RelyingPartyService endpoint="https://dapp2p.cccma.ec.gc.ca/esg-orp/html.htm"/>
-        # <PEMCert>
-        #     <Cert>NOT_AVAILABLE</Cert>
-        # </PEMCert>
+
+        if "orp.service.endpoint" in x:
+            outarr.append('        <RelyingPartyService endpoint="')
+            outarr.append(x["orp.service.endpoint"]) 
+            outarr.append('">\n')            
+
+#TODO get public cert
+        outarr.apppend("   <PEMCert>\n         <Cert>NOT_AVAILABLE</Cert>\n   </PEMCert>")
+
 
 
         outarr.append("    </Node>\n")
