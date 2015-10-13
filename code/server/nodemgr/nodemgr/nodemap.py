@@ -10,6 +10,7 @@ class NodeMap():
     def __init__(self):
         self.filename = ""
         self.readonly = False
+        self.prop_store = {} 
 
     def set_ro(self):
         self.readonly = True
@@ -227,6 +228,8 @@ class NodeMap():
         
         self.nodemap = json.loads(f.read())
         f.close()        
+        
+    def set_prop(self, k, v):
         
 
 

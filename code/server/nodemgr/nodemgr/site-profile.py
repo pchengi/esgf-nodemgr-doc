@@ -30,27 +30,23 @@ def parse_properties():
     f.open(TYPE_FN)
     val=f.read()
     pdict["node.type"] = val.strip()
-
+    pdict["action"] = "node_properties"
 
     return pdict
 
 def get_user_count():
 
-    return
+    return 0
 
 def get_metrics():
 
-    return
+    return 0
     
 
-def add_sn(pdict,sn):
+#def add_sn(pdict,sn):
+    
 
 
-
-
-def get_json(pdict):
-
-    return 
 
 
 def gen_reg_xml(arr_in):
