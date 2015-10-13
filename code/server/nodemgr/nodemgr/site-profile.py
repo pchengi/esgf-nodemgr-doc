@@ -3,6 +3,9 @@ from time import time
 PROPERTIES = "/esg/config/esgf.properties"
 TYPE_FN = "/esg/config/config_type"
 
+REG_FN = "/esg/config/registration.xml"
+
+
 properties_struct = None
 
 def get_prop_st():

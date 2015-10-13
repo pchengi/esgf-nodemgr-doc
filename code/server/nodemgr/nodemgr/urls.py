@@ -8,10 +8,10 @@ from django.http import HttpResponse #, QueryDict
 from healthcheck import RunningCheck
 
 from simplequeue import write_task
-from nodemap import NodeMap
+from nodemap import NodeMap, PROPS_FN
 from api import nodemgrapi
 
-from site-profile import get_prop_st
+from site-profile import get_prop_st, reg_fn
 
 global served 
 served = False
@@ -65,6 +65,21 @@ def healthcheckack(request):
     return HttpResponse(resp)
     
 
+def get_json(request):
+
+    if os.path.isfile(PROPS_FN):
+        f = open(PROPS_FN)
+        resp = f.read()
+        f.close()
+    else:
+        resp = "NO_FILE"
+
+    return HttpResponse(resp)
+
+def get_reg_xml(request):
+    
+    
+    return HttpRespons(resp)
 
 urlpatterns = patterns('',
     # Examples:
@@ -74,5 +89,7 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)
                        url(r'^health-check-api', healthcheckack),
                        url(r'^health-check-rep', healthcheckreport),
-                       url(r'^esgf-nm-api', nodemgrapi))
+                       url(r'^esgf-nm-api', nodemgrapi),
+                       url(r'^esgf-nm/node-props.json', get_json),
+                       url(r'^esgf-node-manager/registration.xml', get_reg_xml))
 

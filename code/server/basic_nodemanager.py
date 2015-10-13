@@ -8,6 +8,8 @@ from taskhandler import handle_tasks
 
 from time_store import get_instance as ts_get_instance
 
+from nodemgr.nodemgr.site_profile import get_prop_st
+
 def usage():
     print "Usage:  python", sys.argv[0], "<node-map-file> [timestamp-file if SN]"
     exit(1)
@@ -20,7 +22,10 @@ if (len(sys.argv) <2):
 nodemap_instance = nm_get_instance()
 
 nodemap_instance.load_map(sys.argv[1])
+
 supernode = False
+
+
 
 if (nodemap_instance.myid > 0) :
     timestore_instance = ts_get_instance()
@@ -51,6 +56,12 @@ if MasterNode:
     timestore_instance.ts = int(time())
     supernode_init(nodemap_instance, timestore_instance.ts)
 
+if (supernode):
+    
+    node_props = get_prop_st()
+    nodemap_instance.set_prop(nodemap_instance.myname, node_props)
+
+
 while (True):
 
     # this is the inital timestamp to be distributed to supernodes for determining when each performs its lead in the health check.  
@@ -74,11 +85,11 @@ while (True):
             if timestore_instance.ts > 0 and my_turn(cur_ts - timestore_instance.ts, int(nodemap_instance.myid), supernode_count, QUANTA * SLEEP_TIME ):
                 print "SN check", count, cur_ts
                 supernode_check(nodemap_instance)
-
+                
             if nodemap_instance.myid > -1:
                 member_node_check(nodemap_instance)
     
-
+                
 
         if count == LINK_CHECK_TIME:
 

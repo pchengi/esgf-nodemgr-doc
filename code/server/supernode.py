@@ -7,7 +7,7 @@ from nodemgr.nodemgr.healthcheck import RunningCheck
 from httplib import HTTPConnection, HTTPException
 from nodemgr.nodemgr.simplequeue import write_task
 
-
+from nodemgr.nodemgr.site-profile import gen_xml, REG_FN
 
 import pdb
 
@@ -241,6 +241,46 @@ def supernode_check(nodemap_instance):
 #    health_check_report(report_dict, nodemap_instance)
 
 
+def check_properties(nodemap_instance):
+
+
+    tmp_props = []
+
+
+    for n in nodemap_instance.nodemap["supernodes"]:
+
+
+        if n[hostname] != localhostname and n["health"] == "good":
+            
+            target = n[hostname]
+
+            conn = HTTPConnection(target, PORT, timeout=30)    
+            conn.request("GET", "/esgf-nm-api/node-props.json" )
+            resp = conn.getresponse()
+
+
+            if resp.status == 200:
+                dat = resp.read()
+                
+                obj = json.loads(dat)
+
+                # TODO: Are we producing duplicate entries?
+                for n in obj:
+
+                    val = obj[n]
+                    tmp_props.append(val)
+
+            else:
+                # TODO: log these sorts of errors
+                print "An Error has occurred"
+                print resp.read()
+    for n in nodemap_instance.prop_store:
+        val = nodemap_instance.prop_store[n]
+
+        tmp_props.append(n)
+    
+    out_xml = 
+        
 
 
 def send_map_to_others(members, nmap, ts=0):
@@ -380,6 +420,7 @@ def member_node_check(nmap):
     #        print "eltime " , eltime 
 # For now we don't care about time to reach a member node - potential
 # future optimization
+        
         if (nmap.update_membernode_status(t.nodename, status)):
             send_map_to_others(False, nmap)
             send_map_to_others(True, nmap)

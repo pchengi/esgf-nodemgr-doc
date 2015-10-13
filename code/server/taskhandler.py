@@ -13,7 +13,8 @@ from user_api import put_file
 def node_properties(task_d, nmap):
     
     ky = task_d["esgf.host"]
-    nmap.prop_store[ky] = task_d
+    nmap.set_prop(ky, task_d)
+
 
 def health_check_fwd(task_d, nmap):
 
