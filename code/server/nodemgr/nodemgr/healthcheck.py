@@ -6,6 +6,8 @@ from nodemap import get_instance
 from httplib import HTTPConnection as Conn
 from httplib import HTTPException
 
+from simplequeue import write_task
+
 import os
 
 
@@ -90,13 +92,16 @@ class RunningCheck(Thread):
                     url = url + "&" + n
                     
                 error = ""
+                resp = ""
                 try:
                     conn.request("GET", url)
                     resp = conn.getresponse()
 
                 except HTTPException as e:
                     error = "connectivity problem"
-                    print e                
+                    print e
+                if len(resp) > 2:
+                    write_task(resp)
 
 # def do_checks(fwdcheck):
 

@@ -10,6 +10,10 @@ from time_store import get_instance
 
 from user_api import put_file
 
+def node_properties(task_d, nmap):
+
+    
+
 def health_check_fwd(task_d, nmap):
 
     fromnode = task_d["from"]

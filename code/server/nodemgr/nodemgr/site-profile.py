@@ -3,6 +3,10 @@ from time import time
 PROPERTIES = "/esg/config/esgf.properties"
 TYPE_FN = "/esg/config/config_type"
 
+properties_struct = None
+
+def get_prop_st():
+    return properties_struct
 
 def ts_func():
 
@@ -135,7 +139,10 @@ def gen_reg_xml(arr_in):
             outarr.append(x["index.service.endpoint"]) 
             outarr.append('">\n')
 
+
 #        <IndexService port="8983" endpoint="http://pcmdi9.llnl.gov/esg-search/search"/>
+
+# TODO get groups for attribute service
 #        <AttributeService endpoint="https://pcmdi9.llnl.gov/esgf-idp/saml/soap/secure/attributeService.htm">
 
 
@@ -155,10 +162,23 @@ def gen_reg_xml(arr_in):
             outarr.append('">\n')
 
         # <ThreddsService endpoint="http://dapp2p.cccma.ec.gc.ca/thredds"/>
+
+
         # <GridFTPService endpoint="gsiftp://dapp2p.cccma.ec.gc.ca">
         #     <Configuration serviceType="Replication" port="2812"/>
         #     <Configuration serviceType="Download" port="2811"/>
         # </GridFTPService>
+
+            if "gridftp.service.endpoint" in x:
+                outarr.append('<GridFTPService endpoint="')
+                outarr.append(x[""])
+
+                outarr.append('">\n')
+                outarr.append('<Configuration serviceType="Replication" port="2812"/>')
+                outarr.append('<Configuration serviceType="Download" port="2811"/>')
+                outarr.append('         </GridFTPService>\n')
+
+# TODO metricz - download count size users , registered users
         # <Metrics>
         #     <DownloadedData count="0" size="0" users="0"/>
         #     <RegisteredUsers count="0"/>
@@ -175,3 +195,5 @@ def gen_reg_xml(arr_in):
 
 
         outarr.append("    </Node>\n")
+
+properties_struct = parse_properties()

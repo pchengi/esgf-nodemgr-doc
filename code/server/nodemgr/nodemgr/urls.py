@@ -11,6 +11,11 @@ from simplequeue import write_task
 from nodemap import NodeMap
 from api import nodemgrapi
 
+from site-profile import get_prop_st
+
+global served 
+served = False
+
 
 #hostname = os.uname()[1]
 
@@ -18,6 +23,17 @@ from api import nodemgrapi
 #MAPFILE = "/export/ames4/node_mgr_map.json"
 
 #nodemap_instance = NodeMap(MAPFILE)
+
+def write_resp(full):
+
+    global served
+
+    if served and (not full):
+        return "OK"
+    else:
+        served = True
+        ret = get_prop_st()
+        return json.dumps(ret)
 
 def healthcheckreport(request):
     qd = request.GET
@@ -29,6 +45,7 @@ def healthcheckreport(request):
     write_task(json.dumps(outd))
 
     return HttpResponse("")
+
 
 def healthcheckack(request):
 
@@ -44,7 +61,8 @@ def healthcheckack(request):
         write_task(json.dumps(outd))
         print "checking on others"        
 
-    return HttpResponse("OK")
+    resp = write_resp()
+    return HttpResponse(resp)
     
 
 
