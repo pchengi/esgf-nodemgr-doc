@@ -54,10 +54,12 @@ def get_metrics():
 
 def gen_reg_xml(arr_in):
 
-    outarr =  ["<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n"]
+    outarr =  ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n']
 
     ts = ts_func()
-    
+    outarr.append('<Registration timeStamp="')
+    outarr.append(ts)
+    outarr.append('">\n')
 
     for z in arr:
 
@@ -123,10 +125,10 @@ def gen_reg_xml(arr_in):
             outarr.append(x["orp.security.authorization.service.endpoint="]) 
             outarr.append('"/>\n')
 
-        if  in x:
-            outarr.append('" ="')
-            outarr.append(x[""]) 
-            outarr.append('">\n')
+        if "idp.service.endpoint" in x:
+             outarr.append('" <OpenIDProvider endpoint="')
+             outarr.append(x["idp.service.endpoint"]) 
+             outarr.append('"/>\n')
 
 
 #        <OpenIDProvider endpoint="https://pcmdi9.llnl.gov/esgf-idp/idp/openidServer.htm"/>
@@ -194,5 +196,7 @@ def gen_reg_xml(arr_in):
 
 
         outarr.append("    </Node>\n")
+    outarr.append("</Registration>\n")
+    return ''.join(outarr)    
 
 properties_struct = parse_properties()

@@ -7,7 +7,7 @@ from nodemgr.nodemgr.healthcheck import RunningCheck
 from httplib import HTTPConnection, HTTPException
 from nodemgr.nodemgr.simplequeue import write_task
 
-from nodemgr.nodemgr.site_profile import gen_xml, REG_FN
+from nodemgr.nodemgr.site_profile import gen_reg_xml, REG_FN
 
 import pdb
 
@@ -279,9 +279,11 @@ def check_properties(nodemap_instance):
 
         tmp_props.append(n)
     
-    out_xml = 
+    out_xml = gen_reg_xml(tmp_props)
         
-
+    f = open(REG_FN, 'w')
+    f.write(out_xml)
+    f.close()
 
 def send_map_to_others(members, nmap, ts=0):
     

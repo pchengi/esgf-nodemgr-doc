@@ -203,7 +203,7 @@ class NodeMap():
 
         # We only write if there are changes
 
-        if self.prop_dirty = True:
+        if self.prop_dirty == True:
             self.prop_ts = ts_func()
             outf = open(PROPS_FN, 'w') 
             self.prop_store["ts_all"] = self.prop_ts
