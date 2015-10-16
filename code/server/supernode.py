@@ -7,7 +7,7 @@ from nodemgr.nodemgr.healthcheck import RunningCheck
 from httplib import HTTPConnection, HTTPException
 from nodemgr.nodemgr.simplequeue import write_task
 
-from nodemgr.nodemgr.site-profile import gen_xml, REG_FN
+from nodemgr.nodemgr.site_profile import gen_xml, REG_FN
 
 import pdb
 

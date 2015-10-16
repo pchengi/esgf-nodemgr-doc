@@ -7,7 +7,7 @@ MAXREF = 20
 
 PROPS_FN = '/esg/config/nm.properties'
 
-from site-profile import ts_func
+from site_profile import ts_func
 
 class NodeMap():
     

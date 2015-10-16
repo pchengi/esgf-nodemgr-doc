@@ -11,7 +11,7 @@ from simplequeue import write_task
 from nodemap import NodeMap, PROPS_FN
 from api import nodemgrapi
 
-from site-profile import get_prop_st, reg_fn
+from site_profile import get_prop_st, reg_fn
 
 global served 
 served = False
