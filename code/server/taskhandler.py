@@ -135,7 +135,7 @@ def handle_tasks(nmap):
         task_d = json.loads(task)
 
         action = task_d["action"]
-
+# TODO - this needs to be hardened before outside deployment
         eval(action)(task_d, nmap)
         
         task = get_next_task()
