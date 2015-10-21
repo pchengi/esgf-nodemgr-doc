@@ -8,7 +8,7 @@ from httplib import HTTPException
 
 from simplequeue import write_task
 
-import os
+import os, logging
 
 
 
@@ -47,7 +47,7 @@ class RunningCheck(Thread):
         self.first = first
         self.checkarr = checkarr
         self.fromnode = fromnode
-
+        self.logger = logging.getLogger("esgf_nodemanager")
 
     def run(self):
 

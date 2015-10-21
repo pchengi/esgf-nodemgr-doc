@@ -24,16 +24,18 @@ def parse_properties():
     pdict["timestamp"] = ts_func()
     for line in f:
         ll = line.strip()
-        if ll[0] != '#':
+        
+        if len(ll) > 0 and ll[0] != '#':
             parts = line.split('=')
             pdict[ parts[0].strip() ] = parts[1].strip()
 
     f.close()
 
-    f.open(TYPE_FN)
+    f = open(TYPE_FN)
     val=f.read()
     pdict["node.type"] = val.strip()
     pdict["action"] = "node_properties"
+    f.close()
 
     return pdict
 

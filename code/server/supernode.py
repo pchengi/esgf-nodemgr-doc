@@ -11,8 +11,9 @@ from nodemgr.nodemgr.site_profile import gen_reg_xml, REG_FN
 
 import pdb
 
-PORT = int(os.environ.get("ESGF_NM_PORT"))
+import logging
 
+PORT = int(os.environ.get("ESGF_NM_PORT"))
 
 
 class NMapSender(Thread):
@@ -23,7 +24,7 @@ class NMapSender(Thread):
         self.target = nn
         self.ts = ts
         self.fromnode = nmap.myid
-    
+        self.logger = logging.getLogger("esgf_nodemanager")
 
     def run(self):
 
@@ -41,7 +42,7 @@ class NMapSender(Thread):
             conn.request("GET", "/esgf-nm-api?action=node_map_update" + tstr + "&from=" + self.fromnode , json.dumps(self.nodemap) )
             resp = conn.getresponse()
             if resp.status == 500:
-                print resp.read()
+                self.logger.error(resp.read())
 
         except Exception as e:
             print "Connection problem: " + str(e)
@@ -59,7 +60,7 @@ class SNInitSender(Thread):
         self.target = nn
         self.ts = ts
         self.fromnode = nmap.myid
-    
+        self.logger = logging.getLogger("esgf_nodemanager")
 
     def run(self):
 
@@ -74,7 +75,8 @@ class SNInitSender(Thread):
             conn.request("GET", "/esgf-nm-api?action=sn_init" + tstr + "&from=" + self.fromnode)
             resp = conn.getresponse()
             if resp.status == 500:
-                print resp.read()
+                self.logger.error(resp.read())
+
 
         except Exception as e:
             print "Connection problem: " + str(e)
@@ -90,7 +92,8 @@ class NMRepoSender(Thread):
         self.task_d = task_d
         self.fromnode = nmap.myid
         self.ts = ts
-    
+        self.logger = logging.getLogger("esgf_nodemanager")    
+
     def get_url_str(self):
         
         parts = ["application", "project", "name", "send"]
@@ -118,7 +121,8 @@ class NMRepoSender(Thread):
             conn.request("GET", "/esgf-nm-api?action=nm_repo_update" + tstr + "&from=" + self.fromnode + get_url_str(), json.dumps(self.task_d["update"]) )
             resp = conn.getresponse()
             if resp.status == 500:
-                print resp.read()
+                self.logger.error(resp.read())
+
 
         except Exception as e:
             print "Connection problem: " + str(e)

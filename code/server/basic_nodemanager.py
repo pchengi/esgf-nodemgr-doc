@@ -10,6 +10,10 @@ from time_store import get_instance as ts_get_instance
 
 from nodemgr.nodemgr.site_profile import get_prop_st
 
+import logging
+
+
+
 def usage():
     print "Usage:  python", sys.argv[0], "<node-map-file> [timestamp-file if SN]"
     exit(1)
@@ -18,6 +22,12 @@ def usage():
 if (len(sys.argv) <2):
     usage()
 
+logger = logging.getLogger("esgf_nodemanager")
+
+fh = logging.FileHandler("/tmp/esgf_nm.log")
+fh.setLevel(logging.ERROR)
+
+logger.addHandler(fh)
 
 nodemap_instance = nm_get_instance()
 

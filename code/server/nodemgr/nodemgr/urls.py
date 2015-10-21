@@ -11,7 +11,7 @@ from simplequeue import write_task
 from nodemap import NodeMap, PROPS_FN
 from api import nodemgrapi
 
-from site_profile import get_prop_st, reg_fn
+from site_profile import get_prop_st, REG_FN
 
 global served 
 served = False
@@ -77,9 +77,12 @@ def get_json(request):
     return HttpResponse(resp)
 
 def get_reg_xml(request):
+    f = open(REG_FN)
     
+    resp = f.read()
+    f.close()
     
-    return HttpRespons(resp)
+    return HttpResponse(resp)
 
 urlpatterns = patterns('',
     # Examples:
