@@ -10,8 +10,12 @@ from simplequeue import write_task
 
 import os, logging
 
+logger = logging.getLogger("esgf_nodemanager")
 
+fh = logging.FileHandler("/tmp/esgf_nm_dj.log")
+fh.setLevel(logging.ERROR)
 
+logger.addHandler(fh)
 
 # def init_node_list():
 
@@ -65,7 +69,8 @@ class RunningCheck(Thread):
             resp = conn.getresponse()
 
             if resp.status == 500:
-                print "500 error: " + resp.read()
+                print "500 error" 
+                self.logger.error(resp.read())
             
             eltime = time() - ts
         except Exception as e:
@@ -100,7 +105,7 @@ class RunningCheck(Thread):
                 except HTTPException as e:
                     error = "connectivity problem"
                     print e
-                if len(resp) > 2:
+                if len(resp.read()) > 2:
                     write_task(resp)
 
 # def do_checks(fwdcheck):
