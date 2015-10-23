@@ -1,7 +1,7 @@
 import sys
 from time import sleep, time
 
-from supernode import member_node_check, supernode_check, links_check, supernode_init, my_turn, calc_time
+from supernode import member_node_check, supernode_check, links_check, supernode_init, my_turn, calc_time, check_properties
 
 from nodemgr.nodemgr.nodemap import get_instance as nm_get_instance
 from taskhandler import handle_tasks
@@ -98,7 +98,7 @@ while (True):
                 
             if nodemap_instance.myid > -1:
                 member_node_check(nodemap_instance)
-    
+                
                 
 
         if count == LINK_CHECK_TIME:
@@ -106,7 +106,9 @@ while (True):
             if timestore_instance.ts > 0 and my_turn(cur_ts - timestore_instance.ts, int(nodemap_instance.myid), supernode_count, QUANTA * SLEEP_TIME ):
                 print "Status review", count, cur_ts
                 links_check(nodemap_instance)
-            
+                print "start properties check"
+                check_properties(nodemap_instance)
+                print "end properties check"
 
     nodemap_instance.write_back()            
     supernode_count = len(nodemap_instance.nodemap["supernodes"])        

@@ -15,6 +15,7 @@ import logging
 
 PORT = int(os.environ.get("ESGF_NM_PORT"))
 
+#TODO - health check should include a timestamp of the current properties in the nodes possession 
 
 class NMapSender(Thread):
 
@@ -254,19 +255,30 @@ def check_properties(nodemap_instance):
     for n in nodemap_instance.nodemap["supernodes"]:
 
 
-        if n[hostname] != localhostname and n["health"] == "good":
+        if n["hostname"] != localhostname and n["health"] == "good":
             
-            target = n[hostname]
+            target = n["hostname"]
 
             conn = HTTPConnection(target, PORT, timeout=30)    
-            conn.request("GET", "/esgf-nm-api/node-props.json" )
+            conn.request("GET", "/esgf-nm/node-props.json" )
             resp = conn.getresponse()
 
 
             if resp.status == 200:
                 dat = resp.read()
+
+#                print dat
+                if dat == "NO_FILE":
+                    print no_file
+                    continue
                 
-                obj = json.loads(dat)
+
+                obj = []
+                try:
+                    obj = json.loads(dat)
+                except:
+                    print "JSON error"
+                    continue
 
                 # TODO: Are we producing duplicate entries?
                 for n in obj:
@@ -277,11 +289,13 @@ def check_properties(nodemap_instance):
             else:
                 # TODO: log these sorts of errors
                 print "An Error has occurred"
-                print resp.read()
+                lg = logging.getLogger("esgf_nodemanager")
+                lg.error(resp.read())
+
     for n in nodemap_instance.prop_store:
         val = nodemap_instance.prop_store[n]
 
-        tmp_props.append(n)
+        tmp_props.append(val)
     
     out_xml = gen_reg_xml(tmp_props)
         

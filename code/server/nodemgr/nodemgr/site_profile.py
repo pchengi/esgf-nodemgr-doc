@@ -63,7 +63,7 @@ def gen_reg_xml(arr_in):
     outarr.append(ts)
     outarr.append('">\n')
 
-    for z in arr:
+    for x in arr_in:
 
         outarr.append("    <Node ")
 

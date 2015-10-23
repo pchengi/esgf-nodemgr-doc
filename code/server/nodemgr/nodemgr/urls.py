@@ -16,13 +16,15 @@ from site_profile import get_prop_st, REG_FN
 global served 
 served = False
 
-
+# TODO - need to 
 #hostname = os.uname()[1]
 
 #checkarr = []
 #MAPFILE = "/export/ames4/node_mgr_map.json"
 
 #nodemap_instance = NodeMap(MAPFILE)
+
+
 
 def write_resp(full):
 
@@ -48,6 +50,7 @@ def healthcheckreport(request):
 
 
 def healthcheckack(request):
+# TODO check timestamp and write resp when the prop file is more recent.
 
     qd = request.GET
 
@@ -61,17 +64,21 @@ def healthcheckack(request):
         write_task(json.dumps(outd))
         print "checking on others"        
 
-    resp = write_resp()
+    resp = write_resp(False)
     return HttpResponse(resp)
     
 
 def get_json(request):
+    
+    resp = ""
 
     if os.path.isfile(PROPS_FN):
         f = open(PROPS_FN)
         resp = f.read()
         f.close()
+
     else:
+        print "no file"
         resp = "NO_FILE"
 
     return HttpResponse(resp)
