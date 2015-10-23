@@ -283,8 +283,9 @@ def check_properties(nodemap_instance):
                 # TODO: Are we producing duplicate entries?
                 for n in obj:
 
-                    val = obj[n]
-                    tmp_props.append(val)
+                    if n != "ts_all": 
+                        val = obj[n]
+                        tmp_props.append(val)
 
             else:
                 # TODO: log these sorts of errors

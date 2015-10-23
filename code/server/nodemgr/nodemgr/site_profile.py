@@ -8,6 +8,8 @@ REG_FN = "/esg/config/registration.xml"
 
 properties_struct = None
 
+from types import DictType
+
 def get_prop_st():
     return properties_struct
 
@@ -56,6 +58,8 @@ def get_metrics():
 
 def gen_reg_xml(arr_in):
 
+#    print str(arr_in)
+
     outarr =  ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n']
 
     ts = ts_func()
@@ -64,6 +68,11 @@ def gen_reg_xml(arr_in):
     outarr.append('">\n')
 
     for x in arr_in:
+        
+        if not type(x) is DictType:
+            print "Type issue"
+            print str(x)
+            continue
 
         outarr.append("    <Node ")
 
@@ -96,9 +105,11 @@ def gen_reg_xml(arr_in):
 #  This should correspond to super-node for member-nodes
 #  adjacent super-node for super-nodes
 #        outarr.append(x["admin.peer"]) 
-        outarr.append(x["default.peer"]) 
+        outarr.append(x["esgf.default.peer"]) 
+        
         outarr.append('" defaultPeer="')
         outarr.append(x["esgf.default.peer"]) 
+
 #        outarr.append('" ="')
 #        outarr.append(x[""]) 
         outarr.append('">\n')
@@ -109,7 +120,7 @@ def gen_reg_xml(arr_in):
         outarr.append(x["esgf.host"])
         outarr.append('" dn="dunno"/>\n')
 
-        outarr.append('"       <GeoLocation lat="')
+        outarr.append('       <GeoLocation lat="')
         outarr.append(x["node.geolocation.lat"])
         outarr.append('" lon="')
         outarr.append(x["node.geolocation.lon"])
@@ -124,11 +135,11 @@ def gen_reg_xml(arr_in):
 
         if "orp.security.authorization.service.endpoint" in x:
             outarr.append('        <AuthorizationService endpoint="')
-            outarr.append(x["orp.security.authorization.service.endpoint="]) 
+            outarr.append(x["orp.security.authorization.service.endpoint"]) 
             outarr.append('"/>\n')
 
         if "idp.service.endpoint" in x:
-             outarr.append('" <OpenIDProvider endpoint="')
+             outarr.append('       <OpenIDProvider endpoint="')
              outarr.append(x["idp.service.endpoint"]) 
              outarr.append('"/>\n')
 
@@ -138,9 +149,9 @@ def gen_reg_xml(arr_in):
 
 #        <FrontEnd endpoint="http://pcmdi9.llnl.gov/esgf-web-fe/"/>
         if "index.service.endpoint" in x:
-            outarr.append('<        IndexService port="80" endpoint="')
+            outarr.append('        <IndexService port="80" endpoint="')
             outarr.append(x["index.service.endpoint"]) 
-            outarr.append('">\n')
+            outarr.append('"/>\n')
 
 
 #        <IndexService port="8983" endpoint="http://pcmdi9.llnl.gov/esg-search/search"/>
@@ -152,7 +163,7 @@ def gen_reg_xml(arr_in):
 
 #        outarr.append('" ="')
 #        outarr.append(x[""]) 
-        outarr.append('">\n')
+#        outarr.append('">\n')
 
 
 
@@ -193,7 +204,7 @@ def gen_reg_xml(arr_in):
             outarr.append('">\n')            
 
 #TODO get public cert
-        outarr.apppend("   <PEMCert>\n         <Cert>NOT_AVAILABLE</Cert>\n   </PEMCert>")
+        outarr.append("   <PEMCert>\n         <Cert>NOT_AVAILABLE</Cert>\n   </PEMCert>\n")
 
 
 
