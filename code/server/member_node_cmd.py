@@ -9,7 +9,7 @@ cmd = sys.argv[1]
 
 myname = os.uname()[1]
 
-PORT = int(os.environ.get("ESGF_NM_PORT")
+PORT = int(os.environ.get("ESGF_NM_PORT"))
 
 if cmd == "add":
 
