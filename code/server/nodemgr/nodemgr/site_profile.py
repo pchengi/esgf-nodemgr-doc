@@ -201,7 +201,7 @@ def gen_reg_xml(arr_in):
         if "orp.service.endpoint" in x:
             outarr.append('        <RelyingPartyService endpoint="')
             outarr.append(x["orp.service.endpoint"]) 
-            outarr.append('">\n')            
+            outarr.append('"/>\n')            
 
 #TODO get public cert
         outarr.append("   <PEMCert>\n         <Cert>NOT_AVAILABLE</Cert>\n   </PEMCert>\n")

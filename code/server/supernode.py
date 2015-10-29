@@ -211,12 +211,6 @@ def node_return(nm_inst, sn_id):
                     n["members"].remove(x)
 
 
-
-
-
-                
-
-
 def supernode_check(nodemap_instance):
 
     tarr = []
@@ -253,9 +247,12 @@ def check_properties(nodemap_instance):
 
 
     for n in nodemap_instance.nodemap["supernodes"]:
+        
 
-
-        if n["hostname"] != localhostname and n["health"] == "good":
+        # for now don't request things we have. TODO: update if the
+        # timestamp is too stale (should be more frequent than the
+        # health checks).
+        if  (not n["hostname"] in nodemap_instance.prop_store) or n["hostname"] != localhostname and n["health"] == "good":
             
             target = n["hostname"]
 
@@ -495,7 +492,8 @@ def links_check(nmap):
             changed = True
 #            print "  change to good"
             new_back_up.append(snodes[i]["id"])
-
+        elif (not down) and snodes[i]["health"] == "new":
+            snodes[i]["health"] = "good"
     if changed:
         nmap.dirty = True
 

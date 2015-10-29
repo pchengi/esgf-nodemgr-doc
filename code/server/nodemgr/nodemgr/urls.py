@@ -33,6 +33,8 @@ def write_resp(full):
     if served and (not full):
         return "OK"
     else:
+        print "first time, serving json"
+
         served = True
         ret = get_prop_st()
         return json.dumps(ret)
@@ -53,7 +55,6 @@ def healthcheckack(request):
 # TODO check timestamp and write resp when the prop file is more recent.
 
     qd = request.GET
-
 
 
     if ("forward" in qd and qd["forward"] == "True"):

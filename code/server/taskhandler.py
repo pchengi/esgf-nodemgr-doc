@@ -11,8 +11,9 @@ from time_store import get_instance
 from user_api import put_file
 
 def node_properties(task_d, nmap):
-    
+
     ky = task_d["esgf.host"]
+    print "node properties task" + ky
     nmap.set_prop(ky, task_d)
 
 

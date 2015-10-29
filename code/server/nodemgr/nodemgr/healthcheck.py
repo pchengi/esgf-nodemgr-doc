@@ -53,6 +53,15 @@ class RunningCheck(Thread):
         self.fromnode = fromnode
         self.logger = logging.getLogger("esgf_nodemanager")
 
+    def handle_resp(self, resp):
+        buf = resp.read()
+        if len(buf) > 2:
+            print "longer response"
+            write_task(buf)
+        else:
+            print "short response"
+
+
     def run(self):
 
         ts = time()
@@ -73,6 +82,11 @@ class RunningCheck(Thread):
                 self.logger.error(resp.read())
             
             eltime = time() - ts
+            
+            self.handle_resp(resp)
+
+
+
         except Exception as e:
             error = "connectivity problem"
             print e
@@ -101,12 +115,12 @@ class RunningCheck(Thread):
                 try:
                     conn.request("GET", url)
                     resp = conn.getresponse()
+                    self.handle_resp(resp)
 
                 except HTTPException as e:
                     error = "connectivity problem"
                     print e
-                if len(resp.read()) > 2:
-                    write_task(resp)
+                
 
 # def do_checks(fwdcheck):
 
