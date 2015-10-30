@@ -252,9 +252,13 @@ def check_properties(nodemap_instance):
         # for now don't request things we have. TODO: update if the
         # timestamp is too stale (should be more frequent than the
         # health checks).
-        if  (not n["hostname"] in nodemap_instance.prop_store) or n["hostname"] != localhostname and n["health"] == "good":
+        target = n["hostname"]
+
+
+        if  (not target in nodemap_instance.prop_store) and target != localhostname and n["health"] == "good":
             
-            target = n["hostname"]
+            print "retrieving", target, "properties"
+
 
             conn = HTTPConnection(target, PORT, timeout=30)    
             conn.request("GET", "/esgf-nm/node-props.json" )
