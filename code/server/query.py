@@ -8,6 +8,8 @@ db_engine = None
 
 PASS_FN = '/esg/config/.esg_pg_pass'
 
+QUERY_INTERVAL=240
+
 def  init_db():
     
     if not os.path.exists(PASS_FN):
@@ -76,13 +78,26 @@ class QueryRunner(Thread):
 
     def run(self):
 
-        f = open(target_fn, "w")
-        
-        outdict = {}
+        last_str = ""
 
-        if self.esg_config.is_idp():
-            outdict["users_count"] = get_user_count()
+        while True:
+
+            out_dict= {}
+
+            if self.esg_config.is_idp():
+                outdict["users_count"] = get_user_count()
 
 #        if self.esg_config.is_data():
+
             
-        
+            outstr = json.dumps(outdict)
+
+
+            if outstr != last_str:
+                f = open(target_fn, "w")
+
+                f.write(outstr)
+                f.close()
+                last_str = outstr
+               
+            sleep(QUERY_INTERVAL)
