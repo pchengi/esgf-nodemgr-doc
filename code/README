@@ -2,7 +2,11 @@ Esgf Node Manager the prototype
 
 This prototype serves to evaluate several of the distributed systems concepts prescribed for the design of the 2015-gen ESGF node manager.
 
-Prerequisites:  Python 2.7.9 installation.  Django installation.  easy_install will install django for you.
+Prerequisites:  
+  * Python 2.7.9 installation.  
+  * Django (1.8)  
+  * sqlalchemy (1.0.9)
+  * psycopg2 (2.6.1)
 
 Setup:
 

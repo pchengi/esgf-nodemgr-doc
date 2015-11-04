@@ -4,14 +4,14 @@ import json, sys, os
 
 if len(sys.argv) < 2:  
     print "need <hostname> argument"
-    exit
+    exit(-1)
 
 
 MAP_FN = os.environ.get("ESGF_NODEMGR_MAP")
 
 if MAP_FN is None or len(MAP_FN) < 1:
     print "Need to set ESGF_NODEMGR_MAP"
-    exit
+    exit(-1)
 
 f = open(MAP_FN)
 obj = json.loads(f.read())
