@@ -8,6 +8,8 @@ REG_FN = "/esg/config/registration.xml"
 
 properties_struct = None
 
+
+
 from types import DictType
 
 def get_prop_st():
@@ -193,6 +195,9 @@ def gen_reg_xml(arr_in):
                 outarr.append('         </GridFTPService>\n')
 
 # TODO metricz - download count size users , registered users
+
+
+
         # <Metrics>
         #     <DownloadedData count="0" size="0" users="0"/>
         #     <RegisteredUsers count="0"/>
