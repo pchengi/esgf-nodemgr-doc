@@ -73,7 +73,7 @@ class RunningCheck(Thread):
         eltime = -1
         error = ""
         try:
-            conn.request("GET", "/health-check-api?from=" + localhostname + "&forward=" + str(self.fwdcheck))
+            conn.request("GET", "/esgf-nm/health-check-api?from=" + localhostname + "&forward=" + str(self.fwdcheck))
         
             resp = conn.getresponse()
 
@@ -105,7 +105,7 @@ class RunningCheck(Thread):
                 if len(node_list) > len(self.checkarr) + 2:
                     sleep(.01)
                 conn = Conn(self.fromnode, PORT, timeout=30)
-                url = "/health-check-rep?from=" + localhostname
+                url = "/esgf-nm/health-check-rep?from=" + localhostname
 
                 for n in self.checkarr:
                     url = url + "&" + n

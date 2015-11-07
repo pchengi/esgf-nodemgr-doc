@@ -8,7 +8,7 @@ COMPUTE_BIT = 32
 
 
 
-class Esg_Config():
+class EsgConfig():
 
     def __init__(self):
 

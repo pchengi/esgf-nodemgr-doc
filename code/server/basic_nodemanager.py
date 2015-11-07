@@ -10,6 +10,8 @@ from time_store import get_instance as ts_get_instance
 
 from nodemgr.nodemgr.site_profile import get_prop_st
 
+from query import QueryRunner
+
 import logging
 
 
@@ -70,6 +72,16 @@ if (supernode):
     
     node_props = get_prop_st()
     nodemap_instance.set_prop(nodemap_instance.myname, node_props)
+
+from esg_config import EsgConfig
+
+ec = EsgConfig()
+
+res_path = os.environ.get("ESGF_NM_STATS_RES")
+
+qr = QueryRunner(res_path, ec)
+
+qr.start()
 
 
 while (True):

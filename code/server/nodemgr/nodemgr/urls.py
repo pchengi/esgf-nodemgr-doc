@@ -16,6 +16,9 @@ from site_profile import get_prop_st, REG_FN
 global served 
 served = False
 
+MET_FN = os.environ.get("ESGF_NM_STATS_RES")
+
+
 # TODO - need to 
 #hostname = os.uname()[1]
 
@@ -23,6 +26,7 @@ served = False
 #MAPFILE = "/export/ames4/node_mgr_map.json"
 
 #nodemap_instance = NodeMap(MAPFILE)
+
 
 
 
@@ -84,6 +88,22 @@ def get_json(request):
 
     return HttpResponse(resp)
 
+
+def get_metrics(request):
+    
+    resp = ""
+
+    if os.path.isfile(MET_FN):
+        f = open(MET_FN)
+        resp = f.read()
+        f.close()
+
+    else:
+        print "no file"
+        resp = "NO_FILE"
+
+    return HttpResponse(resp)
+
 def get_reg_xml(request):
     f = open(REG_FN)
     
@@ -98,9 +118,10 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     # url(r'^admin/', include(admin.site.urls)
-                       url(r'^health-check-api', healthcheckack),
-                       url(r'^health-check-rep', healthcheckreport),
-                       url(r'^esgf-nm-api', nodemgrapi),
+                       url(r'^esgf-nm/health-check-api', healthcheckack),
+                       url(r'^esgf-nm/health-check-rep', healthcheckreport),
+                       url(r'^esgf-nm/api', nodemgrapi),
                        url(r'^esgf-nm/node-props.json', get_json),
-                       url(r'^esgf-node-manager/registration.xml', get_reg_xml))
+                       url(r'^esgf-nm/metrics.json', get_metrics),
+                       url(r'^esgf-nm/registration.xml', get_reg_xml))
 

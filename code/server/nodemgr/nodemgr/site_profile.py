@@ -41,16 +41,9 @@ def parse_properties():
     pdict["action"] = "node_properties"
     f.close()
 
+
     return pdict
 
-def get_user_count():
-
-    return 0
-
-def get_metrics():
-
-    return 0
-    
 
 #def add_sn(pdict,sn):
     

@@ -40,7 +40,7 @@ class NMapSender(Thread):
         
 
         try:
-            conn.request("GET", "/esgf-nm-api?action=node_map_update" + tstr + "&from=" + self.fromnode , json.dumps(self.nodemap) )
+            conn.request("GET", "/esgf-nm/api?action=node_map_update" + tstr + "&from=" + self.fromnode , json.dumps(self.nodemap) )
             resp = conn.getresponse()
             if resp.status == 500:
                 self.logger.error(resp.read())
@@ -73,7 +73,7 @@ class SNInitSender(Thread):
         tstr = "&timestamp=" + str(self.ts)
 
         try:
-            conn.request("GET", "/esgf-nm-api?action=sn_init" + tstr + "&from=" + self.fromnode)
+            conn.request("GET", "/esgf-nm/api?action=sn_init" + tstr + "&from=" + self.fromnode)
             resp = conn.getresponse()
             if resp.status == 500:
                 self.logger.error(resp.read())
@@ -119,7 +119,7 @@ class NMRepoSender(Thread):
         tstr = "&timestamp=" + str(self.ts)
 
         try:
-            conn.request("GET", "/esgf-nm-api?action=nm_repo_update" + tstr + "&from=" + self.fromnode + get_url_str(), json.dumps(self.task_d["update"]) )
+            conn.request("GET", "/esgf-nm/api?action=nm_repo_update" + tstr + "&from=" + self.fromnode + get_url_str(), json.dumps(self.task_d["update"]) )
             resp = conn.getresponse()
             if resp.status == 500:
                 self.logger.error(resp.read())

@@ -26,6 +26,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# TODOO  the esgf-nm path prefix should be a seting
 
 # Application definition
 
