@@ -246,7 +246,11 @@ class NodeMap():
         f.close()        
         
     def set_prop(self, k, v):
-        self.prop_store[k] = v
+        
+        if k in self.prop_store:
+            self.prop_store[k].update(v)
+        else:
+            self.prop_store[k] = v
         self.prop_dirty = True
 
 

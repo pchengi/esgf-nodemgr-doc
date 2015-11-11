@@ -294,10 +294,13 @@ def check_properties(nodemap_instance):
                 lg = logging.getLogger("esgf_nodemanager")
                 lg.error(resp.read())
 
+
+
     for n in nodemap_instance.prop_store:
         val = nodemap_instance.prop_store[n]
 
         tmp_props.append(val)
+        
     
     out_xml = gen_reg_xml(tmp_props)
         

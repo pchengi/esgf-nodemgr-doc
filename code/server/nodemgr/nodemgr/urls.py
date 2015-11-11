@@ -34,13 +34,29 @@ def write_resp(full):
 
     global served
 
-    if served and (not full):
+    met_resp = {}
+
+    if os.path.isfile(MET_FN):
+        f = open(MET_FN)
+        met_in = f.read()
+        try:
+            met_resp = json.loads(met_in)
+        except:
+            print "JSON error with metrics file"
+        f.close()
+
+    if len(met_resp) > 0:
+        met_resp["esgf.host"] = get_prop_st()["esgf.host"]
+        met_resp["action"] = "node_properties"
+        return 
+    elif served and (not full):
         return "OK"
     else:
         print "first time, serving json"
 
         served = True
         ret = get_prop_st()
+        ret.update(met_resp)
         return json.dumps(ret)
 
 def healthcheckreport(request):
