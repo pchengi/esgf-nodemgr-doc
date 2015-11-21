@@ -1,4 +1,4 @@
-import sys
+import sys, os
 from time import sleep, time
 
 from supernode import member_node_check, supernode_check, links_check, supernode_init, my_turn, calc_time, check_properties

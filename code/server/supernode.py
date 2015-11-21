@@ -31,7 +31,7 @@ class NMapSender(Thread):
 
         conn = HTTPConnection(self.target, PORT, timeout=30)
 
-        print self.target, PORT 
+#        print self.target, PORT 
 
         tstr = ""
 
@@ -65,7 +65,7 @@ class SNInitSender(Thread):
 
     def run(self):
 
-        print self.target, PORT 
+#        print self.target, PORT 
 
         conn = HTTPConnection(self.target, PORT, timeout=30)
 
@@ -112,7 +112,7 @@ class NMRepoSender(Thread):
     def run(self):
 
 
-        print self.target, PORT 
+#        print self.target, PORT 
         conn = HTTPConnection(self.target, PORT, timeout=30)
 
 

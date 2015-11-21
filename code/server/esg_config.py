@@ -22,12 +22,12 @@ class EsgConfig():
             exit(-1)
         self.config_type = val
 
-    def is_idp():
+    def is_idp(self):
 
         return IDP_BIT & self.config_type
 
 
-    def is_data():
+    def is_data(self):
 
         return DATA_BIT & self.config_type
 

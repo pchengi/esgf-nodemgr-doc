@@ -1,4 +1,6 @@
 from sqlalchemy import create_engine
+from threading import Thread
+from time import sleep
 
 import os, json
 
@@ -40,14 +42,14 @@ def execute_count_query(qstr):
     val = 0
 
     for row in result:
-        val = row
+        val = row[0]
 
-    return val
+    return str(val)
 
 
 def get_user_count():
-    return    execute_count_query('select count(*) from (select distinct firstname, middlname, lastname from esgf_security.user) as tmp') -1
-
+    return    execute_count_query('select count(*) from (select distinct firstname, middlename, lastname from esgf_security.user) as tmp')
+#  TODO -1 to not count admin user?
 
 def get_dl_bytes():
 
@@ -56,7 +58,8 @@ def get_dl_bytes():
 
 def get_dl_count():
 
-    return execute_count_query('select count(*) from esgf_node_manager.access_logging where data_size = xfer_size and xfer_size > 0')
+#    return execute_count_query('select count(*) from esgf_node_manager.access_logging where data_size = xfer_size and xfer_size > 0')
+    return execute_count_query('select count(*) from esgf_node_manager.access_logging where data_size = xfer_size')
 
 
 def get_dl_users():
@@ -71,7 +74,7 @@ class QueryRunner(Thread):
 
     def __init__(self, fn, c):
 
-        super(QueryRunner, self)._init()
+        super(QueryRunner, self).__init__()
         self.target_fn = fn
         self.esg_config = c
         
@@ -85,16 +88,18 @@ class QueryRunner(Thread):
             out_dict= {}
 
             if self.esg_config.is_idp():
-                outdict["users_count"] = get_user_count()
+                out_dict["users_count"] = get_user_count()
 
-#        if self.esg_config.is_data():
-
+            if self.esg_config.is_data():
+                out_dict["download.users"] = get_dl_users()
+                out_dict["download.count"] = get_dl_count()
+                out_dict["download.bytes"] = get_dl_bytes()
             
-            outstr = json.dumps(outdict)
+            outstr = json.dumps(out_dict)
 
 
             if outstr != last_str:
-                f = open(target_fn, "w")
+                f = open(self.target_fn, "w")
 
                 f.write(outstr)
                 f.close()

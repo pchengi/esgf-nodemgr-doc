@@ -17,6 +17,8 @@ fh.setLevel(logging.ERROR)
 
 logger.addHandler(fh)
 
+import json
+
 # def init_node_list():
 
 #     org_list = [ "aims1.llnl.gov" ]
@@ -55,9 +57,21 @@ class RunningCheck(Thread):
 
     def handle_resp(self, resp):
         buf = resp.read()
+
+
         if len(buf) > 2:
+
             print "longer response"
-            write_task(buf)
+
+            try: 
+                foo = json.loads(buf)
+                write_task(buf)
+            except:
+                print "Error loading json resopnse"
+                print buf
+                print vars(self)
+                print
+
         else:
             print "short response"
 

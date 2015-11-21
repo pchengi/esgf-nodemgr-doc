@@ -180,7 +180,7 @@ def gen_reg_xml(arr_in):
 
             if "gridftp.service.endpoint" in x:
                 outarr.append('<GridFTPService endpoint="')
-                outarr.append(x[""])
+                outarr.append(x["gridftp.service.endpoint"])
 
                 outarr.append('">\n')
                 outarr.append('<Configuration serviceType="Replication" port="2812"/>')
@@ -191,10 +191,25 @@ def gen_reg_xml(arr_in):
 
 
 
-        # <Metrics>
-        #     <DownloadedData count="0" size="0" users="0"/>
-        #     <RegisteredUsers count="0"/>
-        # </Metrics>
+                
+
+        outarr.append('     <Metrics>\n')
+        
+        if "download.count" in x:
+            outarr.append('       <DownloadedData count="')
+            outarr.append(str(x["download.count"]))
+            outarr.append('" size="')
+            outarr.append(str(x["download.bytes"]))
+            outarr.append('" users="')
+            outarr.append(str(x["download.users"]))
+            outarr.append('"/> \n')
+        if "users_count" in x:
+            outarr.append('       <RegisteredUsers count="')
+            outarr.append(str(x["users_count"]))
+            outarr.append('/>\n')
+        else:
+            outarr.append('       <RegisteredUsers count="0"/>\n')
+        outarr.append('     <Metrics/>\n')
 
         if "orp.service.endpoint" in x:
             outarr.append('        <RelyingPartyService endpoint="')

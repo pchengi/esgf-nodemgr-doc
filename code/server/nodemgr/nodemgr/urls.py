@@ -45,19 +45,32 @@ def write_resp(full):
             print "JSON error with metrics file"
         f.close()
 
-    if len(met_resp) > 0:
-        met_resp["esgf.host"] = get_prop_st()["esgf.host"]
-        met_resp["action"] = "node_properties"
-        return 
-    elif served and (not full):
-        return "OK"
-    else:
+
+# TODO if need to not full handle that
+#    if not served:  -- for now just serve all the data each tim
+# TODO work on requests based on absense of data, with timestamp of last for comparison later
+    if True:
         print "first time, serving json"
 
         served = True
+        
         ret = get_prop_st()
+
         ret.update(met_resp)
-        return json.dumps(ret)
+
+        string_resp = json.dumps(ret)
+
+#        print string_resp
+        return string_resp
+
+    elif len(met_resp) > 0:
+        met_resp["esgf.host"] = get_prop_st()["esgf.host"]
+        met_resp["action"] = "node_properties"
+        out_str = json.dumps(met_resp)
+ #       print out_str
+        return out_str
+    else:
+        return "OK"
 
 def healthcheckreport(request):
     qd = request.GET
@@ -86,6 +99,7 @@ def healthcheckack(request):
         print "checking on others"        
 
     resp = write_resp(False)
+
     return HttpResponse(resp)
     
 
