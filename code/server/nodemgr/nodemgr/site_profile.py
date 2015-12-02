@@ -115,13 +115,15 @@ def gen_reg_xml(arr_in):
         outarr.append(x["esgf.host"])
         outarr.append('" dn="dunno"/>\n')
 
-        outarr.append('       <GeoLocation lat="')
-        outarr.append(x["node.geolocation.lat"])
-        outarr.append('" lon="')
-        outarr.append(x["node.geolocation.lon"])
-        outarr.append('" city="')
-        outarr.append(x["node.geolocation.city"])
-        outarr.append('"/>\n')
+        if "node.geolocation.lat" in x:
+            outarr.append('       <GeoLocation lat="')
+            outarr.append(x["node.geolocation.lat"])
+            outarr.append('" lon="')
+            outarr.append(x["node.geolocation.lon"])
+            if "node.geolocation.city" in x:
+                outarr.append('" city="')
+                outarr.append(x["node.geolocation.city"])
+            outarr.append('"/>\n')
 
         if "node.manager.service.endpoint" in x:
             outarr.append('        <NodeManager endpoint="')
