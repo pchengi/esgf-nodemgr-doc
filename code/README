@@ -15,7 +15,8 @@ Set several environment variables:
 export ESGF_NODEMGR_MAP="<your nodemap file>"
 export ESGF_NM_TASKS="<directory to hold tasks>"
 export ESGF_NM_TIMESTAMP="<file to write timestamp>"
-
+export ESGF_NM_PORT=<port>
+export ESGF_NM_STATS_RES=/tmp/stats.json
 
 run "python gen_nodemap.py node1.domain.org node2.other.gov node3 ... "
 to generate an initial map file at the location set in the environment variable.
