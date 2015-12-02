@@ -18,6 +18,31 @@ export ESGF_NM_TIMESTAMP="<file to write timestamp>"
 export ESGF_NM_PORT=<port>
 export ESGF_NM_STATS_RES=/tmp/stats.json
 
+
+  -- or --
+
+Edit and source ./conf_examples/nm.env
+
+For the node map file you can 
+
+If you don't have ESGF installed you need to set up basic files that
+come with the installer.
+
+  sudo mkdir -p /esg/config
+  sudo mkdir -p /esg/log
+  echo 0 > /esg/config/config_type 
+  cp code/conf_examples/esgf.properties /esg/config/
+  sed -i s/'pcmdi11\.llnl\.gov'/`hostname`/g /esg/config/esgf.properties
+    **  other properties elements need to be edited by hand
+
+
+If you used the nm.env defaults, make sure they are present:
+
+cp code/conf_examples/node-mgr-repo.json.org /esg/config/node-mgr-repo.json
+mkdir /esg/tasks
+
+
+
 run "python gen_nodemap.py node1.domain.org node2.other.gov node3 ... "
 to generate an initial map file at the location set in the environment variable.
 

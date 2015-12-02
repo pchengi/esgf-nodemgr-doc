@@ -10,7 +10,7 @@ from time_store import get_instance as ts_get_instance
 
 from nodemgr.nodemgr.site_profile import get_prop_st
 
-from query import QueryRunner
+from query import has_db, QueryRunner
 
 import logging
 
@@ -79,9 +79,11 @@ ec = EsgConfig()
 
 res_path = os.environ.get("ESGF_NM_STATS_RES")
 
-qr = QueryRunner(res_path, ec)
+if has_db:
 
-qr.start()
+    qr = QueryRunner(res_path, ec)
+
+    qr.start()
 
 
 while (True):
