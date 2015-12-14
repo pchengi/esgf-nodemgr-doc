@@ -5,11 +5,17 @@ import os
 # this should be set by a global config
 MAXREF = 20
 
+PROPS_FN = '/esg/config/nm.properties'
+
+from site_profile import ts_func
+
 class NodeMap():
     
     def __init__(self):
         self.filename = ""
         self.readonly = False
+        self.prop_store = {} 
+        self.prop_dirty = False
 
     def set_ro(self):
         self.readonly = True
@@ -196,6 +202,17 @@ class NodeMap():
             return
 
         # We only write if there are changes
+
+        if self.prop_dirty == True:
+            self.prop_ts = ts_func()
+            outf = open(PROPS_FN, 'w') 
+            self.prop_store["ts_all"] = self.prop_ts
+            outs = json.dumps(self.prop_store, sort_keys=True, indent=4, separators=(',', ': '))
+            outf.write(outs)
+            outf.close()
+
+            self.prop_dirty = False
+
         if self.dirty == False:
             return
         
@@ -228,6 +245,13 @@ class NodeMap():
         self.nodemap = json.loads(f.read())
         f.close()        
         
+    def set_prop(self, k, v):
+        
+        if k in self.prop_store:
+            self.prop_store[k].update(v)
+        else:
+            self.prop_store[k] = v
+        self.prop_dirty = True
 
 
 nodemap_instance = NodeMap()

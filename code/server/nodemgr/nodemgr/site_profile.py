@@ -3,6 +3,17 @@ from time import time
 PROPERTIES = "/esg/config/esgf.properties"
 TYPE_FN = "/esg/config/config_type"
 
+REG_FN = "/esg/config/registration.xml"
+
+
+properties_struct = None
+
+
+
+from types import DictType
+
+def get_prop_st():
+    return properties_struct
 
 def ts_func():
 
@@ -17,46 +28,46 @@ def parse_properties():
     pdict["timestamp"] = ts_func()
     for line in f:
         ll = line.strip()
-        if ll[0] != '#':
+        
+        if len(ll) > 0 and ll[0] != '#':
             parts = line.split('=')
             pdict[ parts[0].strip() ] = parts[1].strip()
 
     f.close()
 
-    f.open(TYPE_FN)
+    f = open(TYPE_FN)
     val=f.read()
     pdict["node.type"] = val.strip()
+    pdict["action"] = "node_properties"
+    f.close()
 
 
     return pdict
 
-def get_user_count():
 
-    return
-
-def get_metrics():
-
-    return
+#def add_sn(pdict,sn):
     
 
-def add_sn(pdict,sn):
 
-
-
-
-def get_json(pdict):
-
-    return 
 
 
 def gen_reg_xml(arr_in):
 
-    outarr =  ["<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n"]
+#    print str(arr_in)
+
+    outarr =  ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n']
 
     ts = ts_func()
-    
+    outarr.append('<Registration timeStamp="')
+    outarr.append(ts)
+    outarr.append('">\n')
 
-    for z in arr:
+    for x in arr_in:
+        
+        if not type(x) is DictType:
+            print "Type issue"
+            print str(x)
+            continue
 
         outarr.append("    <Node ")
 
@@ -89,9 +100,11 @@ def gen_reg_xml(arr_in):
 #  This should correspond to super-node for member-nodes
 #  adjacent super-node for super-nodes
 #        outarr.append(x["admin.peer"]) 
-        outarr.append(x["default.peer"]) 
+        outarr.append(x["esgf.default.peer"]) 
+        
         outarr.append('" defaultPeer="')
         outarr.append(x["esgf.default.peer"]) 
+
 #        outarr.append('" ="')
 #        outarr.append(x[""]) 
         outarr.append('">\n')
@@ -102,13 +115,15 @@ def gen_reg_xml(arr_in):
         outarr.append(x["esgf.host"])
         outarr.append('" dn="dunno"/>\n')
 
-        outarr.append('"       <GeoLocation lat="')
-        outarr.append(x["node.geolocation.lat"])
-        outarr.append('" lon="')
-        outarr.append(x["node.geolocation.lon"])
-        outarr.append('" city="')
-        outarr.append(x["node.geolocation.city"])
-        outarr.append('"/>\n')
+        if "node.geolocation.lat" in x:
+            outarr.append('       <GeoLocation lat="')
+            outarr.append(x["node.geolocation.lat"])
+            outarr.append('" lon="')
+            outarr.append(x["node.geolocation.lon"])
+            if "node.geolocation.city" in x:
+                outarr.append('" city="')
+                outarr.append(x["node.geolocation.city"])
+            outarr.append('"/>\n')
 
         if "node.manager.service.endpoint" in x:
             outarr.append('        <NodeManager endpoint="')
@@ -117,13 +132,13 @@ def gen_reg_xml(arr_in):
 
         if "orp.security.authorization.service.endpoint" in x:
             outarr.append('        <AuthorizationService endpoint="')
-            outarr.append(x["orp.security.authorization.service.endpoint="]) 
+            outarr.append(x["orp.security.authorization.service.endpoint"]) 
             outarr.append('"/>\n')
 
-        if  in x:
-            outarr.append('" ="')
-            outarr.append(x[""]) 
-            outarr.append('">\n')
+        if "idp.service.endpoint" in x:
+             outarr.append('       <OpenIDProvider endpoint="')
+             outarr.append(x["idp.service.endpoint"]) 
+             outarr.append('"/>\n')
 
 
 #        <OpenIDProvider endpoint="https://pcmdi9.llnl.gov/esgf-idp/idp/openidServer.htm"/>
@@ -131,18 +146,21 @@ def gen_reg_xml(arr_in):
 
 #        <FrontEnd endpoint="http://pcmdi9.llnl.gov/esgf-web-fe/"/>
         if "index.service.endpoint" in x:
-            outarr.append('<        IndexService port="80" endpoint="')
+            outarr.append('        <IndexService port="80" endpoint="')
             outarr.append(x["index.service.endpoint"]) 
-            outarr.append('">\n')
+            outarr.append('"/>\n')
+
 
 #        <IndexService port="8983" endpoint="http://pcmdi9.llnl.gov/esg-search/search"/>
+
+# TODO get groups for attribute service
 #        <AttributeService endpoint="https://pcmdi9.llnl.gov/esgf-idp/saml/soap/secure/attributeService.htm">
 
 
 
 #        outarr.append('" ="')
 #        outarr.append(x[""]) 
-        outarr.append('">\n')
+#        outarr.append('">\n')
 
 
 
@@ -155,23 +173,58 @@ def gen_reg_xml(arr_in):
             outarr.append('">\n')
 
         # <ThreddsService endpoint="http://dapp2p.cccma.ec.gc.ca/thredds"/>
+
+
         # <GridFTPService endpoint="gsiftp://dapp2p.cccma.ec.gc.ca">
         #     <Configuration serviceType="Replication" port="2812"/>
         #     <Configuration serviceType="Download" port="2811"/>
         # </GridFTPService>
-        # <Metrics>
-        #     <DownloadedData count="0" size="0" users="0"/>
-        #     <RegisteredUsers count="0"/>
-        # </Metrics>
+
+            if "gridftp.service.endpoint" in x:
+                outarr.append('<GridFTPService endpoint="')
+                outarr.append(x["gridftp.service.endpoint"])
+
+                outarr.append('">\n')
+                outarr.append('<Configuration serviceType="Replication" port="2812"/>')
+                outarr.append('<Configuration serviceType="Download" port="2811"/>')
+                outarr.append('         </GridFTPService>\n')
+
+# TODO metricz - download count size users , registered users
+
+
+
+                
+
+        outarr.append('     <Metrics>\n')
+        
+        if "download.count" in x:
+            outarr.append('       <DownloadedData count="')
+            outarr.append(str(x["download.count"]))
+            outarr.append('" size="')
+            outarr.append(str(x["download.bytes"]))
+            outarr.append('" users="')
+            outarr.append(str(x["download.users"]))
+            outarr.append('"/> \n')
+        if "users_count" in x:
+            outarr.append('       <RegisteredUsers count="')
+            outarr.append(str(x["users_count"]))
+            outarr.append('/>\n')
+        else:
+            outarr.append('       <RegisteredUsers count="0"/>\n')
+        outarr.append('     <Metrics/>\n')
 
         if "orp.service.endpoint" in x:
             outarr.append('        <RelyingPartyService endpoint="')
             outarr.append(x["orp.service.endpoint"]) 
-            outarr.append('">\n')            
+            outarr.append('"/>\n')            
 
 #TODO get public cert
-        outarr.apppend("   <PEMCert>\n         <Cert>NOT_AVAILABLE</Cert>\n   </PEMCert>")
+        outarr.append("   <PEMCert>\n         <Cert>NOT_AVAILABLE</Cert>\n   </PEMCert>\n")
 
 
 
         outarr.append("    </Node>\n")
+    outarr.append("</Registration>\n")
+    return ''.join(outarr)    
+
+properties_struct = parse_properties()

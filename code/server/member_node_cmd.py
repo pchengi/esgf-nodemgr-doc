@@ -9,7 +9,7 @@ cmd = sys.argv[1]
 
 myname = os.uname()[1]
 
-PORT = int(os.environ.get("ESGF_NM_PORT")
+PORT = int(os.environ.get("ESGF_NM_PORT"))
 
 if cmd == "add":
 
@@ -21,7 +21,7 @@ if cmd == "add":
     conn = Conn(target, PORT, timeout=30)
 
 
-    conn.request("GET", "/esgf-nm-api?action=add_member&from=" + myname + "&project=" + proj + "&standby=" + stdby)
+    conn.request("GET", "/esgf-nm/api?action=add_member&from=" + myname + "&project=" + proj + "&standby=" + stdby)
     resp = conn.getresponse()
     conn.close()
 
@@ -62,7 +62,7 @@ elif cmd ==  "remove":
 
     conn = Conn(target, PORT, timeout=30)
 
-    conn.request("GET", "/esgf-nm-api?action=remove_member&from=" + myname )
+    conn.request("GET", "/esgf-nm/api?action=remove_member&from=" + myname )
     resp = conn.getresponse()
     conn.close()
     

@@ -10,6 +10,13 @@ from time_store import get_instance
 
 from user_api import put_file
 
+def node_properties(task_d, nmap):
+
+    ky = task_d["esgf.host"]
+    print "node properties task" + ky
+    nmap.set_prop(ky, task_d)
+
+
 def health_check_fwd(task_d, nmap):
 
     fromnode = task_d["from"]
@@ -129,7 +136,7 @@ def handle_tasks(nmap):
         task_d = json.loads(task)
 
         action = task_d["action"]
-
+# TODO - this needs to be hardened before outside deployment
         eval(action)(task_d, nmap)
         
         task = get_next_task()

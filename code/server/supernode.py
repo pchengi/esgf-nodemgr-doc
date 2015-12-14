@@ -7,13 +7,15 @@ from nodemgr.nodemgr.healthcheck import RunningCheck
 from httplib import HTTPConnection, HTTPException
 from nodemgr.nodemgr.simplequeue import write_task
 
-
+from nodemgr.nodemgr.site_profile import gen_reg_xml, REG_FN
 
 import pdb
 
+import logging
+
 PORT = int(os.environ.get("ESGF_NM_PORT"))
 
-
+#TODO - health check should include a timestamp of the current properties in the nodes possession 
 
 class NMapSender(Thread):
 
@@ -23,13 +25,13 @@ class NMapSender(Thread):
         self.target = nn
         self.ts = ts
         self.fromnode = nmap.myid
-    
+        self.logger = logging.getLogger("esgf_nodemanager")
 
     def run(self):
 
         conn = HTTPConnection(self.target, PORT, timeout=30)
 
-        print self.target, PORT 
+#        print self.target, PORT 
 
         tstr = ""
 
@@ -38,10 +40,10 @@ class NMapSender(Thread):
         
 
         try:
-            conn.request("GET", "/esgf-nm-api?action=node_map_update" + tstr + "&from=" + self.fromnode , json.dumps(self.nodemap) )
+            conn.request("GET", "/esgf-nm/api?action=node_map_update" + tstr + "&from=" + self.fromnode , json.dumps(self.nodemap) )
             resp = conn.getresponse()
             if resp.status == 500:
-                print resp.read()
+                self.logger.error(resp.read())
 
         except Exception as e:
             print "Connection problem: " + str(e)
@@ -59,11 +61,11 @@ class SNInitSender(Thread):
         self.target = nn
         self.ts = ts
         self.fromnode = nmap.myid
-    
+        self.logger = logging.getLogger("esgf_nodemanager")
 
     def run(self):
 
-        print self.target, PORT 
+#        print self.target, PORT 
 
         conn = HTTPConnection(self.target, PORT, timeout=30)
 
@@ -71,10 +73,11 @@ class SNInitSender(Thread):
         tstr = "&timestamp=" + str(self.ts)
 
         try:
-            conn.request("GET", "/esgf-nm-api?action=sn_init" + tstr + "&from=" + self.fromnode)
+            conn.request("GET", "/esgf-nm/api?action=sn_init" + tstr + "&from=" + self.fromnode)
             resp = conn.getresponse()
             if resp.status == 500:
-                print resp.read()
+                self.logger.error(resp.read())
+
 
         except Exception as e:
             print "Connection problem: " + str(e)
@@ -90,7 +93,8 @@ class NMRepoSender(Thread):
         self.task_d = task_d
         self.fromnode = nmap.myid
         self.ts = ts
-    
+        self.logger = logging.getLogger("esgf_nodemanager")    
+
     def get_url_str(self):
         
         parts = ["application", "project", "name", "send"]
@@ -108,17 +112,18 @@ class NMRepoSender(Thread):
     def run(self):
 
 
-        print self.target, PORT 
+#        print self.target, PORT 
         conn = HTTPConnection(self.target, PORT, timeout=30)
 
 
         tstr = "&timestamp=" + str(self.ts)
 
         try:
-            conn.request("GET", "/esgf-nm-api?action=nm_repo_update" + tstr + "&from=" + self.fromnode + get_url_str(), json.dumps(self.task_d["update"]) )
+            conn.request("GET", "/esgf-nm/api?action=nm_repo_update" + tstr + "&from=" + self.fromnode + get_url_str(), json.dumps(self.task_d["update"]) )
             resp = conn.getresponse()
             if resp.status == 500:
-                print resp.read()
+                self.logger.error(resp.read())
+
 
         except Exception as e:
             print "Connection problem: " + str(e)
@@ -206,12 +211,6 @@ def node_return(nm_inst, sn_id):
                     n["members"].remove(x)
 
 
-
-
-
-                
-
-
 def supernode_check(nodemap_instance):
 
     tarr = []
@@ -241,7 +240,73 @@ def supernode_check(nodemap_instance):
 #    health_check_report(report_dict, nodemap_instance)
 
 
+def check_properties(nodemap_instance):
 
+
+    tmp_props = []
+
+
+    for n in nodemap_instance.nodemap["supernodes"]:
+        
+
+        # for now don't request things we have. TODO: update if the
+        # timestamp is too stale (should be more frequent than the
+        # health checks).
+        target = n["hostname"]
+
+
+        if  (not target in nodemap_instance.prop_store) and target != localhostname and n["health"] == "good":
+            
+            print "retrieving", target, "properties"
+
+
+            conn = HTTPConnection(target, PORT, timeout=30)    
+            conn.request("GET", "/esgf-nm/node-props.json" )
+            resp = conn.getresponse()
+
+
+            if resp.status == 200:
+                dat = resp.read()
+
+#                print dat
+                if dat == "NO_FILE":
+                    print no_file
+                    continue
+                
+
+                obj = []
+                try:
+                    obj = json.loads(dat)
+                except:
+                    print "JSON error"
+                    continue
+
+                # TODO: Are we producing duplicate entries?
+                for n in obj:
+
+                    if n != "ts_all": 
+                        val = obj[n]
+                        tmp_props.append(val)
+
+            else:
+                # TODO: log these sorts of errors
+                print "An Error has occurred"
+                lg = logging.getLogger("esgf_nodemanager")
+                lg.error(resp.read())
+
+
+
+    for n in nodemap_instance.prop_store:
+        val = nodemap_instance.prop_store[n]
+
+        tmp_props.append(val)
+        
+    
+    out_xml = gen_reg_xml(tmp_props)
+        
+    f = open(REG_FN, 'w')
+    f.write(out_xml)
+    f.close()
 
 def send_map_to_others(members, nmap, ts=0):
     
@@ -380,6 +445,7 @@ def member_node_check(nmap):
     #        print "eltime " , eltime 
 # For now we don't care about time to reach a member node - potential
 # future optimization
+        
         if (nmap.update_membernode_status(t.nodename, status)):
             send_map_to_others(False, nmap)
             send_map_to_others(True, nmap)
@@ -433,7 +499,8 @@ def links_check(nmap):
             changed = True
 #            print "  change to good"
             new_back_up.append(snodes[i]["id"])
-
+        elif (not down) and snodes[i]["health"] == "new":
+            snodes[i]["health"] = "good"
     if changed:
         nmap.dirty = True
 

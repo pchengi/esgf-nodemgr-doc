@@ -6,10 +6,18 @@ from nodemap import get_instance
 from httplib import HTTPConnection as Conn
 from httplib import HTTPException
 
-import os
+from simplequeue import write_task
 
+import os, logging
 
+logger = logging.getLogger("esgf_nodemanager")
 
+fh = logging.FileHandler("/tmp/esgf_nm_dj.log")
+fh.setLevel(logging.ERROR)
+
+logger.addHandler(fh)
+
+import json
 
 # def init_node_list():
 
@@ -45,6 +53,27 @@ class RunningCheck(Thread):
         self.first = first
         self.checkarr = checkarr
         self.fromnode = fromnode
+        self.logger = logging.getLogger("esgf_nodemanager")
+
+    def handle_resp(self, resp):
+        buf = resp.read()
+
+
+        if len(buf) > 2:
+
+            print "longer response"
+
+            try: 
+                foo = json.loads(buf)
+                write_task(buf)
+            except:
+                print "Error loading json resopnse"
+                print buf
+                print vars(self)
+                print
+
+        else:
+            print "short response"
 
 
     def run(self):
@@ -58,14 +87,20 @@ class RunningCheck(Thread):
         eltime = -1
         error = ""
         try:
-            conn.request("GET", "/health-check-api?from=" + localhostname + "&forward=" + str(self.fwdcheck))
+            conn.request("GET", "/esgf-nm/health-check-api?from=" + localhostname + "&forward=" + str(self.fwdcheck))
         
             resp = conn.getresponse()
 
             if resp.status == 500:
-                print "500 error: " + resp.read()
+                print "500 error" 
+                self.logger.error(resp.read())
             
             eltime = time() - ts
+            
+            self.handle_resp(resp)
+
+
+
         except Exception as e:
             error = "connectivity problem"
             print e
@@ -84,19 +119,22 @@ class RunningCheck(Thread):
                 if len(node_list) > len(self.checkarr) + 2:
                     sleep(.01)
                 conn = Conn(self.fromnode, PORT, timeout=30)
-                url = "/health-check-rep?from=" + localhostname
+                url = "/esgf-nm/health-check-rep?from=" + localhostname
 
                 for n in self.checkarr:
                     url = url + "&" + n
                     
                 error = ""
+                resp = ""
                 try:
                     conn.request("GET", url)
                     resp = conn.getresponse()
+                    self.handle_resp(resp)
 
                 except HTTPException as e:
                     error = "connectivity problem"
-                    print e                
+                    print e
+                
 
 # def do_checks(fwdcheck):
 
