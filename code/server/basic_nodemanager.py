@@ -14,6 +14,7 @@ from query import has_db, QueryRunner
 
 import logging
 
+from nodemgr.nodemgr.settings import MAP_FN, TIMESTAMP
 
 
 def usage():
@@ -21,8 +22,8 @@ def usage():
     exit(1)
     
 
-if (len(sys.argv) <2):
-    usage()
+#if (len(sys.argv) <2):
+#    usage()
 
 logger = logging.getLogger("esgf_nodemanager")
 
@@ -33,7 +34,7 @@ logger.addHandler(fh)
 
 nodemap_instance = nm_get_instance()
 
-nodemap_instance.load_map(sys.argv[1])
+nodemap_instance.load_map(MAP_FN)
 
 supernode = False
 
@@ -45,7 +46,7 @@ if (nodemap_instance.myid > 0) :
         print "This node is running as a supernode; timestamp file parameter is missing"
         usage()
     
-    timestore_instance.filename = sys.argv[2]
+    timestore_instance.filename = TIMESTAMP
     supernode = True
 
 

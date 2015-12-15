@@ -7,10 +7,10 @@ if len(sys.argv) < 2:
     exit(-1)
 
 
-MAP_FN = os.environ.get("ESGF_NODEMGR_MAP")
+from nodemgr.nodemgr.settings import MAP_FN
 
 if MAP_FN is None or len(MAP_FN) < 1:
-    print "Need to set ESGF_NODEMGR_MAP"
+    print "Error in setting"
     exit(-1)
 
 f = open(MAP_FN)

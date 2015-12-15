@@ -6,6 +6,7 @@ from threading import Thread
 from nodemgr.nodemgr.healthcheck import RunningCheck
 from httplib import HTTPConnection, HTTPException
 from nodemgr.nodemgr.simplequeue import write_task
+from nodemgr.nodemgr.settings import PORT
 
 from nodemgr.nodemgr.site_profile import gen_reg_xml, REG_FN
 
@@ -13,7 +14,7 @@ import pdb
 
 import logging
 
-PORT = int(os.environ.get("ESGF_NM_PORT"))
+
 
 #TODO - health check should include a timestamp of the current properties in the nodes possession 
 

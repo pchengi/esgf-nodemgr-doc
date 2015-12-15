@@ -2,16 +2,18 @@
 
 import json, sys, os
 
+from nodemgr.nodemgr.settings import MAP_FN
+
 if len(sys.argv) < 3:  
     print "need at least 2 <hostname> arguments"
     print "Example:"
     print sys.argv[0] + " node1.somedomain.org node2.other.gov node3.somewhere.edu ..."
     exit
 
-filename = os.environ.get("ESGF_NODEMGR_MAP")
+filename = MAP_FN
 
 if filename is None or len(filename) == 0:
-    print "Need to set variable ESGF_NODEMGR_MAP"
+    print "Error with mapfile setting"
     exit
 
 
