@@ -16,7 +16,9 @@ from site_profile import get_prop_st, REG_FN
 global served 
 served = False
 
-MET_FN = os.environ.get("ESGF_NM_STATS_RES")
+from settings import metrics_fn
+
+MET_FN = metrics_fn
 
 
 # TODO - need to 
@@ -142,6 +144,13 @@ def get_reg_xml(request):
     
     return HttpResponse(resp)
 
+def hello_world(request):
+
+    resp = "<h1>Hello World</h1>"
+
+    return HttpResponse(resp)
+
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'nodemgr.views.home', name='home'),
@@ -153,5 +162,6 @@ urlpatterns = patterns('',
                        url(r'^esgf-nm/api', nodemgrapi),
                        url(r'^esgf-nm/node-props.json', get_json),
                        url(r'^esgf-nm/metrics.json', get_metrics),
-                       url(r'^esgf-nm/registration.xml', get_reg_xml))
+                       url(r'^esgf-nm/registration.xml', get_reg_xml),
+                       url(r'^esgf-nm', hello_world))
 

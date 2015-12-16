@@ -9,7 +9,8 @@ import json, os
 from nodemap import get_instance
 
 nodemap_instance = get_instance()
-MAP_FN = os.environ.get("ESGF_NODEMGR_MAP")
+from settings import MAP_FN
+#MAP_FN = os.environ.get("ESGF_NODEMGR_MAP")
 
 if MAP_FN is None or len(MAP_FN) < 2:
     print "Need to set ESGF_NODEMGR_MAP"

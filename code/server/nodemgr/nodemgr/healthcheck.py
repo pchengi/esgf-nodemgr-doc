@@ -40,7 +40,7 @@ localhostname = os.uname()[1]
 # MAPFILE = "/export/ames4/node_mgr_map.json"
 
 
-PORT = int(os.environ.get("ESGF_NM_PORT"))
+from settings import PORT
 
 
 class RunningCheck(Thread):

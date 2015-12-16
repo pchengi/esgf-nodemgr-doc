@@ -7,7 +7,8 @@ MAX_TASK = 4096
 
 MAX_COUNT = 256
 
-TASK_DIR = os.environ.get("ESGF_NM_TASKS")
+#TASK_DIR = os.environ.get("ESGF_NM_TASKS")
+from settings import TASK_DIR
 
 if TASK_DIR is None or len(TASK_DIR) < 1:
     print "Need to set ESGF_NM_TASKS"

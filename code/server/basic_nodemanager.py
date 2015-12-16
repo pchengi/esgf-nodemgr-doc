@@ -78,7 +78,7 @@ from esg_config import EsgConfig
 
 ec = EsgConfig()
 
-res_path = os.environ.get("ESGF_NM_STATS_RES")
+from nodemgr.nodemgr.settings import metrics_fn as res_path
 
 if has_db:
 
