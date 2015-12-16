@@ -39,15 +39,18 @@ nodemap_instance.load_map(MAP_FN)
 supernode = False
 
 
-
 if (nodemap_instance.myid > 0) :
     timestore_instance = ts_get_instance()
-    if len(sys.argv) < 3:
-        print "This node is running as a supernode; timestamp file parameter is missing"
+
+
+    if len(TIMESTAMP) < 0:
+       print "This node is running as a supernode; timestamp file parameter is missing"
         usage()
-    
     timestore_instance.filename = TIMESTAMP
-    supernode = True
+
+    supernode = True    
+
+
 
 
 count = 0
