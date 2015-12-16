@@ -1,4 +1,10 @@
 import sys, os
+
+import nodemgr.nodemgr.config_root as config_root
+
+config_root.RUN_IN_DJ = False
+
+
 from time import sleep, time
 
 from supernode import member_node_check, supernode_check, links_check, supernode_init, my_turn, calc_time, check_properties
@@ -25,9 +31,11 @@ def usage():
 #if (len(sys.argv) <2):
 #    usage()
 
+
+
 logger = logging.getLogger("esgf_nodemanager")
 
-fh = logging.FileHandler("/tmp/esgf_nm.log")
+fh = logging.FileHandler("/esg/log/esgf_nm.log")
 fh.setLevel(logging.ERROR)
 
 logger.addHandler(fh)
@@ -47,6 +55,8 @@ if (nodemap_instance.myid > 0) :
         print "This node is running as a supernode; timestamp file parameter is missing"
         usage()
     timestore_instance.filename = TIMESTAMP
+    if os.path.exists(TIMESTAMP):
+        timestore_instance.restore(TIMESTAMP)
 
     supernode = True    
 
@@ -130,3 +140,6 @@ while (True):
 
     nodemap_instance.write_back()            
     supernode_count = len(nodemap_instance.nodemap["supernodes"])        
+
+
+    

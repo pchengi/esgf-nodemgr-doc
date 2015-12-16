@@ -10,12 +10,17 @@ from simplequeue import write_task
 
 import os, logging
 
+import config_root
+
 logger = logging.getLogger("esgf_nodemanager")
 
-fh = logging.FileHandler("/tmp/esgf_nm_dj.log")
-fh.setLevel(logging.ERROR)
+if (config_root.RUN_IN_DJ):
+    fh = logging.FileHandler("/esg/log/esgf_nm_dj.log")
 
-logger.addHandler(fh)
+    fh.setLevel(logging.ERROR)
+
+    logger.addHandler(fh)
+
 
 import json
 
