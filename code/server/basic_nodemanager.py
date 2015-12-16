@@ -44,7 +44,7 @@ if (nodemap_instance.myid > 0) :
 
 
     if len(TIMESTAMP) < 0:
-       print "This node is running as a supernode; timestamp file parameter is missing"
+        print "This node is running as a supernode; timestamp file parameter is missing"
         usage()
     timestore_instance.filename = TIMESTAMP
 
