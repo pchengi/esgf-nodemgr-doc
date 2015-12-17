@@ -9,7 +9,9 @@ cmd = sys.argv[1]
 
 myname = os.uname()[1]
 
-from nodemgr.nodemgr.setting import PORT
+from nodemgr.nodemgr.settings import PORT
+
+print "Port", PORT
 
 if cmd == "add":
 
