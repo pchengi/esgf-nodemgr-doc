@@ -54,6 +54,10 @@ def health_check_report(task_d, nmap):
             
             speed = float(task_d[n])
 
+            if not n in nmap[snidx]:
+                print n,"not found in list"
+                print "TODO: fetch new master list and broadcast"
+            
             to_id = nmap.snidx[n]
             
             if (int (from_id) < int(to_id)): 

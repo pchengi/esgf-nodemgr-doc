@@ -260,13 +260,18 @@ def check_properties(nodemap_instance):
             
             print "retrieving", target, "properties"
 
+            resp = None
+            
+            try:
+                conn = HTTPConnection(target, PORT, timeout=30)    
+                conn.request("GET", "/esgf-nm/node-props.json" )
+                resp = conn.getresponse()
+            except Exception as e:
+                print "Connection problem: " + str(e)
 
-            conn = HTTPConnection(target, PORT, timeout=30)    
-            conn.request("GET", "/esgf-nm/node-props.json" )
-            resp = conn.getresponse()
 
 
-            if resp.status == 200:
+            if not resp is None and resp.status == 200:
                 dat = resp.read()
 
 #                print dat
