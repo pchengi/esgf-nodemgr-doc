@@ -12,7 +12,7 @@ class TimeStore():
         outf.close()
 
 
-    def restore():
+    def restore(self):
         inf = open(self.filename)
         x = inf.read()
         

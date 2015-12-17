@@ -56,7 +56,7 @@ if (nodemap_instance.myid > 0) :
         usage()
     timestore_instance.filename = TIMESTAMP
     if os.path.exists(TIMESTAMP):
-        timestore_instance.restore(TIMESTAMP)
+        timestore_instance.restore()
 
     supernode = True    
 
