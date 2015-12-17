@@ -23,7 +23,7 @@ MET_FN = metrics_fn
 url_prefix = ""
 
 if not os.environ.get("NM_TEST_SRV") is None and os.environ.get("NM_TEST_SRV") == "true":
-    url_prefix = "esgf-nm"
+    url_prefix = "esgf-nm/"
 
 # TODO - need to 
 #hostname = os.uname()[1]
@@ -161,11 +161,11 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     # url(r'^admin/', include(admin.site.urls)
-                       url(r'^'+url_prefix+'/health-check-api', healthcheckack),
-                       url(r'^'+url_prefix+'/health-check-rep', healthcheckreport),
-                       url(r'^'+url_prefix+'/api', nodemgrapi),
-                       url(r'^'+url_prefix+'/node-props.json', get_json),
-                       url(r'^'+url_prefix+'/metrics.json', get_metrics),
-                       url(r'^'+url_prefix+'/registration.xml', get_reg_xml),
+                       url(r'^'+url_prefix+'health-check-api', healthcheckack),
+                       url(r'^'+url_prefix+'health-check-rep', healthcheckreport),
+                       url(r'^'+url_prefix+'api', nodemgrapi),
+                       url(r'^'+url_prefix+'node-props.json', get_json),
+                       url(r'^'+url_prefix+'metrics.json', get_metrics),
+                       url(r'^'+url_prefix+'registration.xml', get_reg_xml),
                        url(r'^'+url_prefix, hello_world))
 
