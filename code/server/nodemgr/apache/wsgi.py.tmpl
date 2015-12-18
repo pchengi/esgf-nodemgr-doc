@@ -13,11 +13,11 @@ framework.
 """
 import os, sys
 
-sys.path.insert(0, '/opt/nfs/ames4/esgf-node-manager/code/server/nodemgr')
+sys.path.insert(0, '/__prefix__/esgf-nodemgr-doc/code/server/nodemgr')
 
 
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nodemgr.settings")
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION

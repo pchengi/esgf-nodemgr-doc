@@ -1,5 +1,5 @@
 import sys, os
-sys.path.insert(0, '/opt/nfs/ames4/esgf-nodemgr-doc/code/server/nodemgr')
+sys.path.insert(0, '__prefix__/esgf-nodemgr-doc/code/server/nodemgr')
 
 # print debugging information BEFORE import Django/CoG
 print 'Using Python version: %s' % sys.version
@@ -9,7 +9,7 @@ print 'LD_LIBRARY_PATH=%s' % os.environ.get('LD_LIBRARY_PATH', None)
 print 'SSL_CERT_DIR=%s' % os.environ.get('SSL_CERT_DIR', None)
 
 # note: settings.py is located under '/usr/local/cog/cog_install/settings.py'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nodemgr.settings")
 from django.conf import settings
 
 from django import setup as django_setup
