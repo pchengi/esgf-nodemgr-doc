@@ -261,6 +261,8 @@ def check_properties(nodemap_instance):
             print "retrieving", target, "properties"
 
             resp = None
+
+            err = ""
             
             try:
                 conn = HTTPConnection(target, PORT, timeout=30)    
@@ -268,7 +270,7 @@ def check_properties(nodemap_instance):
                 resp = conn.getresponse()
             except Exception as e:
                 print "Connection problem: " + str(e)
-
+                err = str(e)
 
 
             if not resp is None and resp.status == 200:
@@ -298,8 +300,11 @@ def check_properties(nodemap_instance):
                 # TODO: log these sorts of errors
                 print "An Error has occurred"
                 lg = logging.getLogger("esgf_nodemanager")
-                lg.error(resp.read())
 
+                if not resp is None:
+                    lg.error(resp.read())
+                else:
+                    lg.error("Connection Problem:" + err)
 
 
     for n in nodemap_instance.prop_store:

@@ -1,0 +1,66 @@
+#!/bin/bash
+#  Node manager control script - run as root
+
+
+
+NODEMGR_DIR=__prefix__/ames4
+NODEMGR_CMD=esgf-nodemgr-doc/code/esgfnmd
+PIDFILE=/var/run/esgf-nm.pid
+LOCKFILE=/var/lock/subsys/esgf-nm
+
+NMUSER=ames4
+
+nm_start() {
+    if [ -f $LOCKFILE ] ; then
+	echo -n $NODEMGR_CMD already started
+	return 0
+    else
+    
+        echo -n "Starting : " $NODEMGR_CMD
+	
+	
+	su $NMUSER -c  "$NODEMGR_DIR/$NODEMGR_CMD >> /esg/log/ &
+	PID=$!
+        RETVAL=$?	
+        echo
+	echo $PID > $PIDFILE
+        [ $RETVAL = 0 ] && touch $LOCKFILE
+        return $RETVAL
+    fi
+}
+
+nm_stop() {
+        echo -n "Shutting down : " $NODEMGR_CMD
+	kill -9 `cat $PIDFILE`
+        RETVAL=$?
+        echo
+        [ $RETVAL = 0 ] && rm -f $LOCKFILE $PIDFILE
+
+}
+
+case "$1" in
+    start)
+        nm_start
+        ;;
+    stop)
+        nm_stop
+        ;;
+    status)
+	x=`ps -fe | grep basic_nodem | head -n 1`
+	gr=`echo $x | awk '{print $8}'`
+	if [ $gr == "grep" ] ; then
+	    echo "Node Manager is not running"
+	else
+	    echo "Node Manager running"
+	fi
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage:  {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
+exit $?
