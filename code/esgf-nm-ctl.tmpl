@@ -8,7 +8,7 @@ NODEMGR_CMD=esgf-nodemgr-doc/code/esgfnmd
 PIDFILE=/var/run/esgf-nm.pid
 LOCKFILE=/var/lock/subsys/esgf-nm
 
-NMUSER=ames4
+NMUSER=nodemgr
 
 nm_start() {
     if [ -f $LOCKFILE ] ; then
@@ -19,10 +19,12 @@ nm_start() {
         echo -n "Starting : " $NODEMGR_CMD
 	
 	
-	su $NMUSER -c  "$NODEMGR_DIR/$NODEMGR_CMD >> /esg/log/ &
-	PID=$!
+	su $NMUSER -c  "$NODEMGR_DIR/$NODEMGR_CMD" >> /esg/log/esgfnmd.out.log 2>> /esg/log/esgfnmd.err.log &
+	
         RETVAL=$?	
         echo
+	TMP1=`ps -fe | grep basic_node | grep -v grep` 
+	PID=`echo $TMP1 | awk '{print $2}'`
 	echo $PID > $PIDFILE
         [ $RETVAL = 0 ] && touch $LOCKFILE
         return $RETVAL
