@@ -2,8 +2,10 @@ import sys, os
 
 from httplib import HTTPConnection as Conn
 
+if len(sys.argv) < 5:
 
-
+    print "Usage: ", sys.argv[0], " <add|delete> <supernode> <project(s)> <standby?>"
+    exit (0)
 
 cmd = sys.argv[1]
 

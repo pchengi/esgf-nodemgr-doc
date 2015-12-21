@@ -21,8 +21,10 @@ nm_start() {
 	
 	su $NMUSER -c  "$NODEMGR_DIR/$NODEMGR_CMD" >> /esg/log/esgfnmd.out.log 2>> /esg/log/esgfnmd.err.log &
 	
+
         RETVAL=$?	
         echo
+	sleep 1
 	TMP1=`ps -fe | grep basic_node | grep -v grep` 
 	PID=`echo $TMP1 | awk '{print $2}'`
 	echo $PID > $PIDFILE
