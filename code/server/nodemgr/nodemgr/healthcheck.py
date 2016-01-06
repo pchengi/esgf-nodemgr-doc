@@ -136,7 +136,7 @@ class RunningCheck(Thread):
                     resp = conn.getresponse()
                     self.handle_resp(resp)
 
-                except HTTPException as e:
+                except Exception as e:
                     error = "connectivity problem"
                     print e
                 

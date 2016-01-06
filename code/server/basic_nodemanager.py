@@ -57,10 +57,11 @@ if (nodemap_instance.myid > 0) :
     timestore_instance.filename = TIMESTAMP
     if os.path.exists(TIMESTAMP):
         timestore_instance.restore()
+    else:
+        print "timestame file is missing!  Please fetch from distribution mirror"
+        exit(1)
 
     supernode = True    
-
-
 
 
 count = 0
@@ -77,10 +78,10 @@ MasterNode = (nodemap_instance.myid == "1")
 supernode_count = len(nodemap_instance.nodemap["supernodes"])
 
 
-if MasterNode:
-
-    timestore_instance.ts = int(time())
-    supernode_init(nodemap_instance, timestore_instance.ts)
+#if MasterNode:
+#
+#    timestore_instance.ts = int(time())
+#    supernode_init(nodemap_instance, timestore_instance.ts)
 
 if (supernode):
     

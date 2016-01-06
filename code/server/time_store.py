@@ -14,8 +14,13 @@ class TimeStore():
 
     def restore(self):
         inf = open(self.filename)
+
         x = inf.read()
         
+        if len(x) < 8:
+            print "problen with timestamp.  Please fetch from distribution mirror"
+            exit (1)
+
         self.ts = int(x)
         inf.close()
     

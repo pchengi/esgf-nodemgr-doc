@@ -62,8 +62,11 @@ case "$1" in
         stop
         start
         ;;
+    cleanup)
+	rm -f $LOCKFILE $PIDFILE
+	;;
     *)
-        echo "Usage:  {start|stop|status|restart}"
+        echo "Usage:  {start|stop|status|restart|cleanup}"
         exit 1
         ;;
 esac
