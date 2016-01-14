@@ -48,6 +48,8 @@ def health_check_report(task_d, nmap):
 
     edgelist = nmap.nodemap["links"]
 
+    
+
     for n in task_d.keys():
 
         if n != "from" and n != "action":
@@ -74,7 +76,7 @@ def health_check_report(task_d, nmap):
                         break
             elif (int (from_id) > int(to_id)):
                 for ee in edgelist:
-                    if ee["to"] == from_id and ee["to"] == from_id:
+                    if ee["to"] == from_id and ee["from"] == to_id:
                         if speed < 0:
                             ee["status"] = "down"
                         else:
