@@ -476,9 +476,8 @@ Integrate with Apache using proxy setup.  Run on some port in a python virtualen
 
 \subsection{Metrics gathering}
 \begin{enumerate}
-\item Investigate logger issue
-\item Decouple logger from Node Manager
-\item Ensure generation of registration.xml
+\item Decouple logger from Node Manager - this will be handled by the dashboard team.
+\item Ensure generation of registration.xml - the desktop claims to not use anymore.
 \end{enumerate}
 
 \subsection{Administrator Console/Interface}
@@ -493,7 +492,9 @@ What for member nodes?
 Shared items, e.g. project membership
 \end{itemize}
 
+\subsection{Member node Vetting}
 
+SuperNodes can vet membernodes by a secure ping-back.  The SuperNode will see the member node's certificate.  It should either have been signed by the CA or added to the truststore in the case of a third-party.  If this test fails (in the case of a self-signed node) the node is not considered trusted.  Entries would not be placed in shards, cogs lists, etc.  Question remains if this should be part of the health check or a periodic task (in which case health check could be done on 80/http. 
 
 \section{Issues and questions}
 This is to be a place to list out problems that need to be handled.

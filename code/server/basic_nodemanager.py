@@ -141,6 +141,8 @@ while (True):
 
     nodemap_instance.write_back()            
     supernode_count = len(nodemap_instance.nodemap["supernodes"])        
+    sys.stdout.flush()
+    sys.stderr.flush()
 
 
     
