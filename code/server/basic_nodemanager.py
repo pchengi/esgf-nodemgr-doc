@@ -7,7 +7,7 @@ config_root.RUN_IN_DJ = False
 
 from time import sleep, time
 
-from supernode import member_node_check, supernode_check, links_check, supernode_init, my_turn, calc_time, check_properties
+from supernode import member_node_check, supernode_check, links_check, supernode_init, my_turn, calc_time, check_properties, quick_check
 
 from nodemgr.nodemgr.nodemap import get_instance as nm_get_instance
 from taskhandler import handle_tasks
@@ -111,6 +111,7 @@ while (True):
     
 
     if quick_check(): 
+        print "passed check"
 
         handle_tasks(nodemap_instance)
     
@@ -145,8 +146,12 @@ while (True):
 
         nodemap_instance.write_back()            
         supernode_count = len(nodemap_instance.nodemap["supernodes"])        
-        sys.stdout.flush()
-        sys.stderr.flush()
+
+    else:
+        print "failed check (apache issue)"
+
+    sys.stdout.flush()
+    sys.stderr.flush()
 
 
     
