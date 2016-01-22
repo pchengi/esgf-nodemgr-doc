@@ -11,12 +11,12 @@ from simplequeue import write_task
 from nodemap import NodeMap, PROPS_FN
 from api import nodemgrapi
 
-from site_profile import get_prop_st, REG_FN
+from site_profile import get_prop_st, REG_FN, ts_func
 
 global served 
 served = False
 
-from settings import metrics_fn
+from settings import metrics_fn, TS_THRESH
 
 MET_FN = metrics_fn
 
@@ -40,6 +40,25 @@ def write_resp(full):
 
     global served
 
+    status = "INITAL"
+
+    if os.path.isfile(PROPS_FN):
+        f = open(PROPS_FN)
+        j = f.read()
+        f.close()
+        
+        dd = json.loads(j)
+    
+        ts_last = dd["ts_all"]
+        ts_now = ts_func()
+
+        ts_diff = ts_now - ts_last
+
+        if ts_diff > TS_THRESH:
+            status = "LAPSED"
+        else:
+            status = "GOOD"
+
     met_resp = {}
 
     if os.path.isfile(MET_FN):
@@ -55,13 +74,18 @@ def write_resp(full):
 # TODO if need to not full handle that
 #    if not served:  -- for now just serve all the data each tim
 # TODO work on requests based on absense of data, with timestamp of last for comparison later
+
+        
+
+
     if True:
+        ret = get_prop_st()
+
         print "first time, serving json"
 
         served = True
-        
-        ret = get_prop_st()
 
+        met_resp["status"] = status
         ret.update(met_resp)
 
         string_resp = json.dumps(ret)
@@ -72,11 +96,12 @@ def write_resp(full):
     elif len(met_resp) > 0:
         met_resp["esgf.host"] = get_prop_st()["esgf.host"]
         met_resp["action"] = "node_properties"
+        met_resp["status"] = status
         out_str = json.dumps(met_resp)
  #       print out_str
         return out_str
     else:
-        return "OK"
+        return status
 
 def healthcheckreport(request):
     qd = request.GET
@@ -94,7 +119,6 @@ def healthcheckack(request):
 # TODO check timestamp and write resp when the prop file is more recent.
 
     qd = request.GET
-
 
     if ("forward" in qd and qd["forward"] == "True"):
 

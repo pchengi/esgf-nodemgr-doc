@@ -108,41 +108,45 @@ while (True):
 
     sleep(SLEEP_TIME)
 
-    handle_tasks(nodemap_instance)
     
 
-    if (supernode):
+    if quick_check(): 
 
-        cur_ts = time()
-        count = calc_time(cur_ts, timestore_instance.ts, QUANTA,  SLEEP_TIME) 
+        handle_tasks(nodemap_instance)
+    
+
+        if (supernode):
+
+            cur_ts = time()
+            count = calc_time(cur_ts, timestore_instance.ts, QUANTA,  SLEEP_TIME) 
         
 #        print "Count:" , count
     
-        if count == HEALTH_CHECK_TIME:
+            if count == HEALTH_CHECK_TIME:
 
         
-            if timestore_instance.ts > 0 and my_turn(cur_ts - timestore_instance.ts, int(nodemap_instance.myid), supernode_count, QUANTA * SLEEP_TIME ):
-                print "SN check", count, cur_ts
-                supernode_check(nodemap_instance)
+                if timestore_instance.ts > 0 and my_turn(cur_ts - timestore_instance.ts, int(nodemap_instance.myid), supernode_count, QUANTA * SLEEP_TIME ):
+                    print "SN check", count, cur_ts
+                    supernode_check(nodemap_instance)
                 
-            if nodemap_instance.myid > -1:
-                member_node_check(nodemap_instance)
+                if nodemap_instance.myid > -1:
+                    member_node_check(nodemap_instance)
                 
                 
 
-        if count == LINK_CHECK_TIME:
+            if count == LINK_CHECK_TIME:
 
-            if timestore_instance.ts > 0 and my_turn(cur_ts - timestore_instance.ts, int(nodemap_instance.myid), supernode_count, QUANTA * SLEEP_TIME ):
-                print "Status review", count, cur_ts
-                links_check(nodemap_instance)
-                print "start properties check"
-                check_properties(nodemap_instance)
-                print "end properties check"
+                if timestore_instance.ts > 0 and my_turn(cur_ts - timestore_instance.ts, int(nodemap_instance.myid), supernode_count, QUANTA * SLEEP_TIME ):
+                    print "Status review", count, cur_ts
+                    links_check(nodemap_instance)
+                    print "start properties check"
+                    check_properties(nodemap_instance)
+                    print "end properties check"
 
-    nodemap_instance.write_back()            
-    supernode_count = len(nodemap_instance.nodemap["supernodes"])        
-    sys.stdout.flush()
-    sys.stderr.flush()
+        nodemap_instance.write_back()            
+        supernode_count = len(nodemap_instance.nodemap["supernodes"])        
+        sys.stdout.flush()
+        sys.stderr.flush()
 
 
     

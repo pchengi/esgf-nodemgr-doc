@@ -15,16 +15,32 @@ from nodemgr.nodemgr.settings import PORT
 
 print "Port", PORT
 
+from time import time
+
 if cmd == "add":
 
+
+    f = open("/esg/config/esgf_nodemgr_map.json")
+
+    nodemap = json.loads(f.read())
+
+    for entry in nodemap["supernodes"]:
+
+        
+
+
+
     target = sys.argv[2]
+
     proj = sys.argv[3]
     
     stdby = sys.argv[4]
 
+    start
+
     conn = Conn(target, PORT, timeout=30)
 
-
+    
     conn.request("GET", "/esgf-nm/api?action=add_member&from=" + myname + "&project=" + proj + "&standby=" + stdby)
     resp = conn.getresponse()
     conn.close()

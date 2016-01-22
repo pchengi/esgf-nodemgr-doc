@@ -18,6 +18,21 @@ import logging
 
 #TODO - health check should include a timestamp of the current properties in the nodes possession 
 
+def quick_check():
+
+    conn = HTTPConnection("localhost", PORT, timeout=1)
+    URLpath = "/esgf-nm/"
+    
+    try:
+        resp = conn.request(URLpath)
+        if resp.status == 200:
+            return True
+    except:
+        pass
+    return False
+
+
+
 class NMapSender(Thread):
 
     def __init__(self,nmap, nn, ts=0):
@@ -512,6 +527,20 @@ def links_check(nmap):
             new_back_up.append(snodes[i]["id"])
         elif (not down) and snodes[i]["health"] == "new":
             snodes[i]["health"] = "good"
+
+
+    for n in snodes:
+
+        hn = n["hostname"]
+
+        status = nmap.prop_store["hn"]["status"]
+        
+        if status == "LAPSED":
+            n["health"] = "bad"
+            new_down.append(n)
+        elif status == "ISSUE":  # we will need to define these
+            n["health"] = "unhealthy"
+
     if changed:
         nmap.dirty = True
 

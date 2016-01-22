@@ -11,10 +11,16 @@ from time_store import get_instance
 # for now not used
 #from user_api import put_file
 
+def set_status(task_d, nmap):
+
+    print "Got the status message:", task_d["status"]
+
 def node_properties(task_d, nmap):
+
 
     ky = task_d["esgf.host"]
     print "node properties task" + ky
+    status = task_d["status"]
     nmap.set_prop(ky, task_d)
 
 

@@ -203,15 +203,14 @@ class NodeMap():
 
         # We only write if there are changes
 
-        if self.prop_dirty == True:
-            self.prop_ts = ts_func()
-            outf = open(PROPS_FN, 'w') 
-            self.prop_store["ts_all"] = self.prop_ts
-            outs = json.dumps(self.prop_store, sort_keys=True, indent=4, separators=(',', ': '))
-            outf.write(outs)
-            outf.close()
 
-            self.prop_dirty = False
+        self.prop_ts = ts_func()
+        outf = open(PROPS_FN, 'w') 
+        self.prop_store["ts_all"] = self.prop_ts
+        outs = json.dumps(self.prop_store, sort_keys=True, indent=4, separators=(',', ': '))
+        outf.write(outs)
+        outf.close()
+
 
         if self.dirty == False:
             return
@@ -229,6 +228,7 @@ class NodeMap():
         tmparr = []
 
         for n in self.nodemap["supernodes"]:
+            
             tmparr.append(n)
         for n in self.nodemap["membernodes"]:
             for x in n["members"]:

@@ -16,6 +16,8 @@ MAP_FN = "/esg/config/esgf_nodemgr_map.json"
 
 PORT = 80
 
+TS_THRESH = 12000
+
 if "ESGF_NM_PORT" in os.environ:
     PORT = os.environ.get("ESGF_NM_PORT")
 

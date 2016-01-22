@@ -64,12 +64,13 @@ class RunningCheck(Thread):
         buf = resp.read()
 
 
-        if len(buf) > 2:
+        if len(buf) > 10:
 
             print "longer response"
 
             try: 
                 foo = json.loads(buf)
+                print buf["status"]
                 write_task(buf)
             except:
                 print "Error loading json resopnse"
@@ -78,7 +79,7 @@ class RunningCheck(Thread):
                 print
 
         else:
-            print "short response"
+            print "short response" + buf
 
 
     def run(self):
