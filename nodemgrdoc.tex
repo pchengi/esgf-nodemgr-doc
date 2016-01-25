@@ -221,6 +221,8 @@ This subcomponent produces the metrics that appear on the dashboard or other UI.
 \subsection{Self-check subcomponent}
 This is a subcomponent of the node manager which is responsible for carrying out sanity checks at regular intervals, on itself. When it fails the sanity checks, it contacts the local node manager to flag itself ineligible to continue as a SuperNode/standby SuperNode/member node. When the node passes a subsequent sanity check, the self-check component contacts the local node manager, to flag itself ready for resumption of duties.  The self-check subcomponent would also use the messaging subcomponent, to send out alert notifications to the local admin, when sanity checks fail.
 
+An example of the self-check is that the node manager assures that Apache is running.  If not, it suspends its activites.  Other nodes will subsequently be unable to detect it.  
+
 \subsubsection{Specific Checks}
 Use this list to mention specific items on the node to use for self-check.
 \begin{description}

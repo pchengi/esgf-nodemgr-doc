@@ -9,6 +9,8 @@ PIDFILE=/var/run/esgf-nm.pid
 LOCKFILE=/var/lock/subsys/esgf-nm
 
 NMUSER=nodemgr
+OUT_LOG=/esg/log/esgfnmd.out.log
+ERR_LOG=/esg/log/esgfnmd.err.log
 
 nm_start() {
     if [ -f $LOCKFILE ] ; then
@@ -18,8 +20,16 @@ nm_start() {
     
         echo -n "Starting : " $NODEMGR_CMD
 	
-	
-	su $NMUSER -c  "$NODEMGR_DIR/$NODEMGR_CMD" >> /esg/log/esgfnmd.out.log 2>> /esg/log/esgfnmd.err.log &
+	echo >> OUT_LOG
+	date >> OUT_LOG
+        echo -n "Starting : " $NODEMGR_CMD >> OUT_LOG
+
+	echo >> ERR_LOG
+	date >> ERR_LOG
+        echo -n "Starting : " $NODEMGR_CMD >> ERR_LOG
+
+		
+	su $NMUSER -c  "$NODEMGR_DIR/$NODEMGR_CMD" >> OUT_LOG 2>> ERR_LOG &
 	
 
         RETVAL=$?	
