@@ -20,16 +20,16 @@ nm_start() {
     
         echo -n "Starting : " $NODEMGR_CMD
 	
-	echo >> OUT_LOG
-	date >> OUT_LOG
-        echo -n "Starting : " $NODEMGR_CMD >> OUT_LOG
+	echo >> $OUT_LOG
+	date >> $OUT_LOG
+        echo -n "Starting : " $NODEMGR_CMD >> $OUT_LOG
 
-	echo >> ERR_LOG
-	date >> ERR_LOG
-        echo -n "Starting : " $NODEMGR_CMD >> ERR_LOG
+	echo >> $ERR_LOG
+	date >> $ERR_LOG
+        echo -n "Starting : " $NODEMGR_CMD >> $ERR_LOG
 
 		
-	su $NMUSER -c  "$NODEMGR_DIR/$NODEMGR_CMD" >> OUT_LOG 2>> ERR_LOG &
+	su $NMUSER -c  "$NODEMGR_DIR/$NODEMGR_CMD" >> $OUT_LOG 2>> $ERR_LOG &
 	
 
         RETVAL=$?	
