@@ -79,7 +79,7 @@ class RunningCheck(Thread):
                 print vars(self)
                 print
 
-            if not foo is none:
+            if not foo is None:
                 write_task(buf)
 
         else:
