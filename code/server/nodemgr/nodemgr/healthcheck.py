@@ -68,15 +68,19 @@ class RunningCheck(Thread):
 
             print "longer response"
 
+            foo = None
             try: 
                 foo = json.loads(buf)
-                print buf["status"]
-                write_task(buf)
+                print foo["status"]
+
             except:
                 print "Error loading json resopnse"
                 print buf
                 print vars(self)
                 print
+
+            if not foo is none:
+                write_task(buf)
 
         else:
             print "short response" + buf
