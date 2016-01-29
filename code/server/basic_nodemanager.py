@@ -111,7 +111,6 @@ while (True):
     
 
     if quick_check(): 
-        print "passed check"
 
         handle_tasks(nodemap_instance)
     

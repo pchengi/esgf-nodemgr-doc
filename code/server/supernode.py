@@ -21,14 +21,16 @@ import logging
 def quick_check():
 
     conn = HTTPConnection("localhost", PORT, timeout=1)
-    URLpath = "/esgf-nm/"
+    URLpath = "/esgf-nm"
     
     try:
-        resp = conn.request(URLpath)
+        conn.request("GET", URLpath)
+        resp = conn.getresponse()
         if resp.status == 200:
             return True
-    except:
+    except Exception as e:
         pass
+
     return False
 
 
@@ -533,13 +535,18 @@ def links_check(nmap):
 
         hn = n["hostname"]
 
-        status = nmap.prop_store["hn"]["status"]
+        if hn in nmap.prop_store:
+
+            hn_dict = nmap.prop_store[hn]
+
+            if "status" in hn_dict:
+                status = hn_dict["status"]
         
-        if status == "LAPSED":
-            n["health"] = "bad"
-            new_down.append(n)
-        elif status == "ISSUE":  # we will need to define these
-            n["health"] = "unhealthy"
+                if status == "LAPSED":
+                    n["health"] = "bad"
+                    new_down.append(n)
+                elif status == "ISSUE":  # we will need to define these
+                    n["health"] = "unhealthy"
 
     if changed:
         nmap.dirty = True
