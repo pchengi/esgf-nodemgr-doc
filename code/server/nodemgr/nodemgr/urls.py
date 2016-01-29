@@ -49,8 +49,8 @@ def write_resp(full):
         
         dd = json.loads(j)
     
-        ts_last = dd["ts_all"]
-        ts_now = ts_func()
+        ts_last = int(dd["ts_all"])
+        ts_now = int(ts_func())
 
         ts_diff = ts_now - ts_last
 
