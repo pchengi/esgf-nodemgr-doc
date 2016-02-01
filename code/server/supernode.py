@@ -547,6 +547,8 @@ def links_check(nmap):
                     new_down.append(n)
                 elif status == "ISSUE":  # we will need to define these
                     n["health"] = "unhealthy"
+                else:
+                    n["health"] = "good"
 
     if changed:
         nmap.dirty = True
