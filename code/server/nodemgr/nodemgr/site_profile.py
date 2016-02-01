@@ -56,6 +56,8 @@ def gen_reg_xml(arr_in):
 #    print str(arr_in)
 
     outarr =  ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n']
+    
+#    outarr = []
 
     ts = ts_func()
     outarr.append('<Registration timeStamp="')
@@ -168,9 +170,9 @@ def gen_reg_xml(arr_in):
 
 
         if "thredds.service.endpoint" in x:
-            outarr.append('"       <ThreddsService enpoint="')
+            outarr.append('       <ThreddsService enpoint="')
             outarr.append(x["thredds.service.endpoint"]) 
-            outarr.append('">\n')
+            outarr.append('"/>\n')
 
         # <ThreddsService endpoint="http://dapp2p.cccma.ec.gc.ca/thredds"/>
 
@@ -208,10 +210,10 @@ def gen_reg_xml(arr_in):
         if "users_count" in x:
             outarr.append('       <RegisteredUsers count="')
             outarr.append(str(x["users_count"]))
-            outarr.append('/>\n')
+            outarr.append('"/>\n')
         else:
             outarr.append('       <RegisteredUsers count="0"/>\n')
-        outarr.append('     <Metrics/>\n')
+        outarr.append('     </Metrics>\n')
 
         if "orp.service.endpoint" in x:
             outarr.append('        <RelyingPartyService endpoint="')

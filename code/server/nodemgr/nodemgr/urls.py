@@ -146,7 +146,7 @@ def get_json(request):
         print "no file"
         resp = "NO_FILE"
 
-    return HttpResponse(resp)
+    return HttpResponse(resp, content_type='text/json')
 
 
 def get_metrics(request):
@@ -162,7 +162,7 @@ def get_metrics(request):
         print "no file"
         resp = "NO_FILE"
 
-    return HttpResponse(resp)
+    return HttpResponse(resp, content_type='text/json')
 
 def get_reg_xml(request):
     f = open(REG_FN)
@@ -170,7 +170,9 @@ def get_reg_xml(request):
     resp = f.read()
     f.close()
     
-    return HttpResponse(resp)
+    httpresp = HttpResponse(resp, content_type='text/xml')
+
+    return httpresp
 
 def hello_world(request):
 
