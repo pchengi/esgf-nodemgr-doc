@@ -10,7 +10,6 @@ from nodemgr.nodemgr.settings import PORT
 
 from nodemgr.nodemgr.site_profile import gen_reg_xml, REG_FN
 
-import pdb
 
 import logging
 
@@ -264,16 +263,25 @@ def check_properties(nodemap_instance):
     tmp_props = []
 
 
-    for n in nodemap_instance.nodemap["supernodes"]:
+    for snode_obj, mnode in zip(nodemap_instance.nodemap["supernodes"], nodemap_instance.nodemap["membernodes"]):
         
 
         # for now don't request things we have. TODO: update if the
         # timestamp is too stale (should be more frequent than the
         # health checks).
-        target = n["hostname"]
+        target = snode_obj["hostname"]
 
-
-        if  (not target in nodemap_instance.prop_store) and target != localhostname and n["health"] == "good":
+        # If we don't have that supernode's record, fetch it
+        fetch_cond = not target in nodemap_instance.prop_store;
+        
+        if not fetch_cond:
+            for mb in mnode:
+                mbtarg = mb["hostname"]
+                if not mbtarg in nodemap_instance.prop_store:
+                    fetch_cond = True
+                    break
+        
+        if  fetch_cond and target != localhostname and snode_obj["health"] == "good":
             
             print "retrieving", target, "properties"
 
@@ -307,10 +315,10 @@ def check_properties(nodemap_instance):
                     continue
 
                 # TODO: Are we producing duplicate entries?
-                for n in obj:
+                for kvp in obj:
 
-                    if n != "ts_all": 
-                        val = obj[n]
+                    if kvp != "ts_all": 
+                        val = obj[kvp]
                         tmp_props.append(val)
 
             else:
@@ -322,6 +330,8 @@ def check_properties(nodemap_instance):
                     lg.error(resp.read())
                 else:
                     lg.error("Connection Problem:" + err)
+
+
 
 
     for n in nodemap_instance.prop_store:
