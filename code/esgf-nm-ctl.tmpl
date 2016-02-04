@@ -69,8 +69,8 @@ case "$1" in
 	fi
         ;;
     restart)
-        stop
-        start
+        nm_stop
+        nm_start
         ;;
     cleanup)
 	rm -f $LOCKFILE $PIDFILE

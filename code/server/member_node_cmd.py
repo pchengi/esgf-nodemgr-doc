@@ -20,11 +20,11 @@ from time import time
 if cmd == "add":
 
 
-    f = open("/esg/config/esgf_nodemgr_map.json")
+#    f = open("/esg/config/esgf_nodemgr_map.json")
 
-    nodemap = json.loads(f.read())
+#    nodemap = json.loads(f.read())
 
-    for entry in nodemap["supernodes"]:
+#    for entry in nodemap["supernodes"]:
 
         
 
@@ -36,7 +36,6 @@ if cmd == "add":
     
     stdby = sys.argv[4]
 
-    start
 
     conn = Conn(target, PORT, timeout=30)
 
