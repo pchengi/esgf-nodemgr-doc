@@ -64,8 +64,14 @@ def gen_reg_xml(arr_in):
     outarr.append(ts)
     outarr.append('">\n')
 
-    for x in arr_in:
+    for key in arr_in:
         
+
+        x = arr_in[key]
+
+        if key == "ts_all":
+            continue
+
         if not type(x) is DictType:
             print "Type issue"
             print str(x)

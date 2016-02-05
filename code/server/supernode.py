@@ -317,7 +317,7 @@ def check_properties(nodemap_instance):
                 # TODO: Are we producing duplicate entries?
                 for kvp in obj:
 
-                    if kvp != "ts_all": 
+                    if not kvp == "ts_all": 
                         val = obj[kvp]
                         tmp_props[kvp] = val
 
