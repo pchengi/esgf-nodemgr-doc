@@ -340,13 +340,16 @@ def check_properties(nodemap_instance):
         if not n in tmp_props:
             
             tmp_props[n] = val
-        
+    
+    #TODO update the prop store with more recent info
 
     out_xml = gen_reg_xml(tmp_props)
         
     f = open(REG_FN, 'w')
     f.write(out_xml)
     f.close()
+
+
 
 def send_map_to_others(members, nmap, ts=0):
     
