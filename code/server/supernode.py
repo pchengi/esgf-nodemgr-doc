@@ -260,7 +260,7 @@ def supernode_check(nodemap_instance):
 def check_properties(nodemap_instance):
 
 
-    tmp_props = []
+    tmp_props = {}
 
 
     for snode_obj, mnode in zip(nodemap_instance.nodemap["supernodes"], nodemap_instance.nodemap["membernodes"]):
@@ -319,7 +319,7 @@ def check_properties(nodemap_instance):
 
                     if kvp != "ts_all": 
                         val = obj[kvp]
-                        tmp_props.append(val)
+                        tmp_props[kvp] = val
 
             else:
                 # TODO: log these sorts of errors
@@ -337,9 +337,11 @@ def check_properties(nodemap_instance):
     for n in nodemap_instance.prop_store:
         val = nodemap_instance.prop_store[n]
 
-        tmp_props.append(val)
+        if not n in tmp_props:
+            
+            tmp_props[n] = val
         
-    
+
     out_xml = gen_reg_xml(tmp_props)
         
     f = open(REG_FN, 'w')
