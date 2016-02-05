@@ -275,7 +275,7 @@ def check_properties(nodemap_instance):
         fetch_cond = not target in nodemap_instance.prop_store;
         
         if not fetch_cond:
-            for mb in mnode:
+            for mb in mnode["members"]:
                 mbtarg = mb["hostname"]
                 if not mbtarg in nodemap_instance.prop_store:
                     fetch_cond = True
