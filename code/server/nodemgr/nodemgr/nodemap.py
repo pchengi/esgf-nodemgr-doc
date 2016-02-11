@@ -5,6 +5,8 @@ import os
 # this should be set by a global config
 MAXREF = 20
 
+
+
 PROPS_FN = '/esg/config/nm.properties'
 
 from site_profile import ts_func
@@ -110,10 +112,10 @@ class NodeMap():
         
                         
 
-    def assign_node(self, node_name, project, standby=False):
+    def assign_node_fewest(self, node_name, project, standby=False):
 
         
-
+        fewest = {}
         ref = self.nodemap["membernodes"]
 
         mincount = MAXREF + 1
@@ -121,7 +123,6 @@ class NodeMap():
         for entry in ref:
             
             found = False
-
         
 
             if ( "members" in entry):
@@ -172,6 +173,80 @@ class NodeMap():
             return True
 
         return False
+
+
+    def assign_node(self, node_name, project, standby=False):
+
+        newentry = {}
+
+        ref = self.nodemap["membernodes"]
+
+        max_count = MAXREF
+
+        count =0
+
+        for entry in ref:
+            
+            found = False
+        
+
+
+            if ( "members" in entry):
+
+                members = entry["members"]
+
+                count = len(members)
+
+                if int(entry["supernode"]) == self.myid:
+                    
+                    
+                    if "max_count" in entry:
+                        
+                        max_count = entry["max_count"]
+                    newentry = {}
+
+                for mn in members:
+                    if mn["hostname"] == node_name:
+
+                        return True
+                        
+
+            else:
+                newlist = []
+                entry["members"] = newlist
+                fewest = entry
+                break
+
+
+#        fewest = min(ref, key=lambda x: len(x["members"]))
+
+
+        if count == max_count:
+            return assign_node_fewest(self, node_name, project, standby)
+
+        mnode_count = int(self.nodemap["total_membernodes"])
+        snode_count = int(self.nodemap["total_supernodes"])
+        
+        mnode_count = mnode_count + 1
+
+        new_node = {}
+        new_node["id"] = str(mnode_count + snode_count)
+        new_node["hostname"] = node_name
+        new_node["standby"] = standby
+        new_node["project"] = project
+        new_node["health"] = "unverified"
+        fewest["members"].append(new_node)
+
+        self.nodemap["total_membernodes"] = mnode_count
+
+        self.dirty = True
+
+        if newentry["supernode"] == self.myid:
+            return True
+
+        return False
+
+
 
     def remove_member(self, hostname):
 
