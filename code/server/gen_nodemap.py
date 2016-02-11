@@ -4,17 +4,26 @@ import json, sys, os
 
 from nodemgr.nodemgr.settings import MAP_FN
 
-if len(sys.argv) < 3:  
-    print "need at least 2 <hostname> arguments"
-    print "Example:"
-    print sys.argv[0] + " node1.somedomain.org node2.other.gov node3.somewhere.edu ..."
-    exit
+sn_list = []
+
+if len(sys.argv) > 2:  
+    
+    print "using command line arguments"
+    sn_list = sys.argv[1:]
+else:
+    try:
+        f = open('/esg/config/esgf_supernodes_list.json')
+    
+        sn_list = json.loads(f.read())
+    except:
+        print "Error loading supernodes list file"
+        sys.exit(-1)
 
 filename = MAP_FN
 
 if filename is None or len(filename) == 0:
     print "Error with mapfile setting"
-    exit
+    sys.exit(-1)
 
 
 new_json = {}
@@ -26,6 +35,8 @@ membernodes = []
 links = []
 
 i = 1
+
+
 
 
 for nn in sys.argv[1:]:
