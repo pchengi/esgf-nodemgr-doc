@@ -224,11 +224,12 @@ class NodeMap():
 
 
         if fewest is None:
-            return assign_node_fewest(self, node_name, project, standby)
+            print "fewest bot found"
+            return assign_node_fewest(node_name, project, standby)
 
         if count == max_count:
             print "max count for supernode has been reached"
-            return assign_node_fewest(self, node_name, project, standby)
+            return assign_node_fewest(node_name, project, standby)
 
         mnode_count = int(self.nodemap["total_membernodes"])
         snode_count = int(self.nodemap["total_supernodes"])
