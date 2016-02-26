@@ -148,8 +148,7 @@ class NodeMap():
                 break
 
 
-#        fewest = min(ref, key=lambda x: len(x["members"]))
-
+        fewest = min(ref, key=lambda x: len(x["members"]))
 
 
         mnode_count = int(self.nodemap["total_membernodes"])
@@ -184,6 +183,8 @@ class NodeMap():
         max_count = MAXREF
 
         count =0
+
+        fewest = None
 
         for entry in ref:
             
@@ -222,6 +223,9 @@ class NodeMap():
 #        fewest = min(ref, key=lambda x: len(x["members"]))
 
 
+        if fewest is None:
+            return assign_node_fewest(self, node_name, project, standby)
+
         if count == max_count:
             print "max count for supernode has been reached"
             return assign_node_fewest(self, node_name, project, standby)
@@ -243,8 +247,6 @@ class NodeMap():
 
         self.dirty = True
 
-        if newentry["supernode"] == self.myid:
-            return True
 
         return False
 
