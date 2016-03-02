@@ -184,7 +184,9 @@ class NodeMap():
 
         count =0
 
-        fewest = None
+        myentry = None
+
+        print "I am adding an entry and my id is ", self.myid
 
         for entry in ref:
             
@@ -194,13 +196,16 @@ class NodeMap():
 
             if ( "members" in entry):
 
+                print "entry is this: ", str(entry)
                 members = entry["members"]
 
                 count = len(members)
 
                 if int(entry["supernode"]) == self.myid:
                     
-                    fewest = entry
+                    print "found the entry"
+
+                    myentry = entry
                     if "max_count" in entry:
                         
                         max_count = entry["max_count"]
@@ -216,15 +221,15 @@ class NodeMap():
                 newlist = []
                 entry["members"] = newlist
                 if int(entry["supernode"]) == self.myid:
-                    fewest = entry
+                    myentry = entry
 
 
 
 #        fewest = min(ref, key=lambda x: len(x["members"]))
 
 
-        if fewest is None:
-            print "fewest not found"
+        if myentry is None:
+            print "myentry not found"
             return self.assign_node_fewest(node_name, project, standby)
 
         if count == max_count:
@@ -242,7 +247,7 @@ class NodeMap():
         new_node["standby"] = standby
         new_node["project"] = project
         new_node["health"] = "unverified"
-        fewest["members"].append(new_node)
+        myentry["members"].append(new_node)
 
         self.nodemap["total_membernodes"] = mnode_count
 
