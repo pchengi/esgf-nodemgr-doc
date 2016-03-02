@@ -201,7 +201,7 @@ class NodeMap():
 
                 count = len(members)
 
-                if int(entry["supernode"]) == self.myid:
+                if int(entry["supernode"]) == int(self.myid):
                     
                     print "found the entry"
 
@@ -220,7 +220,8 @@ class NodeMap():
             else:
                 newlist = []
                 entry["members"] = newlist
-                if int(entry["supernode"]) == self.myid:
+                if int(entry["supernode"]) == int(self.myid):
+                    print "found the empty entry"
                     myentry = entry
 
 
