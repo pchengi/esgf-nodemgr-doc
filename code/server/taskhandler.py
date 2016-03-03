@@ -11,11 +11,12 @@ from time_store import get_instance
 # for now not used
 #from user_api import put_file
 
-def set_status(task_d, nmap):
+def task_set_status(task_d, nmap):
 
     print "Got the status message:", task_d["status"]
 
-def node_properties(task_d, nmap):
+
+def task_node_properties(task_d, nmap):
 
 
     ky = task_d["esgf.host"]
@@ -24,7 +25,7 @@ def node_properties(task_d, nmap):
     nmap.set_prop(ky, task_d)
 
 
-def health_check_fwd(task_d, nmap):
+def task_health_check_fwd(task_d, nmap):
 
     fromnode = task_d["from"]
 
@@ -46,7 +47,7 @@ def health_check_fwd(task_d, nmap):
  #       t.join()
 
 
-def health_check_report(task_d, nmap):
+def task_health_check_report(task_d, nmap):
 
     from_node = task_d["from"]
 
@@ -91,7 +92,7 @@ def health_check_report(task_d, nmap):
                         nmap.dirty = True
                         break
 
-def node_map_update(task_d, nmap):
+def task_node_map_update(task_d, nmap):
     new_map = task_d["update"]
 
     nmap.nodemap = json.loads(new_map)
@@ -100,7 +101,7 @@ def node_map_update(task_d, nmap):
     send_map_to_others(True, nmap)
 
 
-def nm_repo_update(task_d, nmap):
+def task_nm_repo_update(task_d, nmap):
     
     upd = task_d["update"]
 
@@ -111,7 +112,7 @@ def nm_repo_update(task_d, nmap):
         send_repo_upd_to_others(task_d, nmap)
 
 
-def add_member(task_d, nmap):
+def task_add_member(task_d, nmap):
 
     ts = int(time())
 
@@ -121,7 +122,7 @@ def add_member(task_d, nmap):
 
 
 
-def remove_member(task_d, nmap):
+def task_remove_member(task_d, nmap):
     print "From", task_d["from"]
     if nmap.remove_member(task_d["from"]):
         print "removed"
@@ -129,7 +130,7 @@ def remove_member(task_d, nmap):
         print "not removed"
 
 
-def sn_init(task_d, nmap):
+def task_sn_init(task_d, nmap):
 
 
     print "timestore update"
@@ -139,6 +140,19 @@ def sn_init(task_d, nmap):
     ts_inst.ts = int(task_d["timestamp"])
 
     ts_inst.write()
+
+
+switch = { 
+"task_set_status": task_set_status,
+"task_node_properties": task_node_properties,
+ "task_health_check_fwd": task_health_check_fwd,
+ "task_health_check_report": task_health_check_report,
+"task_node_map_update": task_node_map_update,
+"task_nm_repo_update": task_nm_repo_update,
+"task_add_member": task_add_member,
+"task_remove_member": task_remove_member,
+"task_sn_init": task_sn_init 
+}
 
 
 def handle_tasks(nmap):
@@ -151,6 +165,7 @@ def handle_tasks(nmap):
 
         action = task_d["action"]
 # TODO - this needs to be hardened before outside deployment
-        eval(action)(task_d, nmap)
+        fn_ptr = switch["task_" +action]
+        retval = fn_ptr (task_d, nmap)
         
         task = get_next_task()
