@@ -39,7 +39,8 @@ i = 1
 
 
 
-for nn in sys.argv[1:]:
+
+for nn in sn_list:
 
     tmp_supernode = {}
 
