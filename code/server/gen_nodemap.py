@@ -89,7 +89,7 @@ new_json["links"] = links
 
 outf = open(filename, "w")
 
-new_json["timestamp"] = time()
+new_json["create_timestamp"] = time()
 
 outs = json.dumps(new_json,  sort_keys=True, indent=4, separators=(',', ': '))
 outf.write(outs)
