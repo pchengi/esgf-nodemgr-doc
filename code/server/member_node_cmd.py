@@ -65,8 +65,8 @@ if cmd == "add":
     sorted_arr = sorted(times_arr)
 
     target = sorted_arr[0][1]
-    proj = sys.argv[3]
-    stdby = sys.argv[4]
+    proj = sys.argv[2]
+    stdby = sys.argv[3]
 
     resp = None
     conn = Conn(target, PORT, timeout=30)
