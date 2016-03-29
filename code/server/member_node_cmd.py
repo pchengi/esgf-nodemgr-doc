@@ -7,7 +7,7 @@ from time import time
 from json import loads as load_json
 
 
-if len(sys.argv) < 5:
+if len(sys.argv) < 4:
 
     print "Usage: ", sys.argv[0], " <add|delete> <project(s)> <standby?>"
     exit (0)
