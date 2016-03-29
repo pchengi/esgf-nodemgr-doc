@@ -80,7 +80,7 @@ if cmd == "add":
         print "Error in connect to found node"
 
 elif cmd ==  "delete":
-    conf = "/esg/config/esgf_nodemgr_map.json")
+    conf = "/esg/config/esgf_nodemgr_map.json"
 
     f = open(conf)
 
