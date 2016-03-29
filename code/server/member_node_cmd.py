@@ -9,7 +9,7 @@ from json import loads as load_json
 
 if len(sys.argv) < 5:
 
-    print "Usage: ", sys.argv[0], " <add|delete> <supernode> <project(s)> <standby?>"
+    print "Usage: ", sys.argv[0], " <add|delete> <project(s)> <standby?>"
     exit (0)
 
 cmd = sys.argv[1]
@@ -79,9 +79,8 @@ if cmd == "add":
     except:
         print "Error in connect to found node"
 
-elif cmd ==  "remove":
-    conf = sys.argv[2]
-
+elif cmd ==  "delete":
+    conf = "/esg/config/esgf_nodemgr_map.json")
 
     f = open(conf)
 
