@@ -4,6 +4,8 @@ import json, sys, os
 
 from nodemgr.nodemgr.settings import MAP_FN
 
+from time import time
+
 sn_list = []
 
 if len(sys.argv) > 2:  
@@ -86,6 +88,8 @@ for fr in range(1, sn_count):
 new_json["links"] = links
 
 outf = open(filename, "w")
+
+new_json["timestamp"] = time()
 
 outs = json.dumps(new_json,  sort_keys=True, indent=4, separators=(',', ': '))
 outf.write(outs)
