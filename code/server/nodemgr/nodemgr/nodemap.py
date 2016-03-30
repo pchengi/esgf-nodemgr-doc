@@ -196,14 +196,14 @@ class NodeMap():
 
             if ( "members" in entry):
 
-                print "entry is this: ", str(entry)
+#                print "entry is this: ", str(entry)
                 members = entry["members"]
 
                 count = len(members)
 
                 if int(entry["supernode"]) == int(self.myid):
                     
-                    print "found the entry"
+ #                   print "found the entry"
 
                     myentry = entry
                     if "max_count" in entry:

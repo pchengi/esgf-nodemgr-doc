@@ -66,7 +66,7 @@ class RunningCheck(Thread):
 
         if len(buf) > 10:
 
-            print "longer response"
+#            print "longer response"
 
             foo = None
             try: 
@@ -82,14 +82,15 @@ class RunningCheck(Thread):
             if not foo is None:
                 write_task(buf)
 
-        else:
-            print "short response" + buf
+#        else:
+#            pass
+#            print "short response" + buf
 
 
     def run(self):
 
         ts = time()
-        print "Health check on", self.nodename
+#        print "Health check on", self.nodename
 
         conn = Conn(self.nodename, PORT, timeout=30)
 

@@ -81,7 +81,7 @@ def write_resp(full):
     if True:
         ret = get_prop_st()
 
-        print "first time, serving json"
+#        print "first time, serving json"
 
         served = True
 
@@ -126,7 +126,7 @@ def healthcheckack(request):
 
         outd["action"] = "health_check_fwd"
         write_task(json.dumps(outd))
-        print "checking on others"        
+#        print "checking on others"        
 
     resp = write_resp(False)
 
@@ -143,7 +143,7 @@ def get_json(request):
         f.close()
 
     else:
-        print "no file"
+#        print "no file"
         resp = "NO_FILE"
 
     return HttpResponse(resp, content_type='text/json')
@@ -159,7 +159,7 @@ def get_metrics(request):
         f.close()
 
     else:
-        print "no file"
+#        print "no file"
         resp = "NO_FILE"
 
     return HttpResponse(resp, content_type='text/json')
