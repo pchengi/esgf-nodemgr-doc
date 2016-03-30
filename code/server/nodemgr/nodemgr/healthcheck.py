@@ -71,7 +71,7 @@ class RunningCheck(Thread):
             foo = None
             try: 
                 foo = json.loads(buf)
-                print foo["esgf.host"], foo["status"]
+#                print foo["esgf.host"], foo["status"]
 
             except:
                 print "Error loading json resopnse"
