@@ -20,7 +20,7 @@ def task_node_properties(task_d, nmap):
 
 
     ky = task_d["esgf.host"]
-    print "node properties task" + ky
+#    print "node properties task" + ky
     status = task_d["status"]
     nmap.set_prop(ky, task_d)
 
@@ -64,8 +64,8 @@ def task_health_check_report(task_d, nmap):
             speed = float(task_d[n])
 
             if not n in nmap.snidx:
-                print n,"not found in list"
-                print "TODO: fetch new master list and broadcast"
+#                print n,"not found in list"
+#                print "TODO: fetch new master list and broadcast"
                 continue
 
             to_id = nmap.snidx[n]
