@@ -120,7 +120,7 @@ def task_node_map_update(task_d, nmap):
     for n in new_map_obj["supernodes"]:
         new_sn_lst.append(n["hostname"])
         
-    new_sn_list.sort()
+    new_sn_lst.sort()
 
     # We only care about the timestamp if there's been a change in the
     #  supernodes for now we assume that a newer timestamp (generated
@@ -129,7 +129,8 @@ def task_node_map_update(task_d, nmap):
     #  with a newer timestamp could have been generated manually with
     #  an outdated list, but because this scenario seems unlikely, we
     #  hope to stick with this procedure for updating the nodemap.
-    if new_ts > old_ts or old_sn_list == new_sn_list:
+    if new_ts > old_ts or old_sn_list == new_sn_lst:
+        # merge object maps
         nmap.nodemap = new_map_obj
     else:
         print "New map is based on old format, not updating"
