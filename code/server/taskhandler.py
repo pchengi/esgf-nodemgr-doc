@@ -93,13 +93,51 @@ def task_health_check_report(task_d, nmap):
                         break
 
 def task_node_map_update(task_d, nmap):
-    new_map = task_d["update"]
+    # TODO:  nodemap object updates should be signed
 
-    nmap.nodemap = json.loads(new_map)
+    new_map_str = task_d["update"]
+
+    new_map_obj = None
     
+    try:
+        new_map_obj = json.loads(new_map_str)
+    except:
+        print "Illegal string (can't load json)"
+        return False
+    
+    new_ts = 1
+    old_ts = 0
+ 
+    if "create_timestamp" in new_map_obj:
+        new_ts = int(new_map_obj["create_timestamp"])
+ 
+    if "create_timestamp" in nmap.nodemap:
+        old_ts = int(nmap.nodemap["create_timestamp"])
+
+    old_sn_lst = nmap.snidx.keys().sort()
+
+    new_sn_lst = []
+    for n in new_map_obj["supernodes"]:
+        new_sn_lst.append(n["hostname"])
+        
+    new_sn_list.sort()
+
+    # We only care about the timestamp if there's been a change in the
+    #  supernodes for now we assume that a newer timestamp (generated
+    #  on install) will beat out old because the install will have
+    #  fetched the latest version of the mapfile.  Conceivably, a map
+    #  with a newer timestamp could have been generated manually with
+    #  an outdated list, but because this scenario seems unlikely, we
+    #  hope to stick with this procedure for updating the nodemap.
+    if new_ts > old_ts or old_sn_list == new_sn_list:
+        nmap.nodemap = new_map_obj
+    else:
+        print "New map is based on old format, not updating"
+        return False
+
     nmap.dirty = True
     send_map_to_others(True, nmap)
-
+    return True
 
 def task_nm_repo_update(task_d, nmap):
     
