@@ -29,7 +29,7 @@ nm_start() {
         echo -n "Starting : " $NODEMGR_CMD >> $ERR_LOG
 
 		
-	su $NMUSER -c  "$NODEMGR_DIR/$NODEMGR_CMD" >> $OUT_LOG 2>> $ERR_LOG &
+	su $NMUSER -c  "$NODEMGR_DIR/$NODEMGR_CMD $1" >> $OUT_LOG 2>> $ERR_LOG &
 	
 
         RETVAL=$?	
@@ -52,7 +52,18 @@ nm_stop() {
 
 }
 
+nm_update_sn_list() {
+    echo 
+    wget -O /esg/config/esgf_supernodes_list.json http://aims1.llnl.gov/nm-cfg/$FED_NAME/esgf_supernodes_list.json
+
+}
+
+
 case "$1" in
+    update)
+	nm_update_sn_list
+	nm_start("SPOT_DEPLOY")
+	;;
     start)
         nm_start
         ;;

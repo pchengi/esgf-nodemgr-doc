@@ -7,7 +7,7 @@ config_root.RUN_IN_DJ = False
 
 from time import sleep, time
 
-from supernode import member_node_check, supernode_check, links_check, supernode_init, my_turn, calc_time, check_properties, quick_check
+from supernode import member_node_check, supernode_check, links_check, supernode_init, my_turn, calc_time, check_properties, quick_check, send_map_to_others
 
 from nodemgr.nodemgr.nodemap import get_instance as nm_get_instance
 from taskhandler import handle_tasks
@@ -21,6 +21,7 @@ from query import has_db, QueryRunner
 import logging
 
 from nodemgr.nodemgr.settings import MAP_FN, TIMESTAMP
+from gen_nodemap import do_gen_nodemap
 
 
 def usage():
@@ -41,6 +42,14 @@ fh.setLevel(logging.ERROR)
 logger.addHandler(fh)
 
 nodemap_instance = nm_get_instance()
+
+
+if len(sys.argv > 1):
+    deploy_arg = sys.argv[1]
+
+    if deply_arg = "SPOT_DEPLOY":
+
+        do_gen_nodemap()
 
 nodemap_instance.load_map(MAP_FN)
 
@@ -87,6 +96,15 @@ if (supernode):
     
     node_props = get_prop_st()
     nodemap_instance.set_prop(nodemap_instance.myname, node_props)
+
+    if len(sys.argv > 1):
+        deploy_arg = sys.argv[1]
+
+        if deply_arg = "SPOT_DEPLOY":
+            
+            send_map_to_others()
+            
+
 
 from esg_config import EsgConfig
 
