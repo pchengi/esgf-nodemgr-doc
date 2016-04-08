@@ -43,28 +43,32 @@ def do_fetch_nodemap(fqdn):
 
     for host in arr:
 
+        
+
         data_str = ""
 
-        try:
-            conn = Conn(host, PORT, timeout=10)
-            conn.request("GET", "/esgf-nm/api?action=sync_node_map_file")
-            resp = conn.getresponse()
+        if host != fqdn:
 
-            data_str = resp.read()
+            try:
+                conn = Conn(host, PORT, timeout=10)
+                conn.request("GET", "/esgf-nm/api?action=sync_node_map_file")
+                resp = conn.getresponse()
+                
+                data_str = resp.read()
             
-            data = json.loads(data_str)
+                data = json.loads(data_str)
 
-            conn.close()
+                conn.close()
             
 
             
 
-        except:
-            pass
+            except:
+                pass
             
-        if not data is None and len(data_str) > 10:
-            write_json_file(MAP_FN, data_str) 
-            return True
+            if not data is None and len(data_str) > 10:
+                write_json_file(MAP_FN, data_str) 
+                return True
             
         
     print "Could not retrieve the node map from another site.  Will generate a fresh one.  Advised that you attempt to retrieve the map in order to have a complete view of member nodes in the federation." 
@@ -186,7 +190,7 @@ def do_gen_nodemap(args):
 
 
 if(__name__ == '__main__'):
-    sys.exit(do_gen_nodemap(sys.argv[]))
+    sys.exit(do_gen_nodemap(sys.argv))
 
     
 
