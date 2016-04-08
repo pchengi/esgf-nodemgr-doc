@@ -131,8 +131,6 @@ def do_gen_nodemap(args):
     i = 1
 
 
-
-
     for mm in sn_list:
 
         tmp_supernode = {}
@@ -140,7 +138,7 @@ def do_gen_nodemap(args):
 
         tmp_supernode["id"] = str(i)
         tmp_supernode["health"] = "new"
-        tmp_supernode["hostname"] = nn
+        tmp_supernode["hostname"] = mm
 
         supernodes.append(tmp_supernode)
 
