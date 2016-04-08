@@ -2,11 +2,93 @@
 
 import json, sys, os
 
+from httplib import HTTPConnection as Conn
+
 from nodemgr.nodemgr.settings import MAP_FN
 
 from time import time
 
-def do_gen_nodemap():
+PORT = 80
+
+
+def write_json_file(in_fn, json_obj):
+
+    outf = open(in_fn, "w")
+
+    outs = ""
+    
+    if (isinstance(json_obj, str)):
+        outs = json_obj
+    else:
+        json_obj["create_timestamp"] = time()
+        outs = json.dumps(json_obj,  sort_keys=True, indent=4, separators=(',', ': '))
+
+
+    outf.write(outs)
+    outf.close()
+
+
+def do_fetch_nodemap(fqdn):
+
+    arr = []
+
+    try:
+
+        f = open ('/esg/config/esgf_supernodes_list.json')
+        arr = load_json(f.read())
+    except:
+        pass
+    
+    data = None
+
+    for host in arr:
+
+        data_str = ""
+
+        try:
+            conn = Conn(host, PORT, timeout=10)
+            conn.request("GET", "/esgf-nm/api?action=sync_node_map_file")
+            resp = conn.getresponse()
+
+            data_str = resp.read()
+            
+            data = json.loads(data_str)
+
+            conn.close()
+            
+
+            
+
+        except:
+            pass
+            
+        if not data is None and len(data_str) > 10:
+            write_json_file(MAP_FN, data_str) 
+            return True
+            
+        
+    print "Could not retrieve the node map from another site.  Will generate a fresh one.  Advised that you attempt to retrieve the map in order to have a complete view of member nodes in the federation." 
+    return False
+
+
+
+
+def do_gen_nodemap(args):
+
+    filename = MAP_FN
+
+    if filename is None or len(filename) == 0:
+        print "Error with mapfile setting"
+        sys.exit(-1)
+
+    got_map = False
+
+    if args[1] != "INIT":
+        got_map = do_fetch_nodemap(args[1])
+
+    if got_map:
+        print "Nodemap retrieval succeeded! exiting..."
+        exit (0)
 
     sn_list = []
 
@@ -36,11 +118,6 @@ def do_gen_nodemap():
             print "Error loading supernodes list file"
             sys.exit(-1)
 
-    filename = MAP_FN
-
-    if filename is None or len(filename) == 0:
-        print "Error with mapfile setting"
-        sys.exit(-1)
 
 
     new_json = {}
@@ -107,17 +184,11 @@ def do_gen_nodemap():
 
     new_json["links"] = links
 
-    outf = open(filename, "w")
-
-    new_json["create_timestamp"] = time()
-
-    outs = json.dumps(new_json,  sort_keys=True, indent=4, separators=(',', ': '))
-    outf.write(outs)
-    outf.close()
+    write_json_file(filename, new_json)
 
 
 if(__name__ == '__main__'):
-    sys.exit(do_gen_nodemap())
+    sys.exit(do_gen_nodemap(sys.argv[]))
 
     
 

@@ -47,7 +47,7 @@ if cmd == "add":
 
         try: 
             conn = Conn(host, PORT, timeout=30)
-            conn.request("GET", "/esgf-nm )")
+            conn.request("GET", "/esgf-nm")
             resp = conn.getresponse()
             conn.close()
 
