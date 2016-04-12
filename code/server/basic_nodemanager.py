@@ -49,7 +49,7 @@ if len(sys.argv > 1):
 
     if deploy_arg == "SPOT_DEPLOY":
 
-        do_gen_nodemap()
+        do_gen_nodemap([])
 
 nodemap_instance.load_map(MAP_FN)
 
@@ -100,7 +100,7 @@ if (supernode):
     if len(sys.argv > 1):
         deploy_arg = sys.argv[1]
 
-        if deply_arg = "SPOT_DEPLOY":
+        if deploy_arg == "SPOT_DEPLOY":
             
             send_map_to_others()
             
