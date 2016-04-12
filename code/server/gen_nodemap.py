@@ -87,6 +87,10 @@ def do_gen_nodemap(args):
 
     got_map = False
 
+    if (len(args) < 2):
+        print "gen_roadmap requires argument. exiting"
+        exit (-1)
+
     if args[1] != "INIT":
         got_map = do_fetch_nodemap(args[1])
 
