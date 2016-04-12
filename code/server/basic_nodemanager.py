@@ -47,7 +47,7 @@ nodemap_instance = nm_get_instance()
 if len(sys.argv > 1):
     deploy_arg = sys.argv[1]
 
-    if deploy_arg = "SPOT_DEPLOY":
+    if deploy_arg == "SPOT_DEPLOY":
 
         do_gen_nodemap()
 
