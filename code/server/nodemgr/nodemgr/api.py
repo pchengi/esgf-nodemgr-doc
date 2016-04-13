@@ -39,15 +39,14 @@ def nodemgrapi(request):
 
     if action == "get_node_map":
 
-        resp_code = nodemap_instance.get_indv_node_status_json()
         nodemap_instance.reload()
-
+        resp_code = nodemap_instance.get_indv_node_status_json()
 
     elif action == "sync_node_map_file":
         
         nodemap_instance.reload()
 
-        resp_code = json.dumps(nodemap_instance.nmap, ,  sort_keys=True, indent=4, separators=(',', ': '))
+        resp_code = json.dumps(nodemap_instance.nmap, sort_keys=True, indent=4, separators=(',', ': '))
         
     elif action in ["add_member", "remove_member", "sn_init", "set_status"]:
 
