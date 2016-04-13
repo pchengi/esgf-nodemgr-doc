@@ -44,7 +44,7 @@ logger.addHandler(fh)
 nodemap_instance = nm_get_instance()
 
 
-if len(sys.argv > 1):
+if len(sys.argv) > 1:
     deploy_arg = sys.argv[1]
 
     if deploy_arg == "SPOT_DEPLOY":
@@ -97,7 +97,7 @@ if (supernode):
     node_props = get_prop_st()
     nodemap_instance.set_prop(nodemap_instance.myname, node_props)
 
-    if len(sys.argv > 1):
+    if len(sys.argv) > 1:
         deploy_arg = sys.argv[1]
 
         if deploy_arg == "SPOT_DEPLOY":
