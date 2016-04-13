@@ -46,7 +46,7 @@ def nodemgrapi(request):
         
         nodemap_instance.reload()
 
-        resp_code = json.dumps(nodemap_instance.nmap, sort_keys=True, indent=4, separators=(',', ': '))
+        resp_code = json.dumps(nodemap_instance.nodemap, sort_keys=True, indent=4, separators=(',', ': '))
         
     elif action in ["add_member", "remove_member", "sn_init", "set_status"]:
 
