@@ -102,7 +102,7 @@ def do_gen_nodemap(args):
 
     sn_list = []
 
-    old_members = None
+    old_members = []
 
     old_mcount = 0
 
@@ -153,7 +153,7 @@ def do_gen_nodemap(args):
 
         supernodes.append(tmp_supernode)
 
-        if old_members:
+        if len(old_members) >= i :
             membernodes.append(old_members[i-1])
         else :
             tmp_entry = {}
