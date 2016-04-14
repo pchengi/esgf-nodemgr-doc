@@ -53,6 +53,14 @@ nm_stop() {
 }
 
 nm_update_sn_list() {
+    peergroup=`grep node.peer.group /esg/config/esgf.properties | cut -d'=' -f 2`
+    if [ $peergroup == "esgf-demo" ] ; then
+        FED_NAME="demonet"
+    else
+        FED_NAME=$peergroup
+    fi
+    
+   
     echo fetching supernodes list
     wget -O /esg/config/esgf_supernodes_list.json http://aims1.llnl.gov/nm-cfg/$FED_NAME/esgf_supernodes_list.json
 

@@ -41,15 +41,18 @@ fh.setLevel(logging.ERROR)
 
 logger.addHandler(fh)
 
-nodemap_instance = nm_get_instance()
-
 
 if len(sys.argv) > 1:
     deploy_arg = sys.argv[1]
 
     if deploy_arg == "SPOT_DEPLOY":
+                
+        print "Fetching nodes list..."
+        do_gen_nodemap(["INIT"])
 
-        do_gen_nodemap([])
+
+nodemap_instance = nm_get_instance()
+
 
 nodemap_instance.load_map(MAP_FN)
 
@@ -87,6 +90,9 @@ MasterNode = (nodemap_instance.myid == "1")
 supernode_count = len(nodemap_instance.nodemap["supernodes"])
 
 
+
+
+
 #if MasterNode:
 #
 #    timestore_instance.ts = int(time())
@@ -102,7 +108,8 @@ if (supernode):
 
         if deploy_arg == "SPOT_DEPLOY":
             
-            send_map_to_others()
+            send_map_to_others(True, nodemap_instance)
+            send_map_to_others(False, nodemap_instance)
             
 
 

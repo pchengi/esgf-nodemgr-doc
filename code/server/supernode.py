@@ -530,6 +530,8 @@ def links_check(nmap):
 #                print " found an up link"
                 break
 
+        
+        
         if down and snodes[i]["health"] != "unreachable":
             snodes[i]["health"] = "unreachable"
             changed = True
@@ -544,7 +546,7 @@ def links_check(nmap):
             new_back_up.append(snodes[i]["id"])
         elif (not down) and snodes[i]["health"] == "new":
             snodes[i]["health"] = "good"
-
+            changed = True
 
     for n in snodes:
 
@@ -560,9 +562,13 @@ def links_check(nmap):
                 if status == "LAPSED":
                     n["health"] = "bad"
                     new_down.append(n)
+
                 elif status == "ISSUE":  # we will need to define these
                     n["health"] = "unhealthy"
                 else:
+                    if n["health"] != "good":
+                        print "change of health to good"
+                        changed = True
                     n["health"] = "good"
 
     if changed:
