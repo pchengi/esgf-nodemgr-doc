@@ -48,7 +48,7 @@ if len(sys.argv) > 1:
     if deploy_arg == "SPOT_DEPLOY":
                 
         print "Fetching nodes list..."
-        do_gen_nodemap([])
+        do_gen_nodemap(["INIT"])
 
 
 nodemap_instance = nm_get_instance()
@@ -108,7 +108,8 @@ if (supernode):
 
         if deploy_arg == "SPOT_DEPLOY":
             
-            send_map_to_others()
+            send_map_to_others(True, nodemap_instance)
+            send_map_to_others(False, nodemap_instance)
             
 
 

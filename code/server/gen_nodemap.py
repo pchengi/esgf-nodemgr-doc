@@ -79,6 +79,8 @@ def do_fetch_nodemap(fqdn):
 
 def do_gen_nodemap(args):
 
+    print "running as", args    
+
     filename = MAP_FN
 
     if filename is None or len(filename) == 0:
@@ -87,12 +89,12 @@ def do_gen_nodemap(args):
 
     got_map = False
 
-    if (len(args) < 2):
+    if (len(args) < 1):
         print "gen_roadmap requires argument. exiting"
         exit (-1)
 
-    if args[1] != "INIT":
-        got_map = do_fetch_nodemap(args[1])
+    if args[0] != "INIT":
+        got_map = do_fetch_nodemap(args[0])
 
     if got_map:
         print "Nodemap retrieval succeeded! exiting..."
@@ -111,12 +113,13 @@ def do_gen_nodemap(args):
         old_members = existing_map["membernodes"]
         old_mcount = existing_map["total_membernodes"]
     except:
+        print "problem with existing map"
         pass
 
-    if len(sys.argv) > 2:  
+    if len(args) > 1 and args[0] != "INIT":  
     
         print "using command line arguments"
-        sn_list = sys.argv[1:]
+        sn_list = args
     else:
         try:
             f = open('/esg/config/esgf_supernodes_list.json')
@@ -194,7 +197,7 @@ def do_gen_nodemap(args):
 
 
 if(__name__ == '__main__'):
-    sys.exit(do_gen_nodemap(sys.argv))
+    sys.exit(do_gen_nodemap(sys.argv[1:]))
 
     
 
