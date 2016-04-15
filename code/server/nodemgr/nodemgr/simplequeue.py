@@ -48,7 +48,7 @@ def write_task(data):
             
         count = count + 1
         
-        
+        inc_task_code()
         fn = get_task_fn()
 
     f = open(fn, "w")
