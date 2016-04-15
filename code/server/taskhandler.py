@@ -22,7 +22,18 @@ def task_node_properties(task_d, nmap):
     ky = task_d["esgf.host"]
 #    print "node properties task" + ky
     status = task_d["status"]
+
     nmap.set_prop(ky, task_d)
+
+    if not ky in nmap.snidx:
+
+        
+        if (nmap.update_membernode_status(ky, status )):
+            send_map_to_others(True, nmap)        
+            send_map_to_others(False. mmap)
+        
+
+
 
 
 def task_health_check_fwd(task_d, nmap):
