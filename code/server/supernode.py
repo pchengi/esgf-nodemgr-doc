@@ -161,6 +161,8 @@ def node_redist(nm_inst, sn_id):
     
     free_slots = []
 
+    x = None
+
     for n in nm_inst["membernodes"]:
 
         if n["supernode"] == sn_id:
@@ -172,7 +174,12 @@ def node_redist(nm_inst, sn_id):
                 free_slots.append([n, MAX_PER_SN - len(n["members"])])
             
 
-    x["status"] = "reassigned"  
+
+    if x is None:
+        print "supernode node found"
+        return True
+    else:
+        x["status"] = "reassigned"  
         
     idx = 0
 
