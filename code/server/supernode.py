@@ -579,6 +579,7 @@ def links_check(nmap):
                 else:
                     if n["health"] != "good":
                         print "change of health to good"
+                        new_back_up.append(n["id"])
                         changed = True
                     n["health"] = "good"
 
