@@ -504,7 +504,7 @@ def member_node_check(nmap):
 
 def links_check(nmap):
 
-#    print "Links Check"
+    print "Links Check"
 
 #    pdb.set_trace()
 
