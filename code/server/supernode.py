@@ -567,8 +567,12 @@ def links_check(nmap):
                 status = hn_dict["status"]
         
                 if status == "LAPSED":
+
+                    if n["health"] == "good":
+                        new_down.append(n["id"])
+                        changed = True
                     n["health"] = "bad"
-                    new_down.append(n)
+
 
                 elif status == "ISSUE":  # we will need to define these
                     n["health"] = "unhealthy"
