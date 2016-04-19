@@ -30,7 +30,7 @@ def task_node_properties(task_d, nmap):
         
         if (nmap.update_membernode_status(ky, status )):
             send_map_to_others(True, nmap)        
-            send_map_to_others(False. mmap)
+            send_map_to_others(False, mmap)
         
 
 
