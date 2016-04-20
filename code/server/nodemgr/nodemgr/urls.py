@@ -46,18 +46,22 @@ def write_resp(full):
         f = open(PROPS_FN)
         j = f.read()
         f.close()
+
         
-        dd = json.loads(j)
+        if len(j) > 2:
+            dd = json.loads(j)
     
-        ts_last = int(dd["ts_all"])
-        ts_now = int(ts_func())
+            ts_last = int(dd["ts_all"])
+            ts_now = int(ts_func())
 
-        ts_diff = ts_now - ts_last
+            ts_diff = ts_now - ts_last
 
-        if ts_diff > TS_THRESH:
-            status = "LAPSED"
+            if ts_diff > TS_THRESH:
+                status = "LAPSED"
+            else:
+                status = "GOOD"
         else:
-            status = "GOOD"
+            status = "LAPSED"
 
     met_resp = {}
 
