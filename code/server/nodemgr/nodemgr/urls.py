@@ -126,7 +126,7 @@ def healthcheckack(request):
 
     if "what" in qd and  qd["what"] == "timestamp":
 
-        return HttpResponse('[{"ts_all", '+str(ts_func())+'}]',  content_type='text/json')
+        return HttpResponse('{"ts_all": '+str(ts_func())+'}',  content_type='text/json')
     
 
     if ("forward" in qd and qd["forward"] == "True"):
