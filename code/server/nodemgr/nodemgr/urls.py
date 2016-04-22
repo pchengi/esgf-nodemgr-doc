@@ -34,6 +34,12 @@ if not os.environ.get("NM_TEST_SRV") is None and os.environ.get("NM_TEST_SRV") =
 #nodemap_instance = NodeMap(MAPFILE)
 
 
+def make_json(ststr):
+
+    return '{"action": "update_status", "status", "' + ststr+'"}"'
+
+
+
 
 
 def write_resp(full):
@@ -105,7 +111,7 @@ def write_resp(full):
  #       print out_str
         return out_str
     else:
-        return status
+        return make_json(status)
 
 def healthcheckreport(request):
     qd = request.GET

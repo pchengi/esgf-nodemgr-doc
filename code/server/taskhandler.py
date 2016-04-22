@@ -215,8 +215,16 @@ def handle_tasks(nmap):
         task_d = json.loads(task)
 
         action = task_d["action"]
-# TODO - this needs to be hardened before outside deployment
-        fn_ptr = switch["task_" +action]
+
+        fnstr = "task_" +action
+
+        if not fnstr in switch:
+            print "Not a valid task! -  ", task
+            continue
+ 
+        fn_ptr = switch[fnstr]
+
+
         retval = fn_ptr (task_d, nmap)
         
         task = get_next_task()
