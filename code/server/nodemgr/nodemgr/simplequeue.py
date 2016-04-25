@@ -1,4 +1,4 @@
-import os
+import os, stat
 from threading import Thread
 
 TASK_CODE = 0
@@ -51,10 +51,11 @@ def write_task(data):
         inc_task_code()
         fn = get_task_fn()
 
-    f = open(fn, "w")
+    f = open(fn, "w", )
     f.write(data)
 
     f.close()
+    os.chmod(fn, stat.S_IWGRP)
         
 class RunningWrite(Thread):
     def __init__(self, data):
