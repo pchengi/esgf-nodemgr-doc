@@ -55,7 +55,7 @@ def write_task(data):
     f.write(data)
 
     f.close()
-    os.chmod(fn, stat.S_IWGRP)
+    os.chmod(fn, stat.S_IWGRP | stat.S_IRGRP | stat.S_IWUSR | stat.S_IRUSR  )
         
 class RunningWrite(Thread):
     def __init__(self, data):
