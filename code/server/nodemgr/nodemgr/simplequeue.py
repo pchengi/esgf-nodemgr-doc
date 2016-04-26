@@ -51,12 +51,15 @@ def write_task(data):
         inc_task_code()
         fn = get_task_fn()
 
-    f = open(fn, "w", )
+    f = open(fn, "w" )
     f.write(data)
 
     f.close()
     os.chmod(fn, stat.S_IWGRP | stat.S_IRGRP | stat.S_IWUSR | stat.S_IRUSR  )
-        
+    
+    print os.stat(fn)
+
+
 class RunningWrite(Thread):
     def __init__(self, data):
         super(RunningWrite, self).__init__()
