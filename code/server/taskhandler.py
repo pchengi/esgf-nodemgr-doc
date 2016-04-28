@@ -125,9 +125,11 @@ def task_node_map_update(task_d, nmap):
     if "create_timestamp" in nmap.nodemap:
         old_ts = int(nmap.nodemap["create_timestamp"])
 
-    old_sn_lst = nmap.snidx.keys().sort()
+    old_sn_lst = nmap.snidx.keys()
+    old_sn_lst.sort()
 
     new_sn_lst = []
+
     for n in new_map_obj["supernodes"]:
         new_sn_lst.append(n["hostname"])
         
@@ -141,11 +143,12 @@ def task_node_map_update(task_d, nmap):
     #  an outdated list, but because this scenario seems unlikely, we
     #  hope to stick with this procedure for updating the nodemap.
 
-    if new_ts > old_ts or old_sn_lst == new_sn_lst:
+    if new_ts >= old_ts or old_sn_lst == new_sn_lst:
         # merge object maps
         nmap.nodemap = new_map_obj
     else:
         print "New map is based on old format, not updating"
+
         return False
 
     nmap.dirty = True
