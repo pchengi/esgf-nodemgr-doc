@@ -37,8 +37,12 @@ def execute_count_query(qstr):
     if not has_db:
         return 0
 
-    result = db_engine.execute(qstr)
-
+    try:
+        result = db_engine.execute(qstr)
+    except:
+        print "Query failed to execute"
+        return -1
+        
     val = 0
 
     for row in result:

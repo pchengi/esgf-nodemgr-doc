@@ -46,7 +46,7 @@ def write_resp(full):
 
     global served
 
-    status = "INITAL"
+    status = "LAPSED"
 
     if os.path.isfile(PROPS_FN):
         f = open(PROPS_FN)
