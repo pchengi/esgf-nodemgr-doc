@@ -236,7 +236,9 @@ def node_return(nm_inst, sn_id):
                 print x
                 if "temp_assign" in x and x["temp_assign"] and x["prev_owner"] == sn_id:
                     print " removing the entry"
-                    n["members"].remove(x)
+                    tmp = n["members"]
+                    tmp.remove(x)
+                    n["members"] = tmp
             print "New super entry = ", n
 
 def supernode_check(nodemap_instance):
@@ -565,7 +567,7 @@ def links_check(nmap):
 
         hn = n["hostname"]
 
-        if hn in nmap.prop_store:
+        if (not n["id"] in new_down) and  hn in nmap.prop_store:
 
             hn_dict = nmap.prop_store[hn]
 
