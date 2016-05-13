@@ -549,7 +549,7 @@ def links_check(nmap):
             new_down.append(snodes[i]["id"])
 
 #            print "  changed bad"
-        elif (not down) and (snodes[i]["health"] == "unreachable" or snodes[i]["health"] == "bad"):
+        elif (not down) and (snodes[i]["health"] == "unreachable"):
             snodes[i]["health"] = "good"
             changed = True
 #            print "  change to good"
@@ -557,6 +557,8 @@ def links_check(nmap):
         elif (not down) and snodes[i]["health"] == "new":
             snodes[i]["health"] = "good"
             changed = True
+
+        
 
     for n in snodes:
 
