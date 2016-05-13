@@ -235,8 +235,9 @@ def node_return(nm_inst, sn_id):
                 
                 print x
                 if "temp_assign" in x and x["temp_assign"] and x["prev_owner"] == sn_id:
+                    print " removing the entry"
                     n["members"].remove(x)
-            print n
+            print "New super entry = ", n
 
 def supernode_check(nodemap_instance):
 
@@ -548,11 +549,11 @@ def links_check(nmap):
 
             new_down.append(snodes[i]["id"])
 
-#            print "  changed bad"
+            print "  changed bad"
         elif (not down) and (snodes[i]["health"] == "unreachable"):
             snodes[i]["health"] = "good"
             changed = True
-#            print "  change to good"
+            print "  change to good - reachable"
             new_back_up.append(snodes[i]["id"])
         elif (not down) and snodes[i]["health"] == "new":
             snodes[i]["health"] = "good"
@@ -581,9 +582,10 @@ def links_check(nmap):
 
                 elif status == "ISSUE":  # we will need to define these
                     n["health"] = "unhealthy"
+                    changed = True
                 else:
                     if n["health"] != "good":
-                        print "change of health to good"
+                        print "   change of health to good"
                         new_back_up.append(n["id"])
                         changed = True
                     n["health"] = "good"
