@@ -218,6 +218,8 @@ def node_redist(nm_inst, sn_id):
 
 def node_return(nm_inst, sn_id):
 
+    print "returnin node to org position"
+
     for n in nm_inst["membernodes"]:
 
 
@@ -231,9 +233,10 @@ def node_return(nm_inst, sn_id):
         else:
             for x in n["members"]:
                 
+                print x
                 if "temp_assign" in x and x["temp_assign"] and x["prev_owner"] == sn_id:
                     n["members"].remove(x)
-
+            print n
 
 def supernode_check(nodemap_instance):
 
