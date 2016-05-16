@@ -189,6 +189,24 @@ def node_redist(nm_inst, sn_id):
         print "No nodes to reassign"
         return True
 
+    for node_obj in mem:
+
+        remove = False
+        for comp_obj in nm_inst["membernodes"]:
+
+            if comp_obj["supernode"] == sn_id:
+                continue
+            for comp_mn in comp_obj["members"]:
+                if node_obj["id"] == comp_obj["id"] and comp_obj["temp_assign"]:
+                    print "Found duplicate", node_obj
+                    remove = True
+                    break
+            if remove:
+                break
+        if remove:
+            mem.remove(node_obj)
+
+
     summ = 0
     for z in free_slots:
         summ+=z[1]
@@ -202,7 +220,10 @@ def node_redist(nm_inst, sn_id):
 
         for i in range(z[1]):
 
+
             cl = mem[idx].copy()
+            
+            node_id = cl["id"]
             
             cl["temp_assign"] = True
             cl["prev_owner"] = sn_id
@@ -567,7 +588,7 @@ def links_check(nmap):
 
         hn = n["hostname"]
 
-        if (not n["id"] in new_down) and  hn in nmap.prop_store:
+        if (not n["id"] in new_down) and hn in nmap.prop_store:
 
             hn_dict = nmap.prop_store[hn]
 
@@ -586,11 +607,11 @@ def links_check(nmap):
                     n["health"] = "unhealthy"
                     changed = True
                 else:
-                    if n["health"] != "good":
+                    if n["health"] in ["bad", "unhealthy"]:
                         print "   change of health to good"
                         new_back_up.append(n["id"])
                         changed = True
-                    n["health"] = "good"
+                        n["health"] = "good"
 
     if changed:
         nmap.dirty = True
