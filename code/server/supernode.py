@@ -215,6 +215,8 @@ def node_redist(nm_inst, sn_id):
     if summ < len(mem):
         return False
     
+    if idx >= len(mem):
+        return True
         
     for z in free_slots:
 
