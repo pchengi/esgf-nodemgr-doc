@@ -204,8 +204,8 @@ def node_redist(nm_inst, sn_id):
             if remove:
                 break
         if remove:
-            mem.remove(node_obj)
-
+            comp_obj.remove(node_obj)
+            
 
     summ = 0
     for z in free_slots:

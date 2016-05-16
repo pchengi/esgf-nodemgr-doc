@@ -317,9 +317,10 @@ class NodeMap():
             
             tmparr.append(n)
         for n in self.nodemap["membernodes"]:
-            for x in n["members"]:
+            if "status" in n and n["status"] != "reassigned":
+                for x in n["members"]:
 
-                tmparr.append(x)
+                    tmparr.append(x)
 
         STR = json.dumps(tmparr, indent=4, separators=(',', ': '))
 
