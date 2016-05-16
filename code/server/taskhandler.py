@@ -1,4 +1,9 @@
-import json, os
+import json, os, logging
+
+
+
+lg = logging.getLogger("esgf_nodemanager")
+
 from time import time
 from nodemgr.nodemgr.simplequeue import get_next_task
 from nodemgr.nodemgr.healthcheck import RunningCheck
@@ -114,6 +119,7 @@ def task_node_map_update(task_d, nmap):
         new_map_obj = json.loads(new_map_str)
     except:
         print "Illegal string (can't load json)"
+        lg.error("BAD JSON" + new_map_str)
         return False
     
     new_ts = 1
@@ -215,7 +221,13 @@ def handle_tasks(nmap):
 
     while (len(task) > 0):
         
-        task_d = json.loads(task)
+        try:
+            task_d = json.loads(task)
+        except:
+            print "Error in json task"
+            lg.error("BAD JSON - " + task)
+            task = get_next_task()
+            continue
 
         action = task_d["action"]
 
@@ -223,6 +235,7 @@ def handle_tasks(nmap):
 
         if not fnstr in switch:
             print "Not a valid task! -  ", task
+            task = get_next_task()
             continue
  
         fn_ptr = switch[fnstr]
