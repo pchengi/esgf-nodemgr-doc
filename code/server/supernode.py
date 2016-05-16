@@ -197,7 +197,7 @@ def node_redist(nm_inst, sn_id):
             if comp_obj["supernode"] == sn_id:
                 continue
             for comp_mn in comp_obj["members"]:
-                if node_obj["id"] == comp_obj["id"] and comp_obj["temp_assign"]:
+                if node_obj["id"] == comp_mn["id"] and comp_mn["temp_assign"]:
                     print "Found duplicate", node_obj
                     remove = True
                     break
