@@ -88,7 +88,7 @@ elif cmd ==  "delete":
 
     targetnum = 0
     
-    nodemap = json.loads(f.read())
+    nodemap = load_json(f.read())
 
     for entry in nodemap["membernodes"]:
 
@@ -111,6 +111,8 @@ elif cmd ==  "delete":
         print "An error has occurred.  The supernode managing this node not found in the node map."
         exit
 
+        
+    print "Contacting", target, "to delete self from federation"
     conn = Conn(target, PORT, timeout=30)
 
     conn.request("GET", "/esgf-nm/api?action=remove_member&from=" + myname )

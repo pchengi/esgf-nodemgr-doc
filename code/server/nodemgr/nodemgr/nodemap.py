@@ -273,11 +273,15 @@ class NodeMap():
                         memlist.remove(member)
                         self.dirty = True
                         self.nodemap["total_membernodes"] = self.nodemap["total_membernodes"] - 1
+                        
+                        print "success in removing member node"
 
                         return True
+                print "did not find the member node for a removal"
+
                 return False
                      
-
+        print "did not match the supernode for a removal"
         return False
 
          
