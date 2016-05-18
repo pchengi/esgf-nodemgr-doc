@@ -204,9 +204,9 @@ def node_redist(nm_inst, sn_id):
             if remove:
                 break
         if remove:
-            lst = comp_obj("members")
+            lst = comp_obj["members"]
             lst.remove(node_obj)
-            comp_obj("members") = lst
+            comp_obj["members"] = lst
 
     summ = 0
     for z in free_slots:
