@@ -189,6 +189,8 @@ def node_redist(nm_inst, sn_id):
         print "No nodes to reassign"
         return True
 
+    dup_ids = []
+
     for node_obj in mem:
 
         remove = False
@@ -204,9 +206,7 @@ def node_redist(nm_inst, sn_id):
             if remove:
                 break
         if remove:
-            lst = comp_obj["members"]
-            lst.remove(node_obj)
-            comp_obj["members"] = lst
+            dup_ids.append(node_obj["id"])
 
     summ = 0
     for z in free_slots:
@@ -223,18 +223,19 @@ def node_redist(nm_inst, sn_id):
 
         for i in range(z[1]):
 
-
-            cl = mem[idx].copy()
+            if not mem[idx]["id"] in dup_ids:
+                cl = mem[idx].copy()
             
-            node_id = cl["id"]
+                node_id = cl["id"]
             
-            cl["temp_assign"] = True
-            cl["prev_owner"] = sn_id
+                cl["temp_assign"] = True
+                cl["prev_owner"] = sn_id
 
-            print z
+                print z
 
-            z[0]["members"].append(cl)
-            
+                z[0]["members"].append(cl)
+            else:
+                print mem[idx]["id"], "was already added to an alternate nodes list"
             idx=idx+1
             if idx == len(mem):
                 return True
