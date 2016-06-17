@@ -321,7 +321,12 @@ class NodeMap():
             
             tmparr.append(n)
         for n in self.nodemap["membernodes"]:
-            if "status" in n and n["status"] != "reassigned":
+            show = True
+            
+            if "status" in n and n["status"] == "reassigned":
+                show = False
+
+            if show:
                 for x in n["members"]:
 
                     tmparr.append(x)

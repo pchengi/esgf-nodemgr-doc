@@ -37,7 +37,7 @@ def nodemgrapi(request):
         
     task = ""
 
-    if action == "get_node_map":
+    if action == "get_nodes_status":
 
         nodemap_instance.reload()
         resp_code = nodemap_instance.get_indv_node_status_json()
