@@ -178,7 +178,7 @@ def task_add_member(task_d, nmap):
 
     rc = nmap.assign_node(task_d["from"], task_d["project"], task_d["standby"] == "True")
     send_map_to_others(False, nmap)
-
+    send_map_to_others(True, nmap)        
 
 
 
@@ -188,7 +188,8 @@ def task_remove_member(task_d, nmap):
         print "removed"
     else:
         print "not removed"
-
+    send_map_to_others(True, nmap)
+    send_map_to_others(False, nmap)
 
 def task_sn_init(task_d, nmap):
 
